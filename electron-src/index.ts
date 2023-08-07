@@ -6,7 +6,6 @@ import { format } from 'url';
 import { BrowserWindow, app, } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
-import Store from 'electron-store';
 import { icpHandler } from './modules/ipc-handler';
 import { ApplicationSettings } from './modules/application-settings';
 
@@ -16,7 +15,6 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
-	const store = new Store();
 	const settings = ApplicationSettings;
 	await prepareNext('./renderer');
 
@@ -51,7 +49,7 @@ app.on('ready', async () => {
 	mainWindow.loadURL(url);
 
 	// ipc通信設定
-	icpHandler({ window: mainWindow, store });
+	icpHandler({ window: mainWindow });
 });
 
 // アプリ終了

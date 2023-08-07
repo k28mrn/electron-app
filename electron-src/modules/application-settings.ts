@@ -1,12 +1,21 @@
 import Store from 'electron-store';
 
+export const getApplicationSettingsData = (): AppStoreProps => {
+	const store = new Store();
+	return store.get('application-settings') as AppStoreProps;
+};
+
+export const setApplicationSettingsData = (data: AppStoreProps) => {
+	const store = new Store();
+	store.set('application-settings', data);
+};
+
 /**
  * アプリ基本情報設定
  */
 export const ApplicationSettings: AppSettingsProps = (() => {
 	// ローカル保存情報取得
-	const store = new Store();
-	let data = store.get('application-settings') as AppStoreProps;
+	let data = getApplicationSettingsData();
 
 	// 初期設定
 	if (data === undefined || data === null) data = {};
@@ -24,7 +33,7 @@ export const ApplicationSettings: AppSettingsProps = (() => {
 	};
 
 	// 保存
-	store.set('application-settings', settings);
+	setApplicationSettingsData(settings);
 	return settings;
 })();
 

@@ -42,14 +42,23 @@ class ApplicationGui extends EventEmitter {
 		appSettingTab.pages[0].addBinding(this.#settings, 'y', { min: 0, max: height * 0.6, step: 1 }).on('change', this.#onChangeSettings);
 		appSettingTab.pages[0].addBinding(this.#settings, 'width', { min: 0, max: width, step: 1 }).on('change', this.#onChangeSettings);
 		appSettingTab.pages[0].addBinding(this.#settings, 'height', { min: 0, max: width, step: 1 }).on('change', this.#onChangeSettings);
+		appSettingTab.pages[0].addButton({
+			title: '設定反映',
+			label: '',
+		}).on('click', this.#onRestartClick);
+
 		// アプリケーション設定
 		appSettingTab.pages[1].element.classList.add('app_gui_application');
 		appSettingTab.pages[1].addBinding(this.#settings, 'fullscreen', { label: 'フルスクリーン', w: 100 }).on('change', this.#onChangeSettings);
 		appSettingTab.pages[1].addBinding(this.#settings, 'kiosk', { label: '展示モード' }).on('change', this.#onChangeSettings);
 		appSettingTab.pages[1].addBinding(this.#settings, 'alwaysOnTop', { label: '常に最前面' }).on('change', this.#onChangeSettings);
-		appSettingTab.pages[1].addBinding(this.#settings, 'frame', { label: 'ウィンドウバー非表示' }).on('change', this.#onChangeSettings);
+		appSettingTab.pages[1].addBinding(this.#settings, 'frame', { label: 'ウィンドウバー表示' }).on('change', this.#onChangeSettings);
 		appSettingTab.pages[1].addBinding(this.#settings, 'autoHideMenuBar', { label: 'メニューバー非表示' }).on('change', this.#onChangeSettings);
 		appSettingTab.pages[1].addBinding(this.#settings, 'useDevTools', { label: '開発者ツール表示' }).on('change', this.#onChangeSettings);
+		appSettingTab.pages[1].addButton({
+			title: '設定反映',
+			label: '',
+		}).on('click', this.#onRestartClick);
 	}
 
 	/**
@@ -62,6 +71,13 @@ class ApplicationGui extends EventEmitter {
 			// NOTE: Electron側の制御でPCのローカルに保存
 			global.ipcRenderer.invoke('SetAppSettings', this.#settings);
 		}, 100);
+	};
+
+	/**
+	 * 設定反映のための再起動
+	 */
+	#onRestartClick = () => {
+		global.ipcRenderer.invoke('RestartApplication', this.#settings);
 	};
 
 	/**

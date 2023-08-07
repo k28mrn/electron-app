@@ -1,25 +1,35 @@
-import { ipcMain, BrowserWindow, IpcMainInvokeEvent } from "electron";
+import { ipcMain, BrowserWindow, IpcMainInvokeEvent, app } from "electron";
 import { getLocalAddress } from "./utils/get-local-address";
-import Store from 'electron-store';
-import { AppStoreProps } from "./application-settings";
+import { AppStoreProps, getApplicationSettingsData, setApplicationSettingsData } from "./application-settings";
 
 /**
  * ipc通信 イベント登録
  */
-export const icpHandler = ({ store }: { window: BrowserWindow, store: Store; }) => {
+export const icpHandler = ({ window, }: { window: BrowserWindow, }) => {
 	/**
-	 * [electron → renderer] ipをアプリケーション設定
+	 * ipをアプリケーション設定を取得してrendererに渡す
 	 */
 	ipcMain.handle('GetAppSettings', (_: IpcMainInvokeEvent) => {
 		const ip = getLocalAddress();
-		const data = store.get('application-settings') as AppStoreProps;
+		const data = getApplicationSettingsData();
 		return { ...data, ip, };
 	});
 
+	/**
+	 * rendererから送られたアプリケーション設定を保存する
+	 */
 	ipcMain.handle('SetAppSettings', (_: IpcMainInvokeEvent, data: AppStoreProps) => {
-		store.set('application-settings', data);
-		console.log(store.get('application-settings'));
-
+		setApplicationSettingsData(data);
 		return true;
+	});
+
+	/**
+	 * rendererからの通知でアプリを再起動する
+	 */
+	ipcMain.handle('RestartApplication', (_: IpcMainInvokeEvent, data: AppStoreProps) => {
+		setApplicationSettingsData(data);
+		window.close();
+		app.relaunch();
+		app.exit();
 	});
 };
