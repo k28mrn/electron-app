@@ -3,28 +3,42 @@ import { join } from 'path';
 import { format } from 'url';
 
 // Packages
-import { BrowserWindow, app, ipcMain, IpcMainEvent } from 'electron';
+import { BrowserWindow, app, } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
+import Store from 'electron-store';
+import { icpHandler } from './modules/ipc-handler';
+import { ApplicationSettings } from './modules/application-settings';
 
 // NOTE:
-// 開発時ワーニング回避設定
-// (参考: https://qiita.com/kuraiL22/items/80e8e77d62cbe39d0b34)
+// 開発時ワーニング回避設定　(参考: https://qiita.com/kuraiL22/items/80e8e77d62cbe39d0b34)
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
+	const store = new Store();
+	const settings = ApplicationSettings;
 	await prepareNext('./renderer');
 
+	// アプリウィンドウ設定
 	const mainWindow = new BrowserWindow({
-		width: 800,
-		height: 600,
+		x: settings.x, y: settings.y,
+		width: settings.width, height: settings.height,
+		fullscreen: settings.fullscreen,
+		frame: settings.frame,
+		kiosk: settings.kiosk,
+		alwaysOnTop: settings.alwaysOnTop,
 		webPreferences: {
 			nodeIntegration: false,
 			contextIsolation: false,
 			preload: join(__dirname, 'preload.js'),
 		},
 	});
+
+	// 開発用コンソールの表示
+	if (settings.useDevTools) {
+		mainWindow.webContents.openDevTools();
+	}
 
 	const url = isDev
 		? 'http://localhost:8000/'
@@ -35,13 +49,10 @@ app.on('ready', async () => {
 		});
 
 	mainWindow.loadURL(url);
+
+	// ipc通信設定
+	icpHandler({ window: mainWindow, store });
 });
 
-// Quit the app once all windows are closed
+// アプリ終了
 app.on('window-all-closed', app.quit);
-
-// listen the channel `message` and resend the received message to the renderer process
-ipcMain.on('message', (event: IpcMainEvent, message: any) => {
-	console.log(message);
-	setTimeout(() => event.sender.send('message', 'hi from electron'), 500);
-});

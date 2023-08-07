@@ -2,3 +2,8 @@
 @import "./foundation/variables";
 @import "./foundation/functions";
 @import "./foundation/base";
+
+
+.app_gui_application {
+	--bld-vw: 80px;
+}

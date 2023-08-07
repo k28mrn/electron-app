@@ -27,6 +27,8 @@
 		"microcms",
 		"koushou",
 		"gtag",
+		"tweakpane",
+		"fpsgraph",
 	],
 	"files.exclude": {
 		"node_modules": true,

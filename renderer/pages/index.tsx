@@ -6,7 +6,7 @@ const SketchComponent = dynamic(() => import('../components/SketchComponet'), { 
 
 const IndexPage = () => {
 	return (
-		<Layout title="Home | Next.js + TypeScript + Electron Example">
+		<Layout title="ELECTRON BASIC DEVELOP ENVIRONMENT">
 			<SketchComponent />
 		</Layout>
 	);
