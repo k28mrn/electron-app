@@ -1,3 +1,4 @@
+
 export interface AppSettingsProps {
 	ip: string;
 	x: number;
@@ -10,4 +11,12 @@ export interface AppSettingsProps {
 	alwaysOnTop: boolean;
 	autoHideMenuBar: boolean;
 	useDevTools: boolean;
+	options: {
+		serialPort: SerialPortProps;
+	};
+}
+
+interface SerialPortProps {
+	port: string;
+	baudRate: number;
 }

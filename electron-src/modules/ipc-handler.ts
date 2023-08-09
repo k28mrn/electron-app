@@ -18,7 +18,7 @@ export const icpHandler = ({ window, }: { window: BrowserWindow, }) => {
 	/**
 	 * rendererから送られたアプリケーション設定を保存する
 	 */
-	ipcMain.handle('SetAppSettings', (_: IpcMainInvokeEvent, data: AppStoreProps) => {
+	ipcMain.handle('SetAppConfig', (_: IpcMainInvokeEvent, data: AppStoreProps) => {
 		setApplicationSettingsData(data);
 		return true;
 	});

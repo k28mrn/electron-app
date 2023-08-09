@@ -12,11 +12,12 @@ class ApplicationGui extends EventEmitter {
 	#fpsGraph: EssentialsPlugin.FpsGraphBladeApi | BladeApi<BladeController<View>>;
 	#timeoutId: number = -1;
 	#serialConfig: SerialPortProps = {
-		// path: '/dev/tty.usb',
-		path: '/dev/tty.usbmodem1101',
+		path: '/dev/tty.usb',
 		baudRate: 9600,
 		status: SerialStatus.closed,
 	};
+	serialWriteValue: string = '';
+	serialReadValue: string = '';
 
 	constructor() {
 		super();
@@ -24,6 +25,9 @@ class ApplicationGui extends EventEmitter {
 
 	async setup() {
 		this.#settings = await global.ipcRenderer.invoke('GetAppSettings') as AppSettingsProps;
+		this.#serialConfig.path = this.#settings.options.serialPort.port;
+		this.#serialConfig.baudRate = this.#settings.options.serialPort.baudRate;
+
 		this.#pane = new Pane({ title: 'Settings' });
 		this.#pane.registerPlugin(EssentialsPlugin);
 		this.#pane.element.parentElement.style.zIndex = '1000';
@@ -84,21 +88,49 @@ class ApplicationGui extends EventEmitter {
 	 */
 	#createSerialConfig = () => {
 		const folder = this.#pane.addFolder({ title: 'Serial Config' });
-		folder.addBinding(this.#serialConfig, 'path', { label: 'Path' });
-		folder.addBinding(this.#serialConfig, 'baudRate', { label: 'BaudRate', });
+		folder.addBinding(this.#serialConfig, 'path', { label: 'Path' }).on('change', this.#onChangeSettings);
+		folder.addBinding(this.#serialConfig, 'baudRate', { label: 'BaudRate', }).on('change', this.#onChangeSettings);
 		const status = folder.addBinding(this.#serialConfig, 'status', { label: 'Status', });
-		const button = folder.addButton({ title: 'Connect', label: '' }).on('click', this.#onSerialConnectClick);
+		const connectButton = folder.addButton({ title: 'Connect', label: '' }).on('click', this.#onSerialConnectClick);
+		const writeFolder = folder.addFolder({ title: 'WriteDebag' });
+		writeFolder.hidden = true;
+		writeFolder.addBinding(this, "serialWriteValue", { label: 'Value' });
+		writeFolder.addButton({ title: 'SerialWrite', label: '' }).on('click', this.#onWriteSerial);
+
+		const readFolder = folder.addFolder({ title: 'ReadDebag' });
+		readFolder.hidden = true;
+		const readValue = readFolder.addBinding(this, "serialReadValue", { label: 'Value', readonly: true, multiline: true, rows: 2, });
+
 		// folder.hidden = true;
 		// console.log(this.#pane, this.#pane.children.find((child) => 'title' in child && child.title === 'Serial Config'));
+		// オープン検知
 		global.ipcRenderer.on('OpenSerial', () => {
 			this.#serialConfig.status = SerialStatus.open;
 			status.refresh();
-			button.title = 'Disconnect';
+			connectButton.title = 'Disconnect';
+			writeFolder.hidden = false;
+			readFolder.hidden = false;
 		});
+		// クローズ検知
 		global.ipcRenderer.on('CloseSerial', () => {
 			this.#serialConfig.status = SerialStatus.closed;
 			status.refresh();
-			button.title = 'Connect';
+			connectButton.title = 'Connect';
+			writeFolder.hidden = true;
+			readFolder.hidden = true;
+		});
+		// エラー検知
+		global.ipcRenderer.on('ErrorSerial', (_, message: string) => {
+			this.#serialConfig.status = SerialStatus.error;
+			status.refresh();
+			writeFolder.hidden = true;
+			readFolder.hidden = true;
+			throw new Error(`Serial Error ${message}`);
+		});
+		// データ受信検知
+		global.ipcRenderer.on('ReadSerial', (_, data: string) => {
+			this.serialReadValue = data;
+			readValue.refresh();
 		});
 	};
 
@@ -110,7 +142,15 @@ class ApplicationGui extends EventEmitter {
 		window.clearTimeout(this.#timeoutId);
 		this.#timeoutId = window.setTimeout(() => {
 			// NOTE: Electron側の制御でPCのローカルに保存
-			global.ipcRenderer.invoke('SetAppSettings', this.#settings);
+			global.ipcRenderer.invoke('SetAppConfig', {
+				...this.#settings,
+				options: {
+					serialPort: {
+						port: this.#serialConfig.path,
+						baudRate: this.#serialConfig.baudRate,
+					}
+				}
+			});
 		}, 100);
 	};
 
@@ -123,6 +163,13 @@ class ApplicationGui extends EventEmitter {
 		} else {
 			global.ipcRenderer.invoke('DisconnectSerial');
 		}
+	};
+
+	/**
+	 * シリアル通信書き込み
+	 */
+	#onWriteSerial = () => {
+		global.ipcRenderer.invoke('WriteSerial', this.serialWriteValue);
 	};
 
 	/**
