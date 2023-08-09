@@ -1,6 +1,5 @@
 import p5 from "p5";
 import { useEffect, useRef } from "react";
-import Stats from "stats-js";
 import { appGui } from "../modules/app-gui";
 
 const SketchComponent = (): JSX.Element => {

@@ -1,7 +1,7 @@
 import { ipcMain, BrowserWindow, IpcMainInvokeEvent, app } from "electron";
 import { getLocalAddress } from "./utils/get-local-address";
 import { AppStoreProps, getApplicationSettingsData, setApplicationSettingsData } from "./application-settings";
-
+import { serialHandler } from "./serial-handlers";
 /**
  * ipc通信 イベント登録
  */
@@ -32,4 +32,7 @@ export const icpHandler = ({ window, }: { window: BrowserWindow, }) => {
 		app.relaunch();
 		app.exit();
 	});
+
+	// シリアル通信関連
+	serialHandler({ window, });
 };

@@ -7,7 +7,10 @@
 描画ライブラリ
 
 [electron-store](https://github.com/sindresorhus/electron-store)  
-アプリの設定情報等をローカル上に保存する
+アプリの設定情報等をローカル上に保存
 
 [Tweakpane](https://cocopon.github.io/tweakpane/)  
 アプリを設定するためのGUI
+
+[serialport](https://www.npmjs.com/package/serialport)  
+シリアル接続制御ライブラリ
