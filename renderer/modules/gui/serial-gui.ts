@@ -27,10 +27,10 @@ export class SerialGui extends EventEmitter {
 	/**
 	 * setup
 	 */
-	#setup = () => {
-		console.log(this.config);
+	#setup = async () => {
+		const list = await global.ipcRenderer.invoke('GetSerialPortList');
 
-		this.#folder.addBinding(this.config, 'path', { label: 'Path' }).on('change', () => this.emit(SerialGui.Change));
+		this.#folder.addBinding(this.config, 'path', { label: 'Path', options: list }).on('change', () => this.emit(SerialGui.Change));
 		this.#folder.addBinding(this.config, 'baudRate', { label: 'BaudRate', }).on('change', () => this.emit(SerialGui.Change));
 		const status = this.#folder.addBinding(this, 'status', { label: 'Status', });
 		const connectButton = this.#folder.addButton({ title: 'Connect', label: '' }).on('click', this.#onSerialConnectClick);

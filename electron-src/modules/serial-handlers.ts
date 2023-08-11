@@ -6,7 +6,7 @@ import { ReadlineParser, SerialPort } from 'serialport';
 /**
  * シリアル通信設定
  */
-export const serialHandler = ({ window, }: { window: BrowserWindow, }) => {
+export const serialHandler = async ({ window, }: { window: BrowserWindow, }) => {
 	let serialPort: SerialPort | undefined = undefined;
 	let parser: ReadlineParser | undefined = undefined;
 	const isOpen = (): boolean => serialPort && serialPort.isOpen;
@@ -31,7 +31,6 @@ export const serialHandler = ({ window, }: { window: BrowserWindow, }) => {
 			});
 		}
 	};
-
 
 	const onOpen = () => window.webContents.send('OpenSerial');
 	const onClose = () => window.webContents.send('CloseSerial');
@@ -74,6 +73,13 @@ export const serialHandler = ({ window, }: { window: BrowserWindow, }) => {
 		if (isOpen()) {
 			serialPort.write(data);
 		}
+	});
+
+	ipcMain.handle('GetSerialPortList', async () => {
+		const list = await SerialPort.list();
+		const pathList: { [key: string]: string; } = { '/dev/tty.usb': '/dev/tty.usb' };
+		list.forEach((v, i) => pathList[`${v.path}`] = v.path);
+		return pathList;
 	});
 
 	app.on('window-all-closed', portClose);
