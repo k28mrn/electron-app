@@ -17,6 +17,6 @@ export interface AppSettingsProps {
 }
 
 interface SerialPortProps {
-	port: string;
+	path: string;
 	baudRate: number;
 }

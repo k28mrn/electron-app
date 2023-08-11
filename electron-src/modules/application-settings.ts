@@ -32,7 +32,7 @@ export const ApplicationSettings: AppSettingsProps = (() => {
 		useDevTools: (data.useDevTools !== undefined) ? data.useDevTools : false,
 		options: {
 			serialPort: {
-				port: (data.options !== undefined && data.options.serialPort !== undefined && data.options.serialPort.port !== undefined) ? data.options.serialPort.port : '/dev/tty.usb',
+				path: (data.options !== undefined && data.options.serialPort !== undefined && data.options.serialPort.path !== undefined) ? data.options.serialPort.path : '/dev/tty.usb',
 				baudRate: (data.options !== undefined && data.options.serialPort !== undefined && data.options.serialPort.baudRate !== undefined) ? data.options.serialPort.baudRate : 9600
 			}
 		}
@@ -59,7 +59,7 @@ export interface AppStoreProps {
 	};
 }
 export interface SerialStoreProps {
-	port?: string;
+	path?: string;
 	baudRate?: number;
 }
 

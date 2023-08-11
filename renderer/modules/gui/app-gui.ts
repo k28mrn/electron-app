@@ -1,23 +1,17 @@
 import EventEmitter from 'events';
 import { BladeApi, Pane } from 'tweakpane';
-import { AppSettingsProps } from '../interfaces/app-setting-props';
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
-import { BladeController, View } from '@tweakpane/core';
-import { SerialPortProps, SerialStatus } from '../interfaces/serial-config-props';
+import { AppSettingsProps } from '@/interfaces/app-setting-props';
+import { SerialPortProps, SerialStatus } from '@/interfaces/serial-config-props';
+import { SerialGui } from './serial-gui';
 
 
 class ApplicationGui extends EventEmitter {
 	#pane: Pane;
 	#settings: AppSettingsProps;
-	#fpsGraph: EssentialsPlugin.FpsGraphBladeApi | BladeApi<BladeController<View>>;
+	#fpsGraph: EssentialsPlugin.FpsGraphBladeApi;
 	#timeoutId: number = -1;
-	#serialConfig: SerialPortProps = {
-		path: '/dev/tty.usb',
-		baudRate: 9600,
-		status: SerialStatus.closed,
-	};
-	serialWriteValue: string = '';
-	serialReadValue: string = '';
+	#serialGui: SerialGui;
 
 	constructor() {
 		super();
@@ -25,9 +19,6 @@ class ApplicationGui extends EventEmitter {
 
 	async setup() {
 		this.#settings = await global.ipcRenderer.invoke('GetAppSettings') as AppSettingsProps;
-		this.#serialConfig.path = this.#settings.options.serialPort.port;
-		this.#serialConfig.baudRate = this.#settings.options.serialPort.baudRate;
-
 		this.#pane = new Pane({ title: 'Settings' });
 		this.#pane.registerPlugin(EssentialsPlugin);
 		this.#pane.element.parentElement.style.zIndex = '1000';
@@ -43,7 +34,7 @@ class ApplicationGui extends EventEmitter {
 			view: 'fpsgraph',
 			label: 'FPS',
 			rows: 2,
-		});
+		}) as EssentialsPlugin.FpsGraphBladeApi;
 	};
 
 	/**
@@ -88,50 +79,9 @@ class ApplicationGui extends EventEmitter {
 	 */
 	#createSerialConfig = () => {
 		const folder = this.#pane.addFolder({ title: 'Serial Config' });
-		folder.addBinding(this.#serialConfig, 'path', { label: 'Path' }).on('change', this.#onChangeSettings);
-		folder.addBinding(this.#serialConfig, 'baudRate', { label: 'BaudRate', }).on('change', this.#onChangeSettings);
-		const status = folder.addBinding(this.#serialConfig, 'status', { label: 'Status', });
-		const connectButton = folder.addButton({ title: 'Connect', label: '' }).on('click', this.#onSerialConnectClick);
-		const writeFolder = folder.addFolder({ title: 'WriteDebag' });
-		writeFolder.hidden = true;
-		writeFolder.addBinding(this, "serialWriteValue", { label: 'Value' });
-		writeFolder.addButton({ title: 'SerialWrite', label: '' }).on('click', this.#onWriteSerial);
-
-		const readFolder = folder.addFolder({ title: 'ReadDebag' });
-		readFolder.hidden = true;
-		const readValue = readFolder.addBinding(this, "serialReadValue", { label: 'Value', readonly: true, multiline: true, rows: 2, });
-
-		// folder.hidden = true;
-		// console.log(this.#pane, this.#pane.children.find((child) => 'title' in child && child.title === 'Serial Config'));
-		// オープン検知
-		global.ipcRenderer.on('OpenSerial', () => {
-			this.#serialConfig.status = SerialStatus.open;
-			status.refresh();
-			connectButton.title = 'Disconnect';
-			writeFolder.hidden = false;
-			readFolder.hidden = false;
-		});
-		// クローズ検知
-		global.ipcRenderer.on('CloseSerial', () => {
-			this.#serialConfig.status = SerialStatus.closed;
-			status.refresh();
-			connectButton.title = 'Connect';
-			writeFolder.hidden = true;
-			readFolder.hidden = true;
-		});
-		// エラー検知
-		global.ipcRenderer.on('ErrorSerial', (_, message: string) => {
-			this.#serialConfig.status = SerialStatus.error;
-			status.refresh();
-			writeFolder.hidden = true;
-			readFolder.hidden = true;
-			throw new Error(`Serial Error ${message}`);
-		});
-		// データ受信検知
-		global.ipcRenderer.on('ReadSerial', (_, data: string) => {
-			this.serialReadValue = data;
-			readValue.refresh();
-		});
+		const serialPort = this.#settings.options.serialPort;
+		this.#serialGui = new SerialGui(folder, serialPort);
+		this.#serialGui.on(SerialGui.Change, this.#onChangeSettings);
 	};
 
 	/**
@@ -145,31 +95,10 @@ class ApplicationGui extends EventEmitter {
 			global.ipcRenderer.invoke('SetAppConfig', {
 				...this.#settings,
 				options: {
-					serialPort: {
-						port: this.#serialConfig.path,
-						baudRate: this.#serialConfig.baudRate,
-					}
+					serialPort: this.#serialGui.config,
 				}
 			});
 		}, 100);
-	};
-
-	/**
-	 * シリアル通信接続
-	 */
-	#onSerialConnectClick = () => {
-		if (this.#serialConfig.status === SerialStatus.closed) {
-			global.ipcRenderer.invoke('ConnectSerial', this.#serialConfig);
-		} else {
-			global.ipcRenderer.invoke('DisconnectSerial');
-		}
-	};
-
-	/**
-	 * シリアル通信書き込み
-	 */
-	#onWriteSerial = () => {
-		global.ipcRenderer.invoke('WriteSerial', this.serialWriteValue);
 	};
 
 	/**
@@ -183,14 +112,14 @@ class ApplicationGui extends EventEmitter {
 	 * FPS計測開始
 	 */
 	fpsBegin = () => {
-		(this.#fpsGraph as EssentialsPlugin.FpsGraphBladeApi).begin();
+		this.#fpsGraph.begin();
 	};
 
 	/**
 	 * FPS計測終了
 	 */
 	fpsEnd = () => {
-		(this.#fpsGraph as EssentialsPlugin.FpsGraphBladeApi).end();
+		this.#fpsGraph.end();
 	};
 };
 

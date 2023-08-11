@@ -1,6 +1,6 @@
 import p5 from "p5";
 import { useEffect, useRef } from "react";
-import { appGui } from "../modules/app-gui";
+import { appGui } from "@/modules/gui/app-gui";
 
 const SketchComponent = (): JSX.Element => {
 	const p5Ref = useRef<p5>();
