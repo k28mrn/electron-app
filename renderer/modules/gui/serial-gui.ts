@@ -16,14 +16,19 @@ export class SerialGui extends EventEmitter {
 	writeValue: string = '';
 	readValue: string = '';
 
-	constructor(folder: FolderApi, { path, baudRate, }: SerialPortProps) {
+	constructor(folder: FolderApi, { path, baudRate, }: SerialPortProps, useConfig: boolean) {
 		super();
 		this.#folder = folder;
-		this.#folder.expanded = false;
+		this.#folder.hidden = !useConfig;
 		this.config.path = path;
 		this.config.baudRate = baudRate;
 		this.#setup();
 	}
+
+	/**
+	 * 設定GUIの表示/非表示
+	 */
+	set enabled(useConfig: boolean) { this.#folder.hidden = !useConfig; }
 
 	/**
 	 * setup
@@ -43,9 +48,6 @@ export class SerialGui extends EventEmitter {
 		const readFolder = this.#folder.addFolder({ title: 'ReadDebag' });
 		readFolder.hidden = true;
 		const readValue = readFolder.addBinding(this, "readValue", { label: 'Value', readonly: true, multiline: true, rows: 2, });
-
-		// folder.hidden = true;
-		// console.log(this.#pane, this.#pane.children.find((child) => 'title' in child && child.title === 'Serial Config'));
 
 		// オープン検知
 		global.ipcRenderer.on('OpenSerial', () => {

@@ -14,6 +14,10 @@ export interface AppSettingsProps {
 	options: {
 		serialPort: SerialPortProps;
 	};
+	plugin: {
+		useSerialPort: boolean;
+		useOsc: boolean;
+	};
 }
 
 interface SerialPortProps {

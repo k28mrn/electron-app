@@ -30,12 +30,16 @@ export const ApplicationSettings: AppSettingsProps = (() => {
 		alwaysOnTop: (data.alwaysOnTop !== undefined) ? data.alwaysOnTop : false,
 		autoHideMenuBar: (data.autoHideMenuBar !== undefined) ? data.autoHideMenuBar : false,
 		useDevTools: (data.useDevTools !== undefined) ? data.useDevTools : false,
+		plugin: {
+			useSerialPort: (data.plugin !== undefined && data.plugin.useSerialPort !== undefined) ? data.plugin.useSerialPort : false,
+			useOsc: (data.plugin !== undefined && data.plugin.useOsc !== undefined) ? data.plugin.useOsc : false,
+		},
 		options: {
 			serialPort: {
 				path: (data.options !== undefined && data.options.serialPort !== undefined && data.options.serialPort.path !== undefined) ? data.options.serialPort.path : '/dev/tty.usb',
 				baudRate: (data.options !== undefined && data.options.serialPort !== undefined && data.options.serialPort.baudRate !== undefined) ? data.options.serialPort.baudRate : 9600
 			}
-		}
+		},
 	};
 
 	// 保存
@@ -56,6 +60,10 @@ export interface AppStoreProps {
 	useDevTools?: boolean;
 	options?: {
 		serialPort?: SerialStoreProps;
+	};
+	plugin?: {
+		useSerialPort?: boolean;
+		useOsc?: boolean;
 	};
 }
 export interface SerialStoreProps {

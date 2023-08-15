@@ -24,6 +24,7 @@ class ApplicationGui extends EventEmitter {
 		this.#pane = new Pane({ title: 'Settings' });
 		this.#pane.registerPlugin(EssentialsPlugin);
 		this.#pane.element.parentElement.style.zIndex = '1000';
+		this.#pane.element.parentElement.style.width = '280px';
 
 		this.#createBaseConfig();
 		this.#createElectronConfig();
@@ -58,7 +59,7 @@ class ApplicationGui extends EventEmitter {
 	#createSerialConfig = () => {
 		const folder = this.#pane.addFolder({ title: 'Serial Config' });
 		const serialPort = this.#settings.options.serialPort;
-		this.#serialGui = new SerialGui(folder, serialPort);
+		this.#serialGui = new SerialGui(folder, serialPort, this.#settings.plugin.useSerialPort);
 		this.#serialGui.on(SerialGui.Change, this.#onChangeSettings);
 	};
 
@@ -68,10 +69,14 @@ class ApplicationGui extends EventEmitter {
 	#onChangeSettings = () => {
 		// NOTE: 100ms間隔で保存
 		window.clearTimeout(this.#timeoutId);
+		const config = this.#getUpdateConfig();
 		this.#timeoutId = window.setTimeout(() => {
 			// NOTE: Electron側の制御でPCのローカルに保存
-			global.ipcRenderer.invoke('SetAppConfig', this.#getUpdateConfig());
+			global.ipcRenderer.invoke('SetAppConfig', config);
 		}, 100);
+
+		// 各プラグインの表示反映
+		this.#serialGui.enabled = config.plugin.useSerialPort;
 	};
 
 	/**
