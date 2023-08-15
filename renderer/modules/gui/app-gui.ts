@@ -5,6 +5,7 @@ import { AppSettingsProps } from '@/interfaces/app-setting-props';
 import { SerialPortProps, SerialStatus } from '@/interfaces/serial-config-props';
 import { SerialGui } from './serial-gui';
 import { ElectronGui } from './electron-gui';
+import { OscGui } from './osc-gui';
 
 
 class ApplicationGui extends EventEmitter {
@@ -13,6 +14,7 @@ class ApplicationGui extends EventEmitter {
 	#fpsGraph: EssentialsPlugin.FpsGraphBladeApi;
 	#electronGui: ElectronGui;
 	#serialGui: SerialGui;
+	#oscGui: OscGui;
 	#timeoutId: number = -1;
 
 	constructor() {
@@ -30,6 +32,7 @@ class ApplicationGui extends EventEmitter {
 		this.#createBaseConfig();
 		this.#createElectronConfig();
 		this.#createSerialConfig();
+		this.#createOscConfig();
 		this.#addListeners();
 	}
 
@@ -66,6 +69,15 @@ class ApplicationGui extends EventEmitter {
 	};
 
 	/**
+	 * OSC設定
+	 */
+	#createOscConfig = () => {
+		const folder = this.#pane.addFolder({ title: 'OSC Config' });
+		this.#oscGui = new OscGui(folder, this.#settings.plugin.useOsc);
+		this.#oscGui.on(OscGui.Change, this.#onChangeSettings);
+	};
+
+	/**
 	 * イベント登録
 	 */
 	#addListeners = () => {
@@ -89,6 +101,7 @@ class ApplicationGui extends EventEmitter {
 
 		// 各プラグインの表示反映
 		this.#serialGui.enabled = config.plugin.useSerialPort;
+		this.#oscGui.enabled = config.plugin.useOsc;
 	};
 
 	/**
