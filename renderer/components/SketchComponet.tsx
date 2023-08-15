@@ -46,8 +46,10 @@ const SketchComponent = (): JSX.Element => {
 		 */
 		p.draw = () => {
 			appGui.fpsBegin(); // FPSの計測開始
-
-			p.circle(p.mouseX, p.mouseY, 20);
+			p.noStroke();
+			p.fill(getRandomPastelColor());
+			const size = p.random(20, 100);
+			p.circle(p.mouseX, p.mouseY, size);
 
 			appGui.fpsEnd(); // FPSの計測終了
 		};
@@ -59,6 +61,21 @@ const SketchComponent = (): JSX.Element => {
 			let scrollbarWidth = window.innerWidth - document.body.clientWidth;
 			p.resizeCanvas(window.innerWidth - scrollbarWidth, window.innerHeight);
 		};
+
+		/**
+		 * パステルカラーでランダムな色を取得する
+		 */
+		function getRandomPastelColor(): p5.Color {
+			let color: p5.Color;
+			do {
+				let r = p.random(200, 255);
+				let g = p.random(200, 255);
+				let b = p.random(200, 255);
+				color = p.color(r, g, b);
+			} while (p.saturation(color) < 40 || p.brightness(color) < 60); // 彩度が低いまたは明度が低い色を再抽選する条件
+
+			return color;
+		}
 	};
 
 	return <></>;
