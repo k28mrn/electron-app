@@ -31,6 +31,7 @@ export const ApplicationSettings: AppSettingsProps = (() => {
 		autoHideMenuBar: (data.autoHideMenuBar !== undefined) ? data.autoHideMenuBar : false,
 		useDevTools: (data.useDevTools !== undefined) ? data.useDevTools : false,
 		plugin: {
+			guiDisplay: (data.plugin !== undefined && data.plugin.guiDisplay !== undefined) ? data.plugin.guiDisplay : true,
 			useSerialPort: (data.plugin !== undefined && data.plugin.useSerialPort !== undefined) ? data.plugin.useSerialPort : false,
 			useOsc: (data.plugin !== undefined && data.plugin.useOsc !== undefined) ? data.plugin.useOsc : false,
 		},
@@ -62,6 +63,7 @@ export interface AppStoreProps {
 		serialPort?: SerialStoreProps;
 	};
 	plugin?: {
+		guiDisplay?: boolean;
 		useSerialPort?: boolean;
 		useOsc?: boolean;
 	};

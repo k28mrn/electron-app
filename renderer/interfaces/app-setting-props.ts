@@ -15,6 +15,7 @@ export interface AppSettingsProps {
 		serialPort: SerialPortProps;
 	};
 	plugin: {
+		guiDisplay: boolean;
 		useSerialPort: boolean;
 		useOsc: boolean;
 	};

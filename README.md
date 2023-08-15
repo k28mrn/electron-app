@@ -1,9 +1,14 @@
 # electron-basic-develop-env
 2023年度 後期授業用 Electron開発環境
 
+### 開発環境
+node : v18.16.0  
 
-### 仕様パッケージ
-[p5.js](https://p5js.org/)
+### GUI使い方
+「1」を押すことで表示非表示切り替えれます。
+
+### 使用パッケージ
+[p5.js](https://p5js.org/)  
 描画ライブラリ
 
 [electron-store](https://github.com/sindresorhus/electron-store)  

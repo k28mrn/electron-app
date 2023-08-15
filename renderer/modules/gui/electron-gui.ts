@@ -57,6 +57,7 @@ export class ElectronGui extends EventEmitter {
 
 		// プラグイン設定
 		pluginTap.element.classList.add('app_gui_application');
+		pluginTap.addBinding(this.config.plugin, 'guiDisplay', { label: '起動時GUI表示' }).on('change', this.#onChangeConfig);
 		pluginTap.addBinding(this.config.plugin, 'useSerialPort', { label: 'シリアル通信' }).on('change', this.#onChangeConfig);
 		pluginTap.addBinding(this.config.plugin, 'useOsc', { label: 'OSC通信' }).on('change', this.#onChangeConfig);
 	};

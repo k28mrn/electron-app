@@ -25,10 +25,12 @@ class ApplicationGui extends EventEmitter {
 		this.#pane.registerPlugin(EssentialsPlugin);
 		this.#pane.element.parentElement.style.zIndex = '1000';
 		this.#pane.element.parentElement.style.width = '280px';
+		this.#pane.hidden = !this.#settings.plugin.guiDisplay;
 
 		this.#createBaseConfig();
 		this.#createElectronConfig();
 		this.#createSerialConfig();
+		this.#addListeners();
 	}
 
 	#createBaseConfig = () => {
@@ -63,6 +65,16 @@ class ApplicationGui extends EventEmitter {
 		this.#serialGui.on(SerialGui.Change, this.#onChangeSettings);
 	};
 
+	/**
+	 * イベント登録
+	 */
+	#addListeners = () => {
+		window.addEventListener("keydown", (e) => {
+			if (e.key == '1') {
+				this.#pane.hidden = !this.#pane.hidden;
+			}
+		});
+	};
 	/**
 	 * 値の変更を検知して設定を保存
 	 */
