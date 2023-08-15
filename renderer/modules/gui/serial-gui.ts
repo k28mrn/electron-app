@@ -19,6 +19,7 @@ export class SerialGui extends EventEmitter {
 	constructor(folder: FolderApi, { path, baudRate, }: SerialPortProps) {
 		super();
 		this.#folder = folder;
+		this.#folder.expanded = false;
 		this.config.path = path;
 		this.config.baudRate = baudRate;
 		this.#setup();
@@ -30,8 +31,8 @@ export class SerialGui extends EventEmitter {
 	#setup = async () => {
 		const list = await global.ipcRenderer.invoke('GetSerialPortList');
 
-		this.#folder.addBinding(this.config, 'path', { label: 'Path', options: list }).on('change', () => this.emit(SerialGui.Change));
-		this.#folder.addBinding(this.config, 'baudRate', { label: 'BaudRate', }).on('change', () => this.emit(SerialGui.Change));
+		this.#folder.addBinding(this.config, 'path', { label: 'Path', options: list }).on('change', this.#onChangeConfig);
+		this.#folder.addBinding(this.config, 'baudRate', { label: 'BaudRate', }).on('change', this.#onChangeConfig);
 		const status = this.#folder.addBinding(this, 'status', { label: 'Status', });
 		const connectButton = this.#folder.addButton({ title: 'Connect', label: '' }).on('click', this.#onSerialConnectClick);
 		const writeFolder = this.#folder.addFolder({ title: 'WriteDebag' });
@@ -79,6 +80,11 @@ export class SerialGui extends EventEmitter {
 			readValue.refresh();
 		});
 	};
+
+	/**
+	 * 設定変更時
+	 */
+	#onChangeConfig = () => this.emit(SerialGui.Change);
 
 	/**
 	 * シリアル通信書き込み

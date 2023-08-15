@@ -4,14 +4,16 @@ import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 import { AppSettingsProps } from '@/interfaces/app-setting-props';
 import { SerialPortProps, SerialStatus } from '@/interfaces/serial-config-props';
 import { SerialGui } from './serial-gui';
+import { ElectronGui } from './electron-gui';
 
 
 class ApplicationGui extends EventEmitter {
 	#pane: Pane;
 	#settings: AppSettingsProps;
 	#fpsGraph: EssentialsPlugin.FpsGraphBladeApi;
-	#timeoutId: number = -1;
+	#electronGui: ElectronGui;
 	#serialGui: SerialGui;
+	#timeoutId: number = -1;
 
 	constructor() {
 		super();
@@ -23,55 +25,31 @@ class ApplicationGui extends EventEmitter {
 		this.#pane.registerPlugin(EssentialsPlugin);
 		this.#pane.element.parentElement.style.zIndex = '1000';
 
-		this.#createFpsGraph();
+		this.#createBaseConfig();
 		this.#createElectronConfig();
 		this.#createSerialConfig();
 	}
 
-	#createFpsGraph = () => {
+	#createBaseConfig = () => {
 		// FPS
 		this.#fpsGraph = this.#pane.addBlade({
 			view: 'fpsgraph',
 			label: 'FPS',
 			rows: 2,
 		}) as EssentialsPlugin.FpsGraphBladeApi;
+
+		// IP設定
+		this.#pane.addBinding(this.#settings, 'ip', { label: 'IP' });
 	};
 
 	/**
 	 * Electron設定
 	 */
 	#createElectronConfig = () => {
-		// IP設定
-		this.#pane.addBinding(this.#settings, 'ip', { label: 'IP' });
-
-		// ウィンドウ設定
-		const tab = this.#pane.addTab({
-			pages: [{ title: 'Window' }, { title: 'Application' }]
-		});
-		// window設定
-		let width = screen.width;
-		let height = screen.height;
-		tab.pages[0].addBinding(this.#settings, 'x', { color: 0xFFFF00, min: 0, max: width * 0.6, step: 1 }).on('change', this.#onChangeSettings);
-		tab.pages[0].addBinding(this.#settings, 'y', { min: 0, max: height * 0.6, step: 1 }).on('change', this.#onChangeSettings);
-		tab.pages[0].addBinding(this.#settings, 'width', { min: 0, max: width, step: 1 }).on('change', this.#onChangeSettings);
-		tab.pages[0].addBinding(this.#settings, 'height', { min: 0, max: width, step: 1 }).on('change', this.#onChangeSettings);
-		tab.pages[0].addButton({
-			title: '設定反映',
-			label: '',
-		}).on('click', this.#onRestartClick);
-
-		// アプリケーション設定
-		tab.pages[1].element.classList.add('app_gui_application');
-		tab.pages[1].addBinding(this.#settings, 'fullscreen', { label: 'フルスクリーン', w: 100 }).on('change', this.#onChangeSettings);
-		tab.pages[1].addBinding(this.#settings, 'kiosk', { label: '展示モード' }).on('change', this.#onChangeSettings);
-		tab.pages[1].addBinding(this.#settings, 'alwaysOnTop', { label: '常に最前面' }).on('change', this.#onChangeSettings);
-		tab.pages[1].addBinding(this.#settings, 'frame', { label: 'ウィンドウバー表示' }).on('change', this.#onChangeSettings);
-		tab.pages[1].addBinding(this.#settings, 'autoHideMenuBar', { label: 'メニューバー非表示' }).on('change', this.#onChangeSettings);
-		tab.pages[1].addBinding(this.#settings, 'useDevTools', { label: '開発者ツール表示' }).on('change', this.#onChangeSettings);
-		tab.pages[1].addButton({
-			title: '設定反映',
-			label: '',
-		}).on('click', this.#onRestartClick);
+		const folder = this.#pane.addFolder({ title: 'Electron Config' });
+		this.#electronGui = new ElectronGui(folder, { ...this.#settings });
+		this.#electronGui.on(ElectronGui.Restart, this.#onRestartClick);
+		this.#electronGui.on(ElectronGui.Change, this.#onChangeSettings);
 	};
 
 	/**
@@ -92,12 +70,7 @@ class ApplicationGui extends EventEmitter {
 		window.clearTimeout(this.#timeoutId);
 		this.#timeoutId = window.setTimeout(() => {
 			// NOTE: Electron側の制御でPCのローカルに保存
-			global.ipcRenderer.invoke('SetAppConfig', {
-				...this.#settings,
-				options: {
-					serialPort: this.#serialGui.config,
-				}
-			});
+			global.ipcRenderer.invoke('SetAppConfig', this.#getUpdateConfig());
 		}, 100);
 	};
 
@@ -105,7 +78,19 @@ class ApplicationGui extends EventEmitter {
 	 * 設定反映のための再起動
 	 */
 	#onRestartClick = () => {
-		global.ipcRenderer.invoke('RestartApplication', this.#settings);
+		global.ipcRenderer.invoke('RestartApplication', this.#getUpdateConfig());
+	};
+
+	/**
+	 * 設定情報最新取得
+	 */
+	#getUpdateConfig = (): AppSettingsProps => {
+		return {
+			...this.#electronGui.config,
+			options: {
+				serialPort: this.#serialGui.config,
+			}
+		};
 	};
 
 	/**
