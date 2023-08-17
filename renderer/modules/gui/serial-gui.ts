@@ -1,13 +1,11 @@
 import { SerialPortProps, SerialStatus } from "@/interfaces/serial-config-props";
 import { FolderApi } from "@tweakpane/core";
-import EventEmitter from "events";
+import { GuiBase } from "./gui-base";
 
 /**
  * シリアル制御用GUIクラス
  */
-export class SerialGui extends EventEmitter {
-	static Change = 'change';
-	#folder: FolderApi;
+export class SerialGui extends GuiBase {
 	config: SerialPortProps = {
 		path: '/dev/tty.usb',
 		baudRate: 9600,
@@ -17,35 +15,30 @@ export class SerialGui extends EventEmitter {
 	readValue: string = '';
 
 	constructor(folder: FolderApi, { path, baudRate, }: SerialPortProps, useConfig: boolean) {
-		super();
-		this.#folder = folder;
-		this.#folder.hidden = !useConfig;
+		super(folder);
+		this.folder.hidden = !useConfig;
 		this.config.path = path;
 		this.config.baudRate = baudRate;
-		this.#setup();
+		this.setup();
 	}
 
-	/**
-	 * 設定GUIの表示/非表示
-	 */
-	set enabled(useConfig: boolean) { this.#folder.hidden = !useConfig; }
 
 	/**
 	 * setup
 	 */
-	#setup = async () => {
+	setup = async () => {
 		const list = await global.ipcRenderer.invoke('GetSerialPortList');
 
-		this.#folder.addBinding(this.config, 'path', { label: 'Path', options: list }).on('change', this.#onChangeConfig);
-		this.#folder.addBinding(this.config, 'baudRate', { label: 'BaudRate', }).on('change', this.#onChangeConfig);
-		const status = this.#folder.addBinding(this, 'status', { label: 'Status', });
-		const connectButton = this.#folder.addButton({ title: 'Connect', label: '' }).on('click', this.#onSerialConnectClick);
-		const writeFolder = this.#folder.addFolder({ title: 'WriteDebag' });
+		this.folder.addBinding(this.config, 'path', { label: 'Path', options: list }).on('change', this.onChangeConfig);
+		this.folder.addBinding(this.config, 'baudRate', { label: 'BaudRate', }).on('change', this.onChangeConfig);
+		const status = this.folder.addBinding(this, 'status', { label: 'Status', });
+		const connectButton = this.folder.addButton({ title: 'Connect', label: '' }).on('click', this.#onSerialConnectClick);
+		const writeFolder = this.folder.addFolder({ title: 'WriteDebag' });
 		writeFolder.hidden = true;
 		writeFolder.addBinding(this, "writeValue", { label: 'Value' });
 		writeFolder.addButton({ title: 'SerialWrite', label: '' }).on('click', this.#onWriteSerial);
 
-		const readFolder = this.#folder.addFolder({ title: 'ReadDebag' });
+		const readFolder = this.folder.addFolder({ title: 'ReadDebag' });
 		readFolder.hidden = true;
 		const readValue = readFolder.addBinding(this, "readValue", { label: 'Value', readonly: true, multiline: true, rows: 2, });
 
@@ -82,11 +75,6 @@ export class SerialGui extends EventEmitter {
 			readValue.refresh();
 		});
 	};
-
-	/**
-	 * 設定変更時
-	 */
-	#onChangeConfig = () => this.emit(SerialGui.Change);
 
 	/**
 	 * シリアル通信書き込み

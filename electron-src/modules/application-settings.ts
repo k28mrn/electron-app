@@ -13,7 +13,7 @@ export const setApplicationSettingsData = (data: AppStoreProps) => {
 /**
  * アプリ基本情報設定
  */
-export const ApplicationSettings: AppSettingsProps = (() => {
+export const ApplicationSettings: AppStoreProps = (() => {
 	// ローカル保存情報取得
 	let data = getApplicationSettingsData();
 
@@ -34,6 +34,7 @@ export const ApplicationSettings: AppSettingsProps = (() => {
 			guiDisplay: (data.plugin !== undefined && data.plugin.guiDisplay !== undefined) ? data.plugin.guiDisplay : true,
 			useSerialPort: (data.plugin !== undefined && data.plugin.useSerialPort !== undefined) ? data.plugin.useSerialPort : false,
 			useOsc: (data.plugin !== undefined && data.plugin.useOsc !== undefined) ? data.plugin.useOsc : false,
+			useMidi: (data.plugin !== undefined && data.plugin.useMidi !== undefined) ? data.plugin.useMidi : false,
 		},
 		options: {
 			serialPort: {
@@ -60,29 +61,15 @@ export interface AppStoreProps {
 	autoHideMenuBar?: boolean;
 	useDevTools?: boolean;
 	options?: {
-		serialPort?: SerialStoreProps;
+		serialPort?: {
+			path?: string;
+			baudRate?: number;
+		};
 	};
 	plugin?: {
 		guiDisplay?: boolean;
 		useSerialPort?: boolean;
 		useOsc?: boolean;
+		useMidi?: boolean;
 	};
 }
-export interface SerialStoreProps {
-	path?: string;
-	baudRate?: number;
-}
-
-export interface AppSettingsProps {
-	x: number;
-	y: number;
-	width: number;
-	height: number;
-	fullscreen: boolean;
-	frame: boolean;
-	kiosk: boolean;
-	alwaysOnTop: boolean;
-	autoHideMenuBar: boolean;
-	useDevTools: boolean;
-}
-

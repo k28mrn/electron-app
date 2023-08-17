@@ -6,6 +6,7 @@ import { SerialPortProps, SerialStatus } from '@/interfaces/serial-config-props'
 import { SerialGui } from './serial-gui';
 import { ElectronGui } from './electron-gui';
 import { OscGui } from './osc-gui';
+import { MidiGui } from './midi-gui';
 
 
 class ApplicationGui extends EventEmitter {
@@ -15,6 +16,7 @@ class ApplicationGui extends EventEmitter {
 	#electronGui: ElectronGui;
 	#serialGui: SerialGui;
 	#oscGui: OscGui;
+	#midiGui: MidiGui;
 	#timeoutId: number = -1;
 
 	constructor() {
@@ -33,6 +35,7 @@ class ApplicationGui extends EventEmitter {
 		this.#createElectronConfig();
 		this.#createSerialConfig();
 		this.#createOscConfig();
+		this.#createMidiConfig();
 		this.#addListeners();
 	}
 
@@ -78,6 +81,14 @@ class ApplicationGui extends EventEmitter {
 	};
 
 	/**
+	 * MIDI設定
+	 */
+	#createMidiConfig = () => {
+		const folder = this.#pane.addFolder({ title: 'MIDI Config' });
+		this.#midiGui = new MidiGui(folder, this.#settings.plugin.useMidi);
+	};
+
+	/**
 	 * イベント登録
 	 */
 	#addListeners = () => {
@@ -87,6 +98,7 @@ class ApplicationGui extends EventEmitter {
 			}
 		});
 	};
+
 	/**
 	 * 値の変更を検知して設定を保存
 	 */
@@ -102,6 +114,7 @@ class ApplicationGui extends EventEmitter {
 		// 各プラグインの表示反映
 		this.#serialGui.enabled = config.plugin.useSerialPort;
 		this.#oscGui.enabled = config.plugin.useOsc;
+		this.#midiGui.enabled = config.plugin.useMidi;
 	};
 
 	/**

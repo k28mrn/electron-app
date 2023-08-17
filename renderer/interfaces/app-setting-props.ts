@@ -18,6 +18,7 @@ export interface AppSettingsProps {
 		guiDisplay: boolean;
 		useSerialPort: boolean;
 		useOsc: boolean;
+		useMidi: boolean;
 	};
 }
 
