@@ -1,4 +1,3 @@
-import { SerialPortProps, SerialStatus } from "@/interfaces/serial-config-props";
 import { FolderApi } from "@tweakpane/core";
 import { GuiBase } from "./gui-base";
 

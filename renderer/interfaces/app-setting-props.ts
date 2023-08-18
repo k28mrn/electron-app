@@ -13,6 +13,7 @@ export interface AppSettingsProps {
 	useDevTools: boolean;
 	options: {
 		serialPort: SerialPortProps;
+		midi: MidiProps;
 	};
 	plugin: {
 		guiDisplay: boolean;
@@ -25,4 +26,8 @@ export interface AppSettingsProps {
 interface SerialPortProps {
 	path: string;
 	baudRate: number;
+}
+
+export interface MidiProps {
+	deviceName: string;
 }

@@ -14,7 +14,7 @@ export class SerialGui extends GuiBase {
 	writeValue: string = '';
 	readValue: string = '';
 
-	constructor(folder: FolderApi, { path, baudRate, }: SerialPortProps, useConfig: boolean) {
+	constructor(folder: FolderApi, useConfig: boolean, { path, baudRate, }: SerialPortProps,) {
 		super(folder);
 		this.folder.hidden = !useConfig;
 		this.config.path = path;
@@ -27,8 +27,8 @@ export class SerialGui extends GuiBase {
 	 * setup
 	 */
 	setup = async () => {
-		const list = await global.ipcRenderer.invoke('GetSerialPortList');
-
+		const list: { [key: string]: string; } = await global.ipcRenderer.invoke('GetSerialPortList');
+		if (!(this.config.path in list)) this.config.path = '';
 		this.folder.addBinding(this.config, 'path', { label: 'Path', options: list }).on('change', this.onChangeConfig);
 		this.folder.addBinding(this.config, 'baudRate', { label: 'BaudRate', }).on('change', this.onChangeConfig);
 		const status = this.folder.addBinding(this, 'status', { label: 'Status', });
@@ -74,6 +74,9 @@ export class SerialGui extends GuiBase {
 			this.readValue = data;
 			readValue.refresh();
 		});
+
+		// pathが設定されていたら接続
+		// if (this.config.path !== '' && !this.folder.hidden) this.#onSerialConnectClick();
 	};
 
 	/**

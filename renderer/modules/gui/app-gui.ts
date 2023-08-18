@@ -1,8 +1,7 @@
 import EventEmitter from 'events';
-import { BladeApi, Pane } from 'tweakpane';
+import { Pane } from 'tweakpane';
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 import { AppSettingsProps } from '@/interfaces/app-setting-props';
-import { SerialPortProps, SerialStatus } from '@/interfaces/serial-config-props';
 import { SerialGui } from './serial-gui';
 import { ElectronGui } from './electron-gui';
 import { OscGui } from './osc-gui';
@@ -67,7 +66,7 @@ class ApplicationGui extends EventEmitter {
 	#createSerialConfig = () => {
 		const folder = this.#pane.addFolder({ title: 'Serial Config' });
 		const serialPort = this.#settings.options.serialPort;
-		this.#serialGui = new SerialGui(folder, serialPort, this.#settings.plugin.useSerialPort);
+		this.#serialGui = new SerialGui(folder, this.#settings.plugin.useSerialPort, serialPort);
 		this.#serialGui.on(SerialGui.Change, this.#onChangeSettings);
 	};
 
@@ -84,8 +83,12 @@ class ApplicationGui extends EventEmitter {
 	 * MIDI設定
 	 */
 	#createMidiConfig = () => {
+		console.log(this.#settings);
+
 		const folder = this.#pane.addFolder({ title: 'MIDI Config' });
-		this.#midiGui = new MidiGui(folder, this.#settings.plugin.useMidi);
+		const midi = this.#settings.options.midi;
+		this.#midiGui = new MidiGui(folder, this.#settings.plugin.useMidi, midi.deviceName);
+		this.#midiGui.on(MidiGui.Change, this.#onChangeSettings);
 	};
 
 	/**
@@ -132,6 +135,7 @@ class ApplicationGui extends EventEmitter {
 			...this.#electronGui.config,
 			options: {
 				serialPort: this.#serialGui.config,
+				midi: this.#midiGui.config,
 			}
 		};
 	};
