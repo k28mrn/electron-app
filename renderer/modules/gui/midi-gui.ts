@@ -1,4 +1,4 @@
-import { BindingApi, FolderApi, TpChangeEvent } from "@tweakpane/core";
+import { BindingApi, FolderApi, } from "@tweakpane/core";
 import { GuiBase } from "./gui-base";
 import { MidiProps } from "@/interfaces/app-setting-props";
 
@@ -6,15 +6,18 @@ import { MidiProps } from "@/interfaces/app-setting-props";
  * シリアル制御用GUIクラス
  */
 export class MidiGui extends GuiBase {
+	static MidiMessage = 'MidiMessage';
+	deviceName: string = '';
+	device: MIDIInput = undefined;
+	debug: string = '';
 	#deviceList: { [key: string]: MIDIInput; } = {};
 	#deviceKeyList: { [key: string]: string; } = {};
-	selectedDeviceName: string = '';
-	selectedDevice: MIDIInput = undefined;
 	#deviceBinding: BindingApi;
+	#debugBinding: BindingApi;
 	constructor(folder: FolderApi, useConfig: boolean, deviceName: string,) {
 		super(folder);
 		this.folder.hidden = !useConfig;
-		this.selectedDeviceName = deviceName;
+		this.deviceName = deviceName;
 		this.setup();
 	}
 
@@ -23,7 +26,7 @@ export class MidiGui extends GuiBase {
 	 */
 	get config(): MidiProps {
 		return {
-			deviceName: this.selectedDeviceName,
+			deviceName: this.deviceName,
 		};
 	}
 
@@ -32,15 +35,11 @@ export class MidiGui extends GuiBase {
 	 */
 	setup = async () => {
 		await this.#getMidiInputs();
-		if (this.selectedDeviceName in this.#deviceList) {
-			this.selectedDevice = this.#deviceList[this.selectedDeviceName];
+		if (this.deviceName in this.#deviceList) {
+			this.device = this.#deviceList[this.deviceName];
 		};
-
-		this.folder.addButton({ title: 'Update Device List', label: '' }).on('click', async () => {
-			await this.#getMidiInputs();
-			this.#setDeviceList();
-		});
 		this.#setDeviceList();
+		this.#debugBinding = this.folder.addBinding(this, "debug", { label: 'Debug', readonly: true, multiline: true, rows: 8, });
 	};
 
 	/**
@@ -48,10 +47,16 @@ export class MidiGui extends GuiBase {
 	 */
 	#setDeviceList = () => {
 		if (this.#deviceBinding) this.#deviceBinding.dispose();
-		this.#deviceBinding = this.folder.addBinding(this, "selectedDeviceName", { label: 'Device', options: this.#deviceKeyList, }).on('change', (input: any) => {
-			this.selectedDevice = this.#deviceList[this.selectedDeviceName];
+		this.#deviceBinding = this.folder.addBinding(this, "deviceName", { label: 'Device', options: this.#deviceKeyList, }).on('change', (input: any) => {
+			if (this.device) {
+				this.device.onmidimessage = null;
+				this.device.close();
+			}
+			this.device = this.#deviceList[this.deviceName];
 			this.onChangeConfig();
+			this.#startListener();
 		});
+		this.#startListener();
 	};
 
 	/**
@@ -70,6 +75,37 @@ export class MidiGui extends GuiBase {
 		} catch (e) {
 			console.error(e);
 		}
+	};
+
+	/**
+	 * 
+	 */
+	#startListener = () => {
+		if (this.device === undefined) return;
+		this.device.onmidimessage = this.#onMidiMessage;
+	};
+
+	/**
+	 * データ送信
+	 */
+	#onMidiMessage = (message: MIDIMessageEvent) => {
+		console.log(message, message.data);
+		const data = message.data;
+		console.log(data[0]);
+
+		const cmd = data[0] >> 4;
+		const channel = data[0] & 0xf;
+		const type = data[0] & 0xf0;
+		const note = data[1];
+		const velocity = data[2];
+
+		this.debug = `cmd: ${cmd}\n`;
+		this.debug += `channel: ${channel}\n`;
+		this.debug += `type: ${type}\n`;
+		this.debug += `note: ${note}\n`;
+		this.debug += `velocity: ${velocity}\n`;
+
+		this.emit(MidiGui.MidiMessage, message.data);
 	};
 }
 

@@ -29,6 +29,7 @@
 		"gtag",
 		"tweakpane",
 		"fpsgraph",
+		"onmidimessage",
 	],
 	"files.exclude": {
 		"node_modules": true,
