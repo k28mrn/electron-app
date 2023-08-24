@@ -19,3 +19,6 @@ node : v18.16.0
 
 [serialport](https://www.npmjs.com/package/serialport)  
 シリアル接続制御ライブラリ
+
+[osc-js](https://www.npmjs.com/package/osc-js)  
+OSC通信ライブラリ

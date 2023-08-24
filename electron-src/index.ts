@@ -8,6 +8,7 @@ import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 import { icpHandler } from './modules/ipc-handler';
 import { ApplicationSettings } from './modules/application-settings';
+import { oscHandler } from './modules/osc-handler';
 
 // NOTE:
 // 開発時ワーニング回避設定　(参考: https://qiita.com/kuraiL22/items/80e8e77d62cbe39d0b34)
@@ -50,6 +51,9 @@ app.on('ready', async () => {
 
 	// ipc通信設定
 	icpHandler({ window: mainWindow });
+
+	// OSC通信設定
+	oscHandler();
 });
 
 // アプリ終了

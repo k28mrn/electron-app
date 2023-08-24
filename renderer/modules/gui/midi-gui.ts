@@ -39,7 +39,7 @@ export class MidiGui extends GuiBase {
 			this.device = this.#deviceList[this.deviceName];
 		};
 		this.#setDeviceList();
-		this.#debugBinding = this.folder.addBinding(this, "debug", { label: 'Debug', readonly: true, multiline: true, rows: 8, });
+		this.#debugBinding = this.folder.addBinding(this, "debug", { label: 'Debug', readonly: true, multiline: true, rows: 6, });
 	};
 
 	/**

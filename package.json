@@ -30,6 +30,7 @@
 		"electron-store": "^8.1.0",
 		"gsap": "^3.12.2",
 		"next": "latest",
+		"osc-js": "^2.4.0",
 		"p5": "^1.7.0",
 		"rimraf": "^3.0.0",
 		"sass": "^1.64.1",
