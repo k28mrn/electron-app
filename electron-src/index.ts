@@ -53,7 +53,7 @@ app.on('ready', async () => {
 	icpHandler({ window: mainWindow });
 
 	// OSC通信設定
-	oscHandler();
+	oscHandler({ window: mainWindow });
 });
 
 // アプリ終了
