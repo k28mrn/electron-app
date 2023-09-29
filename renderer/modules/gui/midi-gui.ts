@@ -8,9 +8,9 @@ import { MidiProps } from "@/interfaces/app-setting-props";
 export class MidiGui extends GuiBase {
 	static MidiMessage = 'MidiMessage';
 	deviceName: string = '';
-	device: MIDIInput = undefined;
+	device: any = undefined;
 	debug: string = '';
-	#deviceList: { [key: string]: MIDIInput; } = {};
+	#deviceList: { [key: string]: any; } = {};
 	#deviceKeyList: { [key: string]: string; } = {};
 	#deviceBinding: BindingApi;
 	#debugBinding: BindingApi;
@@ -64,17 +64,17 @@ export class MidiGui extends GuiBase {
 	 */
 	#getMidiInputs = async () => {
 		this.#deviceList = {};
-		try {
-			const midiAccess = await window.navigator.requestMIDIAccess();
-			const midi = midiAccess;
-			const inputs = midi.inputs;
-			inputs.forEach((input) => {
-				this.#deviceList[input.name] = input;
-				this.#deviceKeyList[input.name] = input.name;
-			});
-		} catch (e) {
-			console.error(e);
-		}
+		// try {
+		// 	const midiAccess = await window.navigator.requestMIDIAccess();
+		// 	const midi = midiAccess;
+		// 	const inputs = midi.inputs;
+		// 	inputs.forEach((input) => {
+		// 		this.#deviceList[input.name] = input;
+		// 		this.#deviceKeyList[input.name] = input.name;
+		// 	});
+		// } catch (e) {
+		// 	console.error(e);
+		// }
 	};
 
 	/**
@@ -88,7 +88,7 @@ export class MidiGui extends GuiBase {
 	/**
 	 * データ送信
 	 */
-	#onMidiMessage = (message: MIDIMessageEvent) => {
+	#onMidiMessage = (message: any) => {
 		console.log(message, message.data);
 		const data = message.data;
 		console.log(data[0]);
