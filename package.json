@@ -1,7 +1,9 @@
 {
 	"private": true,
+	"name": "electron-basic-develop-env",
+	"version": "1.0.0",
 	"main": "main/index.js",
-	"productName": "ElectronTypescriptNext",
+	"productName": "ElectronBasicDevelopEnv",
 	"scripts": {
 		"clean": "rimraf dist main renderer/out renderer/.next",
 		"dev": "npm run build-electron && electron .",
@@ -15,8 +17,11 @@
 	"dependencies": {
 		"electron-is-dev": "^1.1.0",
 		"electron-next": "^3.1.5",
+		"electron-store": "^8.1.0",
 		"react": "^18.2.0",
-		"react-dom": "^18.2.0"
+		"react-dom": "^18.2.0",
+		"serialport": "^11.0.1",
+		"osc-js": "^2.4.0"
 	},
 	"devDependencies": {
 		"@tweakpane/core": "^2.0.0",
@@ -27,14 +32,11 @@
 		"@types/react-dom": "^16.9.9",
 		"electron": "^25.3.2",
 		"electron-builder": "^23.0.3",
-		"electron-store": "^8.1.0",
 		"gsap": "^3.12.2",
 		"next": "latest",
-		"osc-js": "^2.4.0",
 		"p5": "^1.7.0",
 		"rimraf": "^3.0.0",
 		"sass": "^1.64.1",
-		"serialport": "^11.0.1",
 		"tweakpane": "^4.0.0",
 		"typescript": "^4.0.5"
 	},

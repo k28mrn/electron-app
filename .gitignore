@@ -37,3 +37,4 @@ renderer/.next
 main
 yarn.lock
 renderer/out
+dist
