@@ -1,6 +1,7 @@
-import { SerialPortProps, SerialStatus } from "@/interfaces/serial-config-props";
+import { SerialStatus } from "@/interfaces/serial-config-props";
 import { FolderApi } from "@tweakpane/core";
 import { GuiBase } from "./gui-base";
+import { SerialPortProps } from "@/interfaces/app-setting-props";
 
 /**
  * シリアル制御用GUIクラス

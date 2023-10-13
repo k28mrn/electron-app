@@ -13,6 +13,7 @@ export interface AppSettingsProps {
 	useDevTools: boolean;
 	options: {
 		serialPort: SerialPortProps;
+		osc: OscProps;
 		midi: MidiProps;
 	};
 	plugin: {
@@ -23,9 +24,13 @@ export interface AppSettingsProps {
 	};
 }
 
-interface SerialPortProps {
+export interface SerialPortProps {
 	path: string;
 	baudRate: number;
+}
+
+export interface OscProps {
+	sendHost: string;
 }
 
 export interface MidiProps {

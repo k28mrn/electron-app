@@ -1,13 +1,18 @@
 import { FolderApi } from "@tweakpane/core";
 import { GuiBase } from "./gui-base";
+import { OscProps } from "@/interfaces/app-setting-props";
 
 /**
  * シリアル制御用GUIクラス
  */
 export class OscGui extends GuiBase {
-	constructor(folder: FolderApi, useConfig: boolean) {
+	config: OscProps = {
+		sendHost: `127.0.0.1`,
+	};
+	constructor(folder: FolderApi, useConfig: boolean, config: OscProps) {
 		super(folder);
 		this.folder.hidden = !useConfig;
+		this.config = Object.assign({}, this.config, config);
 		this.setup();
 	}
 
@@ -15,6 +20,6 @@ export class OscGui extends GuiBase {
 	 * setup
 	 */
 	setup = async () => {
-
+		this.folder.addBinding(this.config, 'sendHost', { label: 'Send Host' }).on('change', this.onChangeConfig);
 	};
 }

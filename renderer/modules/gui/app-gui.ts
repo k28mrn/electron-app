@@ -75,7 +75,8 @@ class ApplicationGui extends EventEmitter {
 	 */
 	#createOscConfig = () => {
 		const folder = this.#pane.addFolder({ title: 'OSC Config' });
-		this.#oscGui = new OscGui(folder, this.#settings.plugin.useOsc);
+		const oscConfig = this.#settings.options.osc;
+		this.#oscGui = new OscGui(folder, this.#settings.plugin.useOsc, oscConfig);
 		this.#oscGui.on(OscGui.Change, this.#onChangeSettings);
 	};
 

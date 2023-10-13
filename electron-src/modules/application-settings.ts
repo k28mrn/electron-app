@@ -41,6 +41,9 @@ export const ApplicationSettings: AppStoreProps = (() => {
 				path: (data.options !== undefined && data.options.serialPort !== undefined && data.options.serialPort.path !== undefined) ? data.options.serialPort.path : '/dev/tty.usb',
 				baudRate: (data.options !== undefined && data.options.serialPort !== undefined && data.options.serialPort.baudRate !== undefined) ? data.options.serialPort.baudRate : 9600
 			},
+			osc: {
+				sendHost: (data.options !== undefined && data.options.osc !== undefined && data.options.osc.sendHost !== undefined) ? data.options.osc.sendHost : '127.0.0.1',
+			},
 			midi: {
 				deviceName: (data.options !== undefined && data.options.midi !== undefined && data.options.midi.deviceName !== undefined) ? data.options.midi.deviceName : '',
 			}
@@ -67,6 +70,9 @@ export interface AppStoreProps {
 		serialPort?: {
 			path?: string;
 			baudRate?: number;
+		};
+		osc?: {
+			sendHost?: string;
 		};
 		midi?: {
 			deviceName?: string;
