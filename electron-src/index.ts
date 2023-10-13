@@ -56,7 +56,7 @@ app.on('ready', async () => {
 	icpHandler({ window: mainWindow });
 
 	// OSC通信設定
-	oscHandler({ window: mainWindow });
+	oscHandler({ window: mainWindow, sendHost: settings.options.osc.sendHost, });
 });
 
 // アプリ終了

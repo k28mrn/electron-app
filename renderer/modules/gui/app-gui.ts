@@ -77,7 +77,10 @@ class ApplicationGui extends EventEmitter {
 		const folder = this.#pane.addFolder({ title: 'OSC Config' });
 		const oscConfig = this.#settings.options.osc;
 		this.#oscGui = new OscGui(folder, this.#settings.plugin.useOsc, oscConfig);
-		this.#oscGui.on(OscGui.Change, this.#onChangeSettings);
+		this.#oscGui.on(OscGui.Change, () => {
+			this.#onChangeOsc();
+			this.#onChangeSettings();
+		});
 	};
 
 	/**
@@ -97,7 +100,8 @@ class ApplicationGui extends EventEmitter {
 	 */
 	#addListeners = () => {
 		window.addEventListener("keydown", (e) => {
-			if (e.key == '1') {
+			// NOTE: SPACEキーで設定画面表示
+			if (e.key == ' ') {
 				this.#pane.hidden = !this.#pane.hidden;
 			}
 		});
@@ -122,6 +126,9 @@ class ApplicationGui extends EventEmitter {
 		console.log('----- [onChangeSettings] -----', config);
 	};
 
+	#onChangeOsc = () => {
+		global.ipcRenderer.invoke('RestartOsc', this.#oscGui.config.sendHost);
+	};
 	/**
 	 * 設定反映のための再起動
 	 */
