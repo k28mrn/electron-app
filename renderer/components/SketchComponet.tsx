@@ -1,6 +1,7 @@
 import p5 from "p5";
 import { useEffect, useRef } from "react";
 import { appGui } from "@/modules/gui/app-gui";
+import { sendOsc } from "@/lib/send-osc";
 
 const SketchComponent = (): JSX.Element => {
 	const p5Ref = useRef<p5>();
@@ -52,6 +53,15 @@ const SketchComponent = (): JSX.Element => {
 			p.circle(p.mouseX, p.mouseY, size);
 
 			appGui.fpsEnd(); // FPSの計測終了
+		};
+
+		/**
+		 * キーが押されたときの処理
+		 */
+		p.keyPressed = () => {
+			console.log(`keyPressed = ${p.keyCode}`);
+			// OSC送信テスト
+			// sendOsc('/keyboard', p.keyCode);
 		};
 
 		/**
