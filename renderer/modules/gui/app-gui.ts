@@ -119,6 +119,7 @@ class ApplicationGui extends EventEmitter {
 		this.#serialGui.enabled = config.plugin.useSerialPort;
 		this.#oscGui.enabled = config.plugin.useOsc;
 		this.#midiGui.enabled = config.plugin.useMidi;
+		console.log('----- [onChangeSettings] -----', config);
 	};
 
 	/**
@@ -136,6 +137,7 @@ class ApplicationGui extends EventEmitter {
 			...this.#electronGui.config,
 			options: {
 				serialPort: this.#serialGui.config,
+				osc: this.#oscGui.config,
 				midi: this.#midiGui.config,
 			}
 		};

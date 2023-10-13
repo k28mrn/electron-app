@@ -7,7 +7,7 @@ import { BrowserWindow, app, } from 'electron';
 import isDev from 'electron-is-dev';
 import prepareNext from 'electron-next';
 import { icpHandler } from './modules/ipc-handler';
-import { ApplicationSettings } from './modules/application-settings';
+import { ApplicationSettings, resetApplicationSettingsData } from './modules/application-settings';
 import { oscHandler } from './modules/osc-handler';
 
 // NOTE:
@@ -16,6 +16,9 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
 // Prepare the renderer once the app is ready
 app.on('ready', async () => {
+	// NOTE: [テスト用]アプリ設定をリセット
+	// resetApplicationSettingsData();
+
 	const settings = ApplicationSettings;
 	await prepareNext('./renderer');
 

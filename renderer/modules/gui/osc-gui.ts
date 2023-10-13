@@ -12,7 +12,7 @@ export class OscGui extends GuiBase {
 	constructor(folder: FolderApi, useConfig: boolean, config: OscProps) {
 		super(folder);
 		this.folder.hidden = !useConfig;
-		this.config = Object.assign({}, this.config, config);
+		this.config = config;
 		this.setup();
 	}
 

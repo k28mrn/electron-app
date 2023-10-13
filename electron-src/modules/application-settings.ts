@@ -8,47 +8,41 @@ export const getApplicationSettingsData = (): AppStoreProps => {
 export const setApplicationSettingsData = (data: AppStoreProps) => {
 	const store = new Store();
 	store.set('application-settings', data);
+	console.log(`save json path = ${store.path}`);
+
 };
 
+export const resetApplicationSettingsData = () => {
+	const store = new Store();
+	store.delete('application-settings');
+};
 /**
  * アプリ基本情報設定
  */
 export const ApplicationSettings: AppStoreProps = (() => {
 	// ローカル保存情報取得
 	let data = getApplicationSettingsData();
+	let defaultData = {
+		x: 0, y: 0,
+		width: 1280, height: 1500,
+		fullscreen: false, frame: true, kiosk: false,
+		alwaysOnTop: false, autoHideMenuBar: false, useDevTools: true,
+		plugin: {
+			guiDisplay: true,
+			useSerialPort: false,
+			useOsc: false,
+			useMidi: false,
+		},
+		options: {
+			serialPort: { path: '/dev/tty.usb', baudRate: 9600 },
+			osc: { sendHost: '127.0.0.1', },
+			midi: { deviceName: '', },
+		},
+	};
 
 	// 初期設定
 	if (data === undefined || data === null) data = {};
-	const settings = {
-		x: (data.x !== undefined) ? data.x : 0,
-		y: (data.y !== undefined) ? data.y : 0,
-		width: (data.width !== undefined) ? data.width : 1280,
-		height: (data.height !== undefined) ? data.height : 1500,
-		fullscreen: (data.fullscreen !== undefined) ? data.fullscreen : false,
-		frame: (data.frame !== undefined) ? data.frame : true,
-		kiosk: (data.kiosk !== undefined) ? data.kiosk : false,
-		alwaysOnTop: (data.alwaysOnTop !== undefined) ? data.alwaysOnTop : false,
-		autoHideMenuBar: (data.autoHideMenuBar !== undefined) ? data.autoHideMenuBar : false,
-		useDevTools: (data.useDevTools !== undefined) ? data.useDevTools : false,
-		plugin: {
-			guiDisplay: (data.plugin !== undefined && data.plugin.guiDisplay !== undefined) ? data.plugin.guiDisplay : true,
-			useSerialPort: (data.plugin !== undefined && data.plugin.useSerialPort !== undefined) ? data.plugin.useSerialPort : false,
-			useOsc: (data.plugin !== undefined && data.plugin.useOsc !== undefined) ? data.plugin.useOsc : false,
-			useMidi: (data.plugin !== undefined && data.plugin.useMidi !== undefined) ? data.plugin.useMidi : false,
-		},
-		options: {
-			serialPort: {
-				path: (data.options !== undefined && data.options.serialPort !== undefined && data.options.serialPort.path !== undefined) ? data.options.serialPort.path : '/dev/tty.usb',
-				baudRate: (data.options !== undefined && data.options.serialPort !== undefined && data.options.serialPort.baudRate !== undefined) ? data.options.serialPort.baudRate : 9600
-			},
-			osc: {
-				sendHost: (data.options !== undefined && data.options.osc !== undefined && data.options.osc.sendHost !== undefined) ? data.options.osc.sendHost : '127.0.0.1',
-			},
-			midi: {
-				deviceName: (data.options !== undefined && data.options.midi !== undefined && data.options.midi.deviceName !== undefined) ? data.options.midi.deviceName : '',
-			}
-		},
-	};
+	const settings = { ...defaultData, ...data };
 
 	// 保存
 	setApplicationSettingsData(settings);
