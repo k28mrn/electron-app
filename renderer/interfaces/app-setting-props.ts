@@ -1,6 +1,8 @@
 
 export interface AppSettingsProps {
 	ip: string;
+	appVersion: string;
+	storePath: string;
 	x: number;
 	y: number;
 	width: number;

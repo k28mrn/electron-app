@@ -12,7 +12,9 @@ export const icpHandler = ({ window, }: { window: BrowserWindow, }) => {
 	ipcMain.handle('GetAppSettings', (_: IpcMainInvokeEvent) => {
 		const ip = getLocalAddress();
 		const data = getApplicationSettingsData();
-		return { ...data, ip, };
+		const appVersion = app.getVersion();
+		const storePath = `${app.getPath("userData")}/config.json`;
+		return { ...data, ip, appVersion, storePath, };
 	});
 
 	/**

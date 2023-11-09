@@ -47,6 +47,8 @@ class ApplicationGui extends EventEmitter {
 		}) as EssentialsPlugin.FpsGraphBladeApi;
 
 		// IP設定
+		this.#pane.addBinding(this.#settings, 'appVersion', { label: 'アプリ Ver.' });
+		this.#pane.addBinding(this.#settings, 'storePath', { label: '設定JSON' });
 		this.#pane.addBinding(this.#settings, 'ip', { label: 'IP' });
 	};
 
