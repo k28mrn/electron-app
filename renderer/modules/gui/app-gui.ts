@@ -47,9 +47,10 @@ class ApplicationGui extends EventEmitter {
 		}) as EssentialsPlugin.FpsGraphBladeApi;
 
 		// IP設定
-		this.#pane.addBinding(this.#settings, 'appVersion', { label: 'アプリVer.' });
-		this.#pane.addBinding(this.#settings, 'storePath', { label: '設定JSON' });
-		this.#pane.addBinding(this.#settings, 'ip', { label: 'IP' });
+		this.#pane.addBinding(this.#settings, 'storePath', { label: '設定JSON', disabled: true });
+		this.#pane.addBinding(this.#settings, 'appVersion', { label: 'アプリVer.', disabled: true });
+		this.#pane.addBinding(this.#settings, 'ip', { label: 'IP', disabled: true });
+		this.#pane.addBinding(this.#settings, 'port', { label: 'PORT', color: false, disabled: true });
 	};
 
 	/**
@@ -99,12 +100,14 @@ class ApplicationGui extends EventEmitter {
 	 * イベント登録
 	 */
 	#addListeners = () => {
-		window.addEventListener("keydown", (e) => {
-			// NOTE: SPACEキーで設定画面表示
-			if (e.key == ' ') {
-				this.#pane.hidden = !this.#pane.hidden;
-			}
-		});
+		global.ipcRenderer.on('ShowGui', this.#guiActive);
+	};
+
+	/**
+	 * GUI表示切替
+	 */
+	#guiActive = () => {
+		this.#pane.hidden = !this.#pane.hidden;
 	};
 
 	/**

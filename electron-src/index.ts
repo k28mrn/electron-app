@@ -9,6 +9,7 @@ import prepareNext from 'electron-next';
 import { icpHandler } from './modules/ipc-handler';
 import { ApplicationSettings, resetApplicationSettingsData } from './modules/application-settings';
 import { oscHandler } from './modules/osc-handler';
+import { shortcut } from './modules/shortcut';
 
 // NOTE:
 // 開発時ワーニング回避設定　(参考: https://qiita.com/kuraiL22/items/80e8e77d62cbe39d0b34)
@@ -51,6 +52,9 @@ app.on('ready', async () => {
 		});
 
 	mainWindow.loadURL(url);
+
+	// ショートカット設定
+	shortcut({ window: mainWindow });
 
 	// ipc通信設定
 	icpHandler({ window: mainWindow });
