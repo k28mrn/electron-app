@@ -47,7 +47,7 @@ class ApplicationGui extends EventEmitter {
 		}) as EssentialsPlugin.FpsGraphBladeApi;
 
 		// IP設定
-		this.#pane.addBinding(this.#settings, 'appVersion', { label: 'アプリ Ver.' });
+		this.#pane.addBinding(this.#settings, 'appVersion', { label: 'アプリVer.' });
 		this.#pane.addBinding(this.#settings, 'storePath', { label: '設定JSON' });
 		this.#pane.addBinding(this.#settings, 'ip', { label: 'IP' });
 	};
@@ -80,7 +80,7 @@ class ApplicationGui extends EventEmitter {
 		const oscConfig = this.#settings.options.osc;
 		this.#oscGui = new OscGui(folder, this.#settings.plugin.useOsc, oscConfig);
 		this.#oscGui.on(OscGui.Change, () => {
-			this.#onChangeOsc();
+			this.#updateOsc();
 			this.#onChangeSettings();
 		});
 	};
@@ -89,8 +89,6 @@ class ApplicationGui extends EventEmitter {
 	 * MIDI設定
 	 */
 	#createMidiConfig = () => {
-		console.log(this.#settings);
-
 		const folder = this.#pane.addFolder({ title: 'MIDI Config' });
 		const midi = this.#settings.options.midi;
 		this.#midiGui = new MidiGui(folder, this.#settings.plugin.useMidi, midi.deviceName);
@@ -125,12 +123,23 @@ class ApplicationGui extends EventEmitter {
 		this.#serialGui.enabled = config.plugin.useSerialPort;
 		this.#oscGui.enabled = config.plugin.useOsc;
 		this.#midiGui.enabled = config.plugin.useMidi;
-		console.log('----- [onChangeSettings] -----', config);
+		console.info('[APP INFO] : 設定情報更新 : ', config);
+
+		this.#updateOsc();
 	};
 
-	#onChangeOsc = () => {
-		global.ipcRenderer.invoke('RestartOsc', this.#oscGui.config.sendHost);
+	/**
+	 * OSC設定情報の更新
+	 */
+	#updateOsc = () => {
+		const config = this.#getUpdateConfig();
+		global.ipcRenderer.invoke('UpdateOsc',
+			config.options.osc.sendHost,
+			config.options.osc.sendPort,
+			config.plugin.useOsc,
+		);
 	};
+
 	/**
 	 * 設定反映のための再起動
 	 */

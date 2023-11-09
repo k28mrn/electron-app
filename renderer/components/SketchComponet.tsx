@@ -23,6 +23,7 @@ const SketchComponent = (): JSX.Element => {
 	 * ページの初期設定
 	 */
 	const pageSetup = async () => {
+		// アプリ設定GUIのセットアップ
 		await appGui.setup();
 
 		// p5.jsの設定
@@ -61,7 +62,7 @@ const SketchComponent = (): JSX.Element => {
 		p.keyPressed = () => {
 			console.log(`keyPressed = ${p.keyCode}`);
 			// OSC送信テスト
-			// sendOsc('/keyboard', p.keyCode);
+			sendOsc('/keyboard', p.keyCode);
 		};
 
 		/**

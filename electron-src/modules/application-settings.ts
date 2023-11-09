@@ -23,6 +23,7 @@ export const ApplicationSettings: AppStoreProps = (() => {
 	// ローカル保存情報取得
 	let data = getApplicationSettingsData();
 	let defaultData = {
+		port: '9000',
 		x: 0, y: 0,
 		width: 1280, height: 1500,
 		fullscreen: false, frame: true, kiosk: false,
@@ -35,7 +36,7 @@ export const ApplicationSettings: AppStoreProps = (() => {
 		},
 		options: {
 			serialPort: { path: '/dev/tty.usb', baudRate: 9600 },
-			osc: { sendHost: '127.0.0.1', },
+			osc: { sendHost: '127.0.0.1', sendPort: '3333', },
 			midi: { deviceName: '', },
 		},
 	};
@@ -50,6 +51,7 @@ export const ApplicationSettings: AppStoreProps = (() => {
 })();
 
 export interface AppStoreProps {
+	port?: string;
 	x?: number;
 	y?: number;
 	width?: number;
@@ -67,6 +69,7 @@ export interface AppStoreProps {
 		};
 		osc?: {
 			sendHost?: string;
+			sendPort?: string;
 		};
 		midi?: {
 			deviceName?: string;

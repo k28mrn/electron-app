@@ -2,8 +2,8 @@
 	"private": true,
 	"name": "electron-basic-develop-env",
 	"version": "1.0.0",
-	"main": "main/index.js",
 	"productName": "ElectronBasicDevelopEnv",
+	"main": "main/index.js",
 	"scripts": {
 		"clean": "rimraf dist main renderer/out renderer/.next",
 		"dev": "npm run build-electron && electron .",

@@ -8,6 +8,7 @@ import { OscProps } from "@/interfaces/app-setting-props";
 export class OscGui extends GuiBase {
 	config: OscProps = {
 		sendHost: `127.0.0.1`,
+		sendPort: `3333`,
 	};
 	constructor(folder: FolderApi, useConfig: boolean, config: OscProps) {
 		super(folder);
@@ -21,5 +22,6 @@ export class OscGui extends GuiBase {
 	 */
 	setup = async () => {
 		this.folder.addBinding(this.config, 'sendHost', { label: 'Send Host' }).on('change', this.onChangeConfig);
+		this.folder.addBinding(this.config, 'sendPort', { label: 'Send Port', color: false }).on('change', this.onChangeConfig);
 	};
 }

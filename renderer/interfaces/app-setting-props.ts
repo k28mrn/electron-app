@@ -1,6 +1,7 @@
 
 export interface AppSettingsProps {
 	ip: string;
+	port: string;
 	appVersion: string;
 	storePath: string;
 	x: number;
@@ -33,6 +34,7 @@ export interface SerialPortProps {
 
 export interface OscProps {
 	sendHost: string;
+	sendPort: string;
 }
 
 export interface MidiProps {
