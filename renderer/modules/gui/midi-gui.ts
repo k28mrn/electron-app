@@ -1,16 +1,16 @@
 import { BindingApi, FolderApi, } from "@tweakpane/core";
 import { GuiBase } from "./gui-base";
 import { MidiProps } from "@/interfaces/app-setting-props";
-
+import { MidiEventProps } from "@/interfaces/midi-props";
 /**
  * シリアル制御用GUIクラス
  */
 export class MidiGui extends GuiBase {
 	static MidiMessage = 'MidiMessage';
 	deviceName: string = '';
-	device: any = undefined;
+	device: WebMidi.MIDIInput = undefined;
 	debug: string = '';
-	#deviceList: { [key: string]: any; } = {};
+	#deviceList: { [key: string]: WebMidi.MIDIInput; } = {};
 	#deviceKeyList: { [key: string]: string; } = {};
 	#deviceBinding: BindingApi;
 	#debugBinding: BindingApi;
@@ -35,9 +35,6 @@ export class MidiGui extends GuiBase {
 	 */
 	setup = async () => {
 		await this.#getMidiInputs();
-		if (this.deviceName in this.#deviceList) {
-			this.device = this.#deviceList[this.deviceName];
-		};
 		this.#setDeviceList();
 		this.#debugBinding = this.folder.addBinding(this, "debug", { label: 'Debug', readonly: true, multiline: true, rows: 6, });
 	};
@@ -47,15 +44,23 @@ export class MidiGui extends GuiBase {
 	 */
 	#setDeviceList = () => {
 		if (this.#deviceBinding) this.#deviceBinding.dispose();
-		this.#deviceBinding = this.folder.addBinding(this, "deviceName", { label: 'Device', options: this.#deviceKeyList, }).on('change', (input: any) => {
+		// GUI設定
+		this.#deviceBinding = this.folder.addBinding(this, "deviceName", { label: 'Device', options: this.#deviceKeyList, }).on('change', (_) => {
+			// 既に選択されてるバイは一度閉じる
 			if (this.device) {
 				this.device.onmidimessage = null;
 				this.device.close();
 			}
+			// 新しいデバイスを設定
 			this.device = this.#deviceList[this.deviceName];
 			this.onChangeConfig();
 			this.#startListener();
 		});
+
+		// 保存してた情報がありリストの中に存在していれば設定
+		if (this.deviceName in this.#deviceList) {
+			this.device = this.#deviceList[this.deviceName];
+		};
 		this.#startListener();
 	};
 
@@ -64,21 +69,21 @@ export class MidiGui extends GuiBase {
 	 */
 	#getMidiInputs = async () => {
 		this.#deviceList = {};
-		// try {
-		// 	const midiAccess = await window.navigator.requestMIDIAccess();
-		// 	const midi = midiAccess;
-		// 	const inputs = midi.inputs;
-		// 	inputs.forEach((input) => {
-		// 		this.#deviceList[input.name] = input;
-		// 		this.#deviceKeyList[input.name] = input.name;
-		// 	});
-		// } catch (e) {
-		// 	console.error(e);
-		// }
+		try {
+			const midiAccess = await window.navigator.requestMIDIAccess();
+			const midi = midiAccess;
+			const inputs = midi.inputs;
+			inputs.forEach((input) => {
+				this.#deviceList[input.name] = input;
+				this.#deviceKeyList[input.name] = input.name;
+			});
+		} catch (e) {
+			console.error(e);
+		}
 	};
 
 	/**
-	 * 
+	 * MIDIイベントリスナーを開始する
 	 */
 	#startListener = () => {
 		if (this.device === undefined) return;
@@ -88,24 +93,26 @@ export class MidiGui extends GuiBase {
 	/**
 	 * データ送信
 	 */
-	#onMidiMessage = (message: any) => {
-		console.log(message, message.data);
-		const data = message.data;
-		console.log(data[0]);
+	#onMidiMessage = (message: WebMidi.MIDIMessageEvent) => {
+		// console.log(message, message.data);
+		const data: MidiEventProps = {
+			message: message,
+			cmd: message.data[0] >> 4,
+			channel: message.data[0] & 0xf,
+			type: message.data[0] & 0xf0,
+			note: message.data[1],
+			velocity: message.data[2],
+		};
 
-		const cmd = data[0] >> 4;
-		const channel = data[0] & 0xf;
-		const type = data[0] & 0xf0;
-		const note = data[1];
-		const velocity = data[2];
 
-		this.debug = `cmd: ${cmd}\n`;
-		this.debug += `channel: ${channel}\n`;
-		this.debug += `type: ${type}\n`;
-		this.debug += `note: ${note}\n`;
-		this.debug += `velocity: ${velocity}\n`;
+		this.debug = `cmd: ${data.cmd}\n`;
+		this.debug += `channel: ${data.channel}\n`; //MIDIチャンネル
+		this.debug += `type: ${data.type}\n`; //MIDIメッセージのタイプ
+		this.debug += `note: ${data.note}\n`; //ノート番号（キー）
+		this.debug += `velocity: ${data.velocity}\n`; //鍵盤を押す強さ (フェーダー・ノブの場合は操作値 / ボタンの場合は 0 or 127)
 
-		this.emit(MidiGui.MidiMessage, message.data);
+		// イベント通知
+		this.emit(MidiGui.MidiMessage, data);
 	};
 }
 

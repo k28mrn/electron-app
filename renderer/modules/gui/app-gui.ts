@@ -6,6 +6,7 @@ import { SerialGui } from './serial-gui';
 import { ElectronGui } from './electron-gui';
 import { OscGui } from './osc-gui';
 import { MidiGui } from './midi-gui';
+import { MidiEventProps } from '@/interfaces/midi-props';
 
 
 class ApplicationGui extends EventEmitter {
@@ -94,6 +95,20 @@ class ApplicationGui extends EventEmitter {
 		const midi = this.#settings.options.midi;
 		this.#midiGui = new MidiGui(folder, this.#settings.plugin.useMidi, midi.deviceName);
 		this.#midiGui.on(MidiGui.Change, this.#onChangeSettings);
+	};
+
+	/**
+	 * MIDIメッセージ受信時のイベント登録
+	 */
+	addMidiMessage = (method: (data: MidiEventProps) => void) => {
+		this.#midiGui.on(MidiGui.MidiMessage, method);
+	};
+
+	/**
+	 * MIDIメッセージ受信時のイベント削除
+	 */
+	removeMidiMessage = (method: (data: MidiEventProps) => void) => {
+		this.#midiGui.off(MidiGui.MidiMessage, method);
 	};
 
 	/**

@@ -2,6 +2,7 @@ import p5 from "p5";
 import { useEffect, useRef } from "react";
 import { appGui } from "@/modules/gui/app-gui";
 import { sendOsc } from "@/lib/send-osc";
+import { MidiEventProps } from "@/interfaces/midi-props";
 
 const SketchComponent = (): JSX.Element => {
 	const p5Ref = useRef<p5>();
@@ -10,7 +11,13 @@ const SketchComponent = (): JSX.Element => {
 	 * mounted (Electronの開始処理的なもの)
 	 */
 	useEffect(() => {
-		pageSetup();
+		// ページの初期設定
+		const init = async () => {
+			await appGui.setup(); // アプリ設定GUIのセットアップ
+			p5Ref.current = new p5(sketch); // p5.jsの設定
+		};
+		init();
+
 		/**
 		 * unmount (Electronの終了処理的なもの)
 		 */
@@ -20,17 +27,6 @@ const SketchComponent = (): JSX.Element => {
 	}, []);
 
 	/**
-	 * ページの初期設定
-	 */
-	const pageSetup = async () => {
-		// アプリ設定GUIのセットアップ
-		await appGui.setup();
-
-		// p5.jsの設定
-		p5Ref.current = new p5(sketch);
-	};
-
-	/**
 	 * p5.jsでの描画処理
 	 */
 	const sketch = (p: p5) => {
@@ -38,6 +34,7 @@ const SketchComponent = (): JSX.Element => {
 		 * 初期設定
 		 */
 		p.setup = () => {
+			appGui.addMidiMessage(onMidiMessage); // MIDIイベント登録
 			let scrollbarWidth = window.innerWidth - document.body.clientWidth;
 			p.createCanvas(window.innerWidth - scrollbarWidth, window.innerHeight);
 			p.background(255);
@@ -61,8 +58,7 @@ const SketchComponent = (): JSX.Element => {
 		 */
 		p.keyPressed = () => {
 			console.log(`keyPressed = ${p.keyCode}`);
-			// OSC送信テスト
-			sendOsc('/keyboard', p.keyCode);
+			sendOsc('/keyboard', p.keyCode); // OSC送信テスト
 		};
 
 		/**
@@ -87,6 +83,13 @@ const SketchComponent = (): JSX.Element => {
 
 			return color;
 		}
+
+		/**
+		 * MIDIイベント取得
+		 */
+		const onMidiMessage = (data: MidiEventProps) => {
+			console.log(data);
+		};
 	};
 
 	return <></>;
