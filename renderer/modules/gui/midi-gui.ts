@@ -95,24 +95,27 @@ export class MidiGui extends GuiBase {
 	 */
 	#onMidiMessage = (message: WebMidi.MIDIMessageEvent) => {
 		// console.log(message, message.data);
-		const data: MidiEventProps = {
+		const data = message.data;
+		const cmd = data[0] >> 4;
+		const channel = data[0] & 0xf;
+		const type = data[0] & 0xf0;
+		const note = data[1];
+		const velocity = data[2];
+
+		this.debug = `cmd: ${cmd}\n`;
+		this.debug += `channel: ${channel}\n`; //MIDIチャンネル
+		this.debug += `type: ${type}\n`; //MIDIメッセージのタイプ
+		this.debug += `note: ${note}\n`; //ノート番号（キー）
+		this.debug += `velocity: ${velocity}\n`; //鍵盤を押す強さ (フェーダー・ノブの場合は操作値 / ボタンの場合は 0 or 127)
+
+		this.emit(MidiGui.MidiMessage, {
 			message: message,
-			cmd: message.data[0] >> 4,
-			channel: message.data[0] & 0xf,
-			type: message.data[0] & 0xf0,
-			note: message.data[1],
-			velocity: message.data[2],
-		};
-
-
-		this.debug = `cmd: ${data.cmd}\n`;
-		this.debug += `channel: ${data.channel}\n`; //MIDIチャンネル
-		this.debug += `type: ${data.type}\n`; //MIDIメッセージのタイプ
-		this.debug += `note: ${data.note}\n`; //ノート番号（キー）
-		this.debug += `velocity: ${data.velocity}\n`; //鍵盤を押す強さ (フェーダー・ノブの場合は操作値 / ボタンの場合は 0 or 127)
-
-		// イベント通知
-		this.emit(MidiGui.MidiMessage, data);
+			cmd: cmd,
+			channel: channel,
+			type: type,
+			note: note,
+			velocity: velocity,
+		});
 	};
 }
 
