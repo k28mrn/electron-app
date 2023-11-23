@@ -3,8 +3,9 @@ import { useEffect, useRef } from "react";
 import { appGui } from "@/modules/gui/app-gui";
 import { sendOsc } from "@/lib/send-osc";
 import { MidiEventProps } from "@/interfaces/midi-props";
+import { getRandomPastelColor } from "@/lib/utils";
 
-const SketchComponent = (): JSX.Element => {
+const Sketch = (): JSX.Element => {
 	const p5Ref = useRef<p5>();
 
 	/**
@@ -34,7 +35,9 @@ const SketchComponent = (): JSX.Element => {
 		 * 初期設定
 		 */
 		p.setup = () => {
-			appGui.addMidiMessage(onMidiMessage); // MIDIイベント登録
+			// NOTE: 自分で作成した「onMidiMessage」メソッドを
+			// MIDIのイベントが発生したときに呼び出すように登録
+			appGui.addMidiMessage(onMidiMessage);
 			let scrollbarWidth = window.innerWidth - document.body.clientWidth;
 			p.createCanvas(window.innerWidth - scrollbarWidth, window.innerHeight);
 			p.background(255);
@@ -45,20 +48,7 @@ const SketchComponent = (): JSX.Element => {
 		 */
 		p.draw = () => {
 			appGui.fpsBegin(); // FPSの計測開始
-			p.noStroke();
-			p.fill(getRandomPastelColor());
-			const size = p.random(20, 100);
-			p.circle(p.mouseX, p.mouseY, size);
-
 			appGui.fpsEnd(); // FPSの計測終了
-		};
-
-		/**
-		 * キーが押されたときの処理
-		 */
-		p.keyPressed = () => {
-			console.log(`keyPressed = ${p.keyCode}`);
-			sendOsc('/keyboard', p.keyCode); // OSC送信テスト
 		};
 
 		/**
@@ -70,24 +60,10 @@ const SketchComponent = (): JSX.Element => {
 		};
 
 		/**
-		 * パステルカラーでランダムな色を取得する
-		 */
-		function getRandomPastelColor(): p5.Color {
-			let color: p5.Color;
-			do {
-				let r = p.random(200, 255);
-				let g = p.random(200, 255);
-				let b = p.random(200, 255);
-				color = p.color(r, g, b);
-			} while (p.saturation(color) < 40 || p.brightness(color) < 60); // 彩度が低いまたは明度が低い色を再抽選する条件
-
-			return color;
-		}
-
-		/**
 		 * MIDIイベント取得
 		 */
 		const onMidiMessage = (data: MidiEventProps) => {
+			// NOTE: MIDI情報をログに表示
 			console.log(data);
 		};
 	};
@@ -95,4 +71,4 @@ const SketchComponent = (): JSX.Element => {
 	return <></>;
 };
 
-export default SketchComponent;
+export default Sketch;
