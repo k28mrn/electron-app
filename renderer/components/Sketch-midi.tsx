@@ -3,6 +3,10 @@ import { useEffect, useRef } from "react";
 import { appGui } from "@/modules/gui/app-gui";
 import { MidiEventProps } from "@/interfaces/midi-props";
 
+/**
+ * MIDI通信サンプル
+ * MIDIデバイスからのメッセージを受信する
+ */
 const Sketch = (): JSX.Element => {
 	const p5Ref = useRef<p5>();
 
