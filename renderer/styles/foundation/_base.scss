@@ -1,6 +1,6 @@
 html {
 	font-size: 62.5%;
-	overflow-y: scroll;
+	// overflow-y: scroll;
 }
 
 a {
@@ -13,11 +13,11 @@ a {
 }
 
 body {
-	font-family: "游ゴシック", YuGothic, Helvetica, Arial, "ヒラギノ角ゴ ProN", "Hiragino Kaku Gothic ProN", "メイリオ", Meiryo, verdana, Osaka, "ＭＳ Ｐゴシック", "MS PGothic", sans-serif;
+	font-family: '游ゴシック', YuGothic, Helvetica, Arial, 'ヒラギノ角ゴ ProN', 'Hiragino Kaku Gothic ProN', 'メイリオ', Meiryo, verdana, Osaka, 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif;
 	font-weight: 600;
 	font-style: normal;
 	letter-spacing: 0.1em;
-	font-feature-settings: "palt" 1;
+	font-feature-settings: 'palt' 1;
 	color: $Black;
 	width: 100%;
 	min-height: 100svh;

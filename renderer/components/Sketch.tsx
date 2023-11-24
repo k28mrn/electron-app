@@ -1,8 +1,6 @@
 import p5 from "p5";
 import { useEffect, useRef } from "react";
 import { appGui } from "@/modules/gui/app-gui";
-import { sendOsc } from "@/lib/send-osc";
-import { MidiEventProps } from "@/interfaces/midi-props";
 import { getRandomPastelColor } from "@/lib/utils";
 
 const Sketch = (): JSX.Element => {
@@ -35,8 +33,7 @@ const Sketch = (): JSX.Element => {
 		 * 初期設定
 		 */
 		p.setup = () => {
-			let scrollbarWidth = window.innerWidth - document.body.clientWidth;
-			p.createCanvas(window.innerWidth - scrollbarWidth, window.innerHeight);
+			p.createCanvas(p.windowWidth, p.windowHeight);
 			p.background(255);
 		};
 
@@ -55,19 +52,10 @@ const Sketch = (): JSX.Element => {
 		};
 
 		/**
-		 * キーが押されたときの処理
-		 */
-		p.keyPressed = () => {
-			console.log(`keyPressed = ${p.keyCode}`);
-			sendOsc('/keyboard', p.keyCode); // OSC送信テスト
-		};
-
-		/**
 		 * 画面のリサイズ処理
 		 */
 		p.windowResized = () => {
-			let scrollbarWidth = window.innerWidth - document.body.clientWidth;
-			p.resizeCanvas(window.innerWidth - scrollbarWidth, window.innerHeight);
+			p.resizeCanvas(p.windowWidth, p.windowHeight);
 		};
 	};
 

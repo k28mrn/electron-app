@@ -1,8 +1,12 @@
 import p5 from "p5";
 import { useEffect, useRef } from "react";
 import { appGui } from "@/modules/gui/app-gui";
-import { MidiEventProps } from "@/interfaces/midi-props";
+import { sendOsc } from "@/lib/send-osc";
 
+/**
+ * OSC通信サンプル
+ * キーボードのキーを押すとOSCメッセージを送信する
+ */
 const Sketch = (): JSX.Element => {
 	const p5Ref = useRef<p5>();
 
@@ -33,20 +37,8 @@ const Sketch = (): JSX.Element => {
 		 * 初期設定
 		 */
 		p.setup = () => {
-			// NOTE: 自分で作成した「onMidiMessage」メソッドを
-			// MIDIのイベントが発生したときに呼び出すように登録
-			appGui.addMidiMessage(onMidiMessage);
-			let scrollbarWidth = window.innerWidth - document.body.clientWidth;
-			p.createCanvas(window.innerWidth - scrollbarWidth, window.innerHeight);
+			p.createCanvas(p.windowWidth, p.windowHeight);
 			p.background(255);
-		};
-
-		/**
-		 * MIDIイベント取得
-		 */
-		const onMidiMessage = (data: MidiEventProps) => {
-			// NOTE: MIDI情報をログに表示
-			console.log(data);
 		};
 
 		/**
@@ -56,6 +48,14 @@ const Sketch = (): JSX.Element => {
 			appGui.fpsBegin(); // FPSの計測開始
 
 			appGui.fpsEnd(); // FPSの計測終了
+		};
+
+		/**
+		 * キーが押されたときの処理
+		 */
+		p.keyPressed = () => {
+			console.log(`keyPressed = ${p.keyCode}`);
+			sendOsc('/keyboard', p.keyCode); // OSC送信テスト
 		};
 
 		/**
