@@ -96,6 +96,13 @@ class ApplicationGui extends EventEmitter {
 	};
 
 	/**
+	 * シリアルデータ読み取り時のイベント登録
+	 */
+	addSerialReadEvent = (method: (data: string) => void) => {
+		this.#serialGui.on(SerialGui.ReadSerial, method);
+	};
+
+	/**
 	 * MIDI設定
 	 */
 	#createMidiConfig = () => {

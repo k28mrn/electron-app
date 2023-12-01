@@ -4,8 +4,7 @@ import { sendOsc } from "@/lib/send-osc";
 import { OscEventProps } from "@/interfaces/osc-props";
 
 /**
- * OSC通信サンプル
- * キーボードのキーを押すとOSCメッセージを送信する
+ * シリアル通信通信サンプル
  */
 export const sketch = (p: p5) => {
 	/**
@@ -13,18 +12,17 @@ export const sketch = (p: p5) => {
 	 */
 	p.setup = () => {
 		// NOTE:
-		// 作成した「addOscMessage」メソッドをOSCのメッセージを受信持に呼び出すように登録
-		appGui.addOscMessage(onOscMessage);
-
+		// 作成した「onReadSerialData」メソッドをシリアルデータを読み込み時に呼び出すように登録
+		appGui.addSerialReadEvent(onReadSerialData);
 		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.background(255);
 	};
 
 	/**
-	 * OSCメッセージ受信時の処理
+	 * シリアルデータ読み取り時の処理
 	 */
-	const onOscMessage = (message: OscEventProps) => {
-		console.log(message);
+	const onReadSerialData = (data: string) => {
+		console.log(`data = ${data}`);
 	};
 
 	/**
@@ -41,7 +39,6 @@ export const sketch = (p: p5) => {
 	 */
 	p.keyPressed = () => {
 		console.log(`keyPressed = ${p.keyCode}`);
-		sendOsc('/keyboard', p.keyCode); // OSC送信テスト
 	};
 
 	/**

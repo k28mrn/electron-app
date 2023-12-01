@@ -12,7 +12,7 @@ export const sketch = (p: p5) => {
 	 */
 	p.setup = () => {
 		// NOTE:
-		// 作成した「onMidiMessage」メソッドをMIDIのメッセージを受信維持に呼び出すように登録
+		// 作成した「onMidiMessage」メソッドをMIDIのメッセージを受信持に呼び出すように登録
 		appGui.addMidiMessage(onMidiMessage);
 		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.background(255);

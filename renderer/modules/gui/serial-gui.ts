@@ -7,6 +7,8 @@ import { SerialPortProps } from "@/interfaces/app-setting-props";
  * シリアル制御用GUIクラス
  */
 export class SerialGui extends GuiBase {
+	static ReadSerial = 'ReadSerial';
+
 	config: SerialPortProps = {
 		path: '/dev/tty.usb',
 		baudRate: 9600,
@@ -74,6 +76,7 @@ export class SerialGui extends GuiBase {
 		global.ipcRenderer.on('ReadSerial', (_, data: string) => {
 			this.readValue = data;
 			readValue.refresh();
+			this.emit(SerialGui.ReadSerial, data);
 		});
 
 		// pathが設定されていたら接続
