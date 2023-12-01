@@ -1,3 +1,6 @@
+/**
+ * MIDIメッセージ受信データ
+ */
 export interface MidiEventProps {
 	message: WebMidi.MIDIMessageEvent;
 	cmd: number;

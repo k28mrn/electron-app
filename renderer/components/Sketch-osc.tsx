@@ -1,6 +1,7 @@
 import p5 from "p5";
 import { appGui } from "@/modules/gui/app-gui";
 import { sendOsc } from "@/lib/send-osc";
+import { OscEventProps } from "@/interfaces/osc-props";
 
 /**
  * OSC通信サンプル
@@ -11,8 +12,19 @@ export const sketch = (p: p5) => {
 	 * 初期設定
 	 */
 	p.setup = () => {
+		// NOTE:
+		// 作成した「addOscMessage」メソッドをOSCのメッセージを受信維持に呼び出すように登録
+		appGui.addOscMessage(onOscMessage);
+
 		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.background(255);
+	};
+
+	/**
+	 * OSCメッセージ受信時の処理
+	 */
+	const onOscMessage = (message: OscEventProps) => {
+		console.log(message);
 	};
 
 	/**

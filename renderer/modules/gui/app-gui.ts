@@ -7,6 +7,7 @@ import { ElectronGui } from './electron-gui';
 import { OscGui } from './osc-gui';
 import { MidiGui } from './midi-gui';
 import { MidiEventProps } from '@/interfaces/midi-props';
+import { OscEventProps } from '@/interfaces/osc-props';
 
 
 class ApplicationGui extends EventEmitter {
@@ -88,6 +89,13 @@ class ApplicationGui extends EventEmitter {
 	};
 
 	/**
+	 * OSCメッセージ受信時のイベント登録
+	 */
+	addOscMessage = (method: (message: OscEventProps) => void) => {
+		this.#oscGui.on(OscGui.OscMessage, method);
+	};
+
+	/**
 	 * MIDI設定
 	 */
 	#createMidiConfig = () => {
@@ -100,7 +108,7 @@ class ApplicationGui extends EventEmitter {
 	/**
 	 * MIDIメッセージ受信時のイベント登録
 	 */
-	addMidiMessage = (method: (data: MidiEventProps) => void) => {
+	addMidiMessage = (method: (message: MidiEventProps) => void) => {
 		this.#midiGui.on(MidiGui.MidiMessage, method);
 	};
 

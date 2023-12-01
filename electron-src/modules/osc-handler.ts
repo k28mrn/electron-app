@@ -31,16 +31,17 @@ export const oscHandler = ({ window, myPort, send, useOsc }: oscHandlerProps) =>
 
 		osc = new OSC({ plugin: new OSC.DatagramPlugin(option) });
 		osc.on('*', (message) => {
-			console.log(message);
-			window.webContents.send('getOscData', message);
+			window.webContents.send('getOscMessage', message);
 		});
 
 		openEventId = osc.on('open', () => {
 			console.info(`[APP INFO] Opened OSC :`, option);
+			window.webContents.send('oscOpen');
 		});
 
 		closeEventId = osc.on('close', () => {
 			console.info(`[APP INFO] Closed OSC`);
+			window.webContents.send('oscClose');
 		});
 
 		osc.open();

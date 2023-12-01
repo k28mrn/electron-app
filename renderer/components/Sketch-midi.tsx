@@ -11,20 +11,19 @@ export const sketch = (p: p5) => {
 	 * 初期設定
 	 */
 	p.setup = () => {
-		// NOTE: 自分で作成した「onMidiMessage」メソッドを
-		// MIDIのイベントが発生したときに呼び出すように登録
+		// NOTE:
+		// 作成した「onMidiMessage」メソッドをMIDIのメッセージを受信維持に呼び出すように登録
 		appGui.addMidiMessage(onMidiMessage);
-		let scrollbarWidth = window.innerWidth - document.body.clientWidth;
-		p.createCanvas(window.innerWidth - scrollbarWidth, window.innerHeight);
+		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.background(255);
 	};
 
 	/**
-	 * MIDIイベント取得
+	 * MIDIメッセージ受信時の処理
 	 */
-	const onMidiMessage = (data: MidiEventProps) => {
+	const onMidiMessage = (message: MidiEventProps) => {
 		// NOTE: MIDI情報をログに表示
-		console.log(data);
+		console.log(message);
 	};
 
 	/**

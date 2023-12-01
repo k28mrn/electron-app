@@ -22,8 +22,9 @@ export const sketch = (p: p5) => {
 	 */
 	p.draw = () => {
 		appGui.fpsBegin(); // FPSの計測開始
-		let img = capture.get();
+		let img = capture.get(); // 映像を取得
 
+		// ピクセルデータをロード
 		img.loadPixels();
 
 		// すべてのピクセルをループ処理
@@ -61,9 +62,9 @@ export const sketch = (p: p5) => {
 		// ピクセルデータを更新
 		img.updatePixels();
 
+		// NOTE: canvasに画像をフルサイズで表示する(長編が見切れて中央配置)
 		let winAspect = p.windowWidth / p.windowHeight; // canvasのアスペクト比
 		let imgAspect = img.width / img.height; //画像のアスペクト比
-		// NOTE: canvasに画像をフルサイズで表示する(長編が見切れて中央配置)
 		if (winAspect > imgAspect) {
 			let w = p.windowWidth;
 			let h = img.height * p.windowWidth / img.width;
