@@ -1,6 +1,6 @@
 import p5 from "p5";
 import { appGui } from "@/modules/gui/app-gui";
-import { sendOsc } from "@/lib/send-osc";
+import { sendOsc } from "@/lib/utils";
 import { OscEventProps } from "@/interfaces/osc-props";
 
 /**

@@ -1,7 +1,6 @@
 import p5 from "p5";
 import { appGui } from "@/modules/gui/app-gui";
-import { sendOsc } from "@/lib/send-osc";
-import { OscEventProps } from "@/interfaces/osc-props";
+import { writeSerial } from "@/lib/utils";
 
 /**
  * シリアル通信通信サンプル
@@ -14,6 +13,7 @@ export const sketch = (p: p5) => {
 		// NOTE:
 		// 作成した「onReadSerialData」メソッドをシリアルデータを読み込み時に呼び出すように登録
 		appGui.addSerialReadEvent(onReadSerialData);
+
 		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.background(255);
 	};
@@ -39,6 +39,7 @@ export const sketch = (p: p5) => {
 	 */
 	p.keyPressed = () => {
 		console.log(`keyPressed = ${p.keyCode}`);
+		writeSerial(p.keyCode); // Serial書込み
 	};
 
 	/**

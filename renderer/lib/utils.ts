@@ -12,3 +12,17 @@ export const getRandomPastelColor = (p: p5): p5.Color => {
 	} while (p.saturation(color) < 40 || p.brightness(color) < 60); // 彩度が低いまたは明度が低い色を再抽選する条件
 	return color;
 };
+
+/**
+ * OSCメッセージを送信する
+ */
+export const sendOsc = (address: string, args: any) => {
+	global.ipcRenderer.invoke('SendOsc', address, args);
+};
+
+/**
+ * Serial書き込み
+ */
+export const writeSerial = (data: string | number) => {
+	global.ipcRenderer.invoke('WriteSerial', data);
+};
