@@ -8,6 +8,11 @@ import { OscEventProps } from "@/interfaces/osc-props";
  * キーボードのキーを押すとOSCメッセージを送信する
  */
 export const sketch = (p: p5) => {
+	let x = 0;
+	let y = 0;
+	let r = 0;
+	let g = 0;
+	let b = 0;
 	/**
 	 * 初期設定
 	 */
@@ -25,6 +30,17 @@ export const sketch = (p: p5) => {
 	 */
 	const onOscMessage = (message: OscEventProps) => {
 		console.log(message);
+		// Addressに応じて処理を分岐
+		if (message.address === '/1/xy1') {
+			x = message.args[0];
+			y = message.args[1];
+		} else if (message.address === '/Blue') {
+			b = message.args[0];
+		} else if (message.address === '/Green') {
+			g = message.args[0];
+		} else if (message.address === '/Red') {
+			r = message.args[0];
+		}
 	};
 
 	/**
@@ -32,6 +48,12 @@ export const sketch = (p: p5) => {
 	 */
 	p.draw = () => {
 		appGui.fpsBegin(); // FPSの計測開始
+
+		// OSCで送られてきた値で円を描画（お絵かき）
+		p.fill(r, g, b);
+		let _x = p.map(x, 1, 255, 0, p.width);
+		let _y = y / 255 * p.height;
+		p.circle(_x, _y, 20);
 
 		appGui.fpsEnd(); // FPSの計測終了
 	};
