@@ -30,6 +30,7 @@
 		"tweakpane",
 		"fpsgraph",
 		"onmidimessage",
+		"webmidi",
 	],
 	"files.exclude": {
 		"node_modules": true,
