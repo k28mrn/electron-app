@@ -84,8 +84,6 @@ export const sketch = (p: p5) => {
 			for (let i = 0; i < circles.length; i++) {
 				let c = circles[i];
 				let delay = (circles.length - i) * 0.0005;
-				console.log(delay);
-
 				if (i % 2 === 0) {
 					gsap.to(c, { radius: 10, duration: 0.4, delay: delay, });
 				} else {

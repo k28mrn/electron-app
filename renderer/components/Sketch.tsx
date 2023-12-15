@@ -19,11 +19,13 @@ export const sketch = (p: p5) => {
 	 */
 	p.draw = () => {
 		appGui.fpsBegin(); // FPSの計測開始
+
 		let fillColor = getRandomPastelColor(p); // ランダムな色を取得
 		p.fill(fillColor);
 		p.noStroke();
 		const size = p.random(20, 100);
 		p.circle(p.mouseX, p.mouseY, size);
+
 		appGui.fpsEnd(); // FPSの計測終了
 	};
 

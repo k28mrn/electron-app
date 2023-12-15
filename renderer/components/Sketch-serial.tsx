@@ -20,6 +20,7 @@ export const sketch = (p: p5) => {
 
 	/**
 	 * シリアルデータ読み取り時の処理
+	 * Arduino側でシリアルを送信された時にElectron側で受信するためのメソッドを準備する
 	 */
 	const onReadSerialData = (data: string) => {
 		console.log(`data = ${data}`);
