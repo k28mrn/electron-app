@@ -47,7 +47,7 @@ export const serialHandler = async ({ window, }: { window: BrowserWindow, }) => 
 			baudRate: data.baudRate,
 			autoOpen: false,
 		});
-		parser = serialPort.pipe(new ReadlineParser());
+		parser = serialPort.pipe(new ReadlineParser({ delimiter: '\n' }));
 		// イベント設定
 		serialPort.on('open', onOpen);
 		serialPort.on('close', onClose);

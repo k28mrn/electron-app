@@ -89,17 +89,25 @@ class ApplicationGui extends EventEmitter {
 	};
 
 	/**
-	 * OSCメッセージ受信時のイベント登録
+	 * OSCメッセージ受信時のイベント登録 / 削除
 	 */
 	addOscMessage = (method: (message: OscEventProps) => void) => {
 		this.#oscGui.on(OscGui.OscMessage, method);
 	};
 
+	removeOscMessage = (method: (message: OscEventProps) => void) => {
+		this.#oscGui.off(OscGui.OscMessage, method);
+	};
+
 	/**
-	 * シリアルデータ読み取り時のイベント登録
+	 * シリアルデータ読み取り時のイベント登録 / 削除
 	 */
 	addSerialReadEvent = (method: (data: string) => void) => {
 		this.#serialGui.on(SerialGui.ReadSerial, method);
+	};
+
+	removeSerialReadEvent = (method: (data: string) => void) => {
+		this.#serialGui.off(SerialGui.ReadSerial, method);
 	};
 
 	/**
@@ -113,15 +121,12 @@ class ApplicationGui extends EventEmitter {
 	};
 
 	/**
-	 * MIDIメッセージ受信時のイベント登録
+	 * MIDIメッセージ受信時のイベント登録 / 削除
 	 */
 	addMidiMessage = (method: (message: MidiEventProps) => void) => {
 		this.#midiGui.on(MidiGui.MidiMessage, method);
 	};
 
-	/**
-	 * MIDIメッセージ受信時のイベント削除
-	 */
 	removeMidiMessage = (method: (data: MidiEventProps) => void) => {
 		this.#midiGui.off(MidiGui.MidiMessage, method);
 	};

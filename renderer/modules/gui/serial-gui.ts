@@ -34,7 +34,7 @@ export class SerialGui extends GuiBase {
 		if (!(this.config.path in list)) this.config.path = '';
 		this.folder.addBinding(this.config, 'path', { label: 'Path', options: list }).on('change', this.onChangeConfig);
 		this.folder.addBinding(this.config, 'baudRate', { label: 'BaudRate', }).on('change', this.onChangeConfig);
-		const status = this.folder.addBinding(this, 'status', { label: 'Status', });
+		const status = this.folder.addBinding(this, 'status', { label: 'Status', disabled: false, });
 		const connectButton = this.folder.addButton({ title: 'Connect', label: '' }).on('click', this.#onSerialConnectClick);
 		const writeFolder = this.folder.addFolder({ title: 'WriteDebag' });
 		writeFolder.hidden = true;
