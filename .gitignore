@@ -35,6 +35,5 @@ yarn-error.log*
 next-env.d.ts
 renderer/.next
 main
-yarn.lock
 renderer/out
 dist
