@@ -52,7 +52,7 @@ class ApplicationGui extends EventEmitter {
 		this.#pane.addBinding(this.#settings, 'storePath', { label: '設定JSON', disabled: true });
 		this.#pane.addBinding(this.#settings, 'appVersion', { label: 'アプリVer.', disabled: true });
 		this.#pane.addBinding(this.#settings, 'ip', { label: 'IP', disabled: true });
-		this.#pane.addBinding(this.#settings, 'port', { label: 'PORT', color: false, disabled: true });
+		this.#pane.addBinding(this.#settings, 'port', { label: 'OSC PORT', color: false, disabled: true });
 	};
 
 	/**
