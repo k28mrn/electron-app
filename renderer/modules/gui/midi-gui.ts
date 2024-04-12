@@ -46,7 +46,7 @@ export class MidiGui extends GuiBase {
 		if (this.#deviceBinding) this.#deviceBinding.dispose();
 		// GUI設定
 		this.#deviceBinding = this.folder.addBinding(this, "deviceName", { label: 'Device', options: this.#deviceKeyList, }).on('change', (_) => {
-			// 既に選択されてるバイは一度閉じる
+			// 既に選択されてるデバイス一度閉じる
 			if (this.device) {
 				this.device.onmidimessage = null;
 				this.device.close();
