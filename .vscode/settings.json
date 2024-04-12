@@ -1,0 +1,34 @@
+{
+	"typescript.tsdk": "node_modules/typescript/lib",
+	"typescript.enablePromptUseWorkspaceTsdk": true,
+	"editor.formatOnSave": true,
+	"editor.formatOnType": true,
+	"editor.formatOnPaste": true,
+	"javascript.format.semicolons": "insert",
+	"typescript.format.semicolons": "insert",
+	"cSpell.ignoreWords": [
+		"gsap",
+		"Tweens",
+		"webp",
+		"chara",
+		"pmrem",
+		"Equirectangular",
+		"gltf",
+		"RGBE",
+		"metalness",
+		"svgr",
+		"Raycaster",
+		"lerp",
+		"gtag",
+		"tweakpane",
+		"fpsgraph",
+		"onmidimessage",
+		"webmidi",
+	],
+	"files.exclude": {
+		"node_modules": true,
+	},
+	"search.exclude": {
+		"main": true,
+	}
+}

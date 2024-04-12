@@ -1,0 +1,14 @@
+@use "sass:math";
+@import "./variables";
+
+@mixin pc{
+	@media (min-width: $pc){
+		@content
+	}
+};
+
+@mixin sp{
+	@media (max-width: $sp){
+		@content
+	}
+};
