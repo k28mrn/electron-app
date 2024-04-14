@@ -1,10 +1,11 @@
-import { app, shell, BrowserWindow } from 'electron';
+import { app, shell, BrowserWindow, ipcMain } from 'electron';
 import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { AppConfig } from './config/application';
+import { icpHandler } from './handler/icp-handler';
 
 // NOTE:
-// 開発時ワーニング回避設定　(参考: https://qiita.com/kuraiL22/items/80e8e77d62cbe39d0b34)
+// 開発時ワーニング回避設定 (参考: https://qiita.com/kuraiL22/items/80e8e77d62cbe39d0b34)
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
 /**
@@ -13,8 +14,7 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
  */
 function createWindow(): void {
 	// Create the browser window.
-	const browserOptions = AppConfig.getbrowserOptions();
-	const mainWindow = new BrowserWindow({ ...browserOptions });
+	const mainWindow = new BrowserWindow(AppConfig.browser);
 
 	mainWindow.on('ready-to-show', () => {
 		mainWindow.show();
@@ -32,6 +32,8 @@ function createWindow(): void {
 	} else {
 		mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
 	}
+
+	icpHandler({ window: mainWindow });
 }
 
 /**
@@ -55,6 +57,12 @@ app.whenReady().then(() => {
 		// dock icon is clicked and there are no other windows open.
 		if (BrowserWindow.getAllWindows().length === 0) createWindow();
 	});
+});
+
+/**
+ * アプリケーションが終了する前に呼び出される
+ */
+app.on("will-quit", () => {
 });
 
 /**

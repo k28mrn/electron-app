@@ -1,4 +1,4 @@
-import { MidiProps, OscProps, SerialPortProps } from "./interfaces";
+import { MidiProps, OscProps, SerialPortProps } from '@common/types';
 import icon from '../../../resources/icon.png?asset';
 import { join } from 'path';
 
@@ -30,6 +30,7 @@ export const DEFAULT_SERIAL_PORT_OPTIONS: SerialPortProps = {
  * OSCデフォルト設定
  */
 export const DEFAULT_OSC_OPTIONS: OscProps = {
+	selfPort: '9000',
 	sendHost: '127.0.0.1', sendPort: '3333',
 };
 
@@ -38,4 +39,9 @@ export const DEFAULT_OSC_OPTIONS: OscProps = {
  */
 export const DEFAULT_MIDI_OPTIONS: MidiProps = {
 	deviceName: '',
+};
+
+export const DEFAULT_DMX_OPTIONS = {
+	host: '255.255.255.255',
+	posrt: 6454,
 };

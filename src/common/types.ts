@@ -3,16 +3,16 @@
  * アプリケーション設定
  */
 export interface AppStoreProps {
-	browser?: Electron.BrowserWindowConstructorOptions;
+	ip?: string;
+	port?: string;
+	version?: string;
+	storePath?: string;
+	browser?: BrowserProps;
 	serialPort?: SerialPortProps;
 	osc?: OscProps;
 	midi?: MidiProps;
-	plugin?: {
-		guiDisplay?: boolean;
-		useSerialPort?: boolean;
-		useOsc?: boolean;
-		useMidi?: boolean;
-	};
+	dmx?: DmxProps;
+	usePlugin?: UsePluginProps;
 }
 
 /**
@@ -29,9 +29,21 @@ export interface BrowserProps {
 	kiosk?: boolean;
 	alwaysOnTop?: boolean;
 	autoHideMenuBar?: boolean;
-	useDevTools?: boolean;
 	serialPort?: SerialPortProps;
 }
+
+/**
+ * Plugin 使用設定
+ */
+export interface UsePluginProps {
+	guiDisplay?: boolean;
+	useDmx?: boolean;
+	useSerialPort?: boolean;
+	useOsc?: boolean;
+	useMidi?: boolean;
+}
+
+
 /**
  * シリアルポート設定
  */
@@ -44,6 +56,7 @@ export interface SerialPortProps {
  * OSC設定
  */
 export interface OscProps {
+	selfPort?: string;
 	sendHost?: string;
 	sendPort?: string;
 }
@@ -53,4 +66,12 @@ export interface OscProps {
  */
 export interface MidiProps {
 	deviceName?: string;
+}
+
+/**
+ * DMX設定
+ */
+export interface DmxProps {
+	host?: string;
+	port?: number;
 }

@@ -24,11 +24,11 @@
 		"fpsgraph",
 		"onmidimessage",
 		"webmidi",
+		"artnet",
 	],
-	"files.exclude": {
-		"node_modules": true,
-	},
+	"files.exclude": {},
 	"search.exclude": {
 		"main": true,
+		"node_modules": true,
 	}
 }
