@@ -1,12 +1,14 @@
 import p5 from "p5";
 import { AppGui } from "./gui/app-gui";
+import { DmxHandleTypes } from "@common/enums";
 
 export const sketch = (p: p5): void => {
-
+	let data = new Uint8Array(512);
 	/**
 	 * Setup
 	 */
 	p.setup = (): void => {
+		window.electron.ipcRenderer.invoke(DmxHandleTypes.options, { host: '100.0.0.10' });
 		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.background(255);
 	};
@@ -22,6 +24,11 @@ export const sketch = (p: p5): void => {
 		p.noStroke();
 		const size = p.random(20, 100);
 		p.circle(p.mouseX, p.mouseY, size);
+
+		data[2] = 255;//
+		data[3] = 255 * (p.mouseX / p.width);
+		data[4] = 255 * (p.mouseY / p.height);
+		window.electron.ipcRenderer.invoke(DmxHandleTypes.send, { data });
 
 		AppGui.fpsEnd(); // FPS計測終了
 	};
