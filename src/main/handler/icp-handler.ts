@@ -1,9 +1,8 @@
 import { BrowserWindow, app, ipcMain } from "electron";
-import { ArtnetDMX, } from 'artnet-dmx';
-import { SendProps } from 'artnet-dmx/dist/interfaces';
+import { ArtnetDMX, SendProps } from 'artnet-dmx';
 import { AppConfig } from "../config/application";
 import { AppStoreProps, DmxProps } from "@common/types";
-import { AppHandleTypes, DmxHandleTypes } from "@common/enums";
+import { AppHandleTypes, DmxHandleTypes, } from "@common/enums";
 import { getLocalAddress } from "../utils/get-local-address";
 
 /**
@@ -35,6 +34,13 @@ export const icpHandler = ({ window, }: { window: BrowserWindow, }): void => {
 		window.close();
 		app.relaunch();
 		app.exit();
+	});
+
+	/**
+	 * アプリケーション設定保存
+	 */
+	ipcMain.handle(AppHandleTypes.save, (_, data: AppStoreProps) => {
+		AppConfig.setConfig(data);
 	});
 
 	/**

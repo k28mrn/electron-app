@@ -4,6 +4,7 @@ import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 import { AppStoreProps } from "@common/types";
 import { AppHandleTypes } from "@common/enums";
 import { ElectronGui } from "./settings/electron-gui";
+import { SerialGui } from "./settings/serial-gui";
 
 /**
  * アプリケーションGUI
@@ -12,7 +13,8 @@ class ApplicationGui extends EventEmitter {
 	#config: AppStoreProps;
 	#pane: Pane;
 	#fpsGraph: EssentialsPlugin.FpsGraphBladeApi;
-	#electronConfig: ElectronGui;
+	electronConfig: ElectronGui;
+	serialGui: SerialGui;
 
 	constructor() {
 		super();
@@ -31,7 +33,7 @@ class ApplicationGui extends EventEmitter {
 
 		this.#createBaseConfig();
 		this.#createElectronConfig();
-
+		this.#createSerialConfig();
 	}
 
 	/**
@@ -56,13 +58,31 @@ class ApplicationGui extends EventEmitter {
 	 */
 	#createElectronConfig = () => {
 		const folder = this.#pane.addFolder({ title: 'Electron Config' });
-		this.#electronConfig = new ElectronGui({
+		this.electronConfig = new ElectronGui({
 			folder,
 			config: this.#config.browser,
 			usePlugin: this.#config.usePlugin,
 		});
-		this.#electronConfig.on(ElectronGui.Restart, this.#onRestartClick);
+		this.electronConfig.on(ElectronGui.Restart, this.#onRestartClick);
+		this.electronConfig.on(ElectronGui.Save, this.#onSaveClick);
 		// this.#electronConfig.on(ElectronGui.Change, this.#onChangeSettings);
+	};
+
+	/**
+	 * シリアル設定
+	 */
+	#createSerialConfig = () => {
+		const folder = this.#pane.addFolder({ title: 'Serial Config' });
+		const serialPort = this.#config.serialPort;
+		const useFlg = this.#config.usePlugin.useSerialPort;
+		this.serialGui = new SerialGui(folder, true, serialPort);
+	};
+
+	/**
+	 * 設定保存
+	 */
+	#onSaveClick = () => {
+		window.electron.ipcRenderer.invoke(AppHandleTypes.save, this.#getUpdateConfig());
 	};
 
 	/**
@@ -78,9 +98,8 @@ class ApplicationGui extends EventEmitter {
 	#getUpdateConfig = (): AppStoreProps => {
 		return {
 			...this.#config,
-			browser: { ...this.#config.browser, ...this.#electronConfig.config },
-			usePlugin: { ...this.#config.usePlugin, ...this.#electronConfig.usePlugin },
-
+			browser: { ...this.#config.browser, ...this.electronConfig.config },
+			usePlugin: { ...this.#config.usePlugin, ...this.electronConfig.usePlugin },
 		};
 	};
 
@@ -88,14 +107,14 @@ class ApplicationGui extends EventEmitter {
 	 * FPS計測開始
 	 */
 	fpsBegin = () => {
-		this.#fpsGraph.begin();
+		this.#fpsGraph?.begin();
 	};
 
 	/**
 	 * FPS計測終了
 	 */
 	fpsEnd = () => {
-		this.#fpsGraph.end();
+		this.#fpsGraph?.end();
 	};
 }
 

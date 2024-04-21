@@ -36,9 +36,9 @@ export class ElectronGui extends GuiBase {
 		windowTap.addBinding(this.config, 'width', { min: 0, max: width, step: 1 }).on('change', this.onChangeConfig);
 		windowTap.addBinding(this.config, 'height', { min: 0, max: width, step: 1 }).on('change', this.onChangeConfig);
 		windowTap.addButton({
-			title: '設定反映',
+			title: '設定保存',
 			label: '',
-		}).on('click', this.onRestartClick);
+		}).on('click', this.onSaveClick);
 
 		// アプリケーション設定
 		applicationTap.element.classList.add('app_gui_application');
@@ -48,17 +48,16 @@ export class ElectronGui extends GuiBase {
 		applicationTap.addBinding(this.config, 'frame', { label: 'ウィンドウバー表示' }).on('change', this.onChangeConfig);
 		applicationTap.addBinding(this.config, 'autoHideMenuBar', { label: 'メニューバー非表示' }).on('change', this.onChangeConfig);
 		applicationTap.addButton({
-			title: '設定反映',
+			title: '設定保存',
 			label: '',
-		}).on('click', this.onRestartClick);
+		}).on('click', this.onSaveClick);
 
 		// プラグイン設定
 		pluginTap.element.classList.add('app_gui_application');
 		pluginTap.addBinding(this.usePlugin, 'guiDisplay', { label: '起動時GUI表示' }).on('change', this.onChangeConfig);
 		pluginTap.addBinding(this.usePlugin, 'useDmx', { label: 'DMX' }).on('change', this.onChangeConfig);
-
-		// pluginTap.addBinding(this.config.plugin, 'useSerialPort', { label: 'シリアル通信' }).on('change', this.onChangeConfig);
-		// pluginTap.addBinding(this.config.plugin, 'useOsc', { label: 'OSC通信' }).on('change', this.onChangeConfig);
-		// pluginTap.addBinding(this.config.plugin, 'useMidi', { label: 'Midiデバイス' }).on('change', this.onChangeConfig);
+		pluginTap.addBinding(this.usePlugin, 'useSerialPort', { label: 'Serial通信' }).on('change', this.onChangeConfig);
+		pluginTap.addBinding(this.usePlugin, 'useOsc', { label: 'OSC通信' }).on('change', this.onChangeConfig);
+		pluginTap.addBinding(this.usePlugin, 'useMidi', { label: 'Midiデバイス' }).on('change', this.onChangeConfig);
 	};
 }

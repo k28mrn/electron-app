@@ -3,6 +3,7 @@ import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { AppConfig } from './config/application';
 import { icpHandler } from './handler/icp-handler';
+import { SerialHandler } from './handler/serial-handler';
 
 // NOTE:
 // 開発時ワーニング回避設定 (参考: https://qiita.com/kuraiL22/items/80e8e77d62cbe39d0b34)
@@ -34,6 +35,7 @@ function createWindow(): void {
 	}
 
 	icpHandler({ window: mainWindow });
+	new SerialHandler({ window: mainWindow });
 }
 
 /**

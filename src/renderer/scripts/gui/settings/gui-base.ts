@@ -7,11 +7,13 @@ import { FolderApi } from "@tweakpane/core";
 export abstract class GuiBase extends EventEmitter {
 	static Change = 'change';
 	static Restart = 'restart';
+	static Save = 'save';
 	protected folder: FolderApi;
 
-	constructor(folder: FolderApi) {
+	constructor(folder: FolderApi, useConfig: boolean = true) {
 		super();
 		this.folder = folder;
+		this.folder.hidden = !useConfig;
 	}
 
 	/**
@@ -33,4 +35,9 @@ export abstract class GuiBase extends EventEmitter {
 	 * 設定反映のための再起動
 	 */
 	protected onRestartClick = (): boolean => this.emit(GuiBase.Restart);
+
+	/**
+	 * 設定保存
+	 */
+	protected onSaveClick = (): boolean => this.emit(GuiBase.Save);
 }

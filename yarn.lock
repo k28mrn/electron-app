@@ -1206,10 +1206,10 @@ array-union@^2.1.0:
   resolved "https://registry.yarnpkg.com/array-union/-/array-union-2.1.0.tgz#b798420adbeb1de828d84acd8a2e23d3efe85e8d"
   integrity sha512-HGyxoOTYUyCM6stUe6EJgnd4EoewAI7zMdfqO+kGjnlZmBDz/cR5pf8r/cR4Wq60sL/p0IkcjUEEPwS3GFrIyw==
 
-artnet-dmx@^0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/artnet-dmx/-/artnet-dmx-0.1.5.tgz#54437625141aecd2f95d04afd55b07ea7e871ed0"
-  integrity sha512-dWWEdQSj+tpaK4u9uimPoiNVSAASbj7VpLPJkUatikOUYT5QbhJFKoxZZL3nbb32Cy/pxcfaLvHK509yovb8NA==
+artnet-dmx@^0.1.7:
+  version "0.1.7"
+  resolved "https://registry.yarnpkg.com/artnet-dmx/-/artnet-dmx-0.1.7.tgz#32555eb12e2c49968bfce28c7e377eb9ce887508"
+  integrity sha512-wh814tOkUo766+cc8AlUDu1Phy3JS1CdGcyMrpFLvTAXpSH23bXw5Bi7r+ff5eYRFtCHH/o8Bta9ZEIHIIir7w==
 
 assert-plus@^1.0.0:
   version "1.0.0"
