@@ -8,14 +8,9 @@
 	"typescript.format.semicolons": "insert",
 	"cSpell.ignoreWords": [
 		"gsap",
-		"pana",
 		"Tweens",
 		"webp",
 		"chara",
-		"fullcalendar",
-		"daygrid",
-		"challengechildlist",
-		"checkinuse",
 		"pmrem",
 		"Equirectangular",
 		"gltf",
@@ -24,18 +19,16 @@
 		"svgr",
 		"Raycaster",
 		"lerp",
-		"microcms",
-		"koushou",
 		"gtag",
 		"tweakpane",
 		"fpsgraph",
 		"onmidimessage",
 		"webmidi",
+		"artnet",
 	],
-	"files.exclude": {
-		"node_modules": true,
-	},
+	"files.exclude": {},
 	"search.exclude": {
 		"main": true,
+		"node_modules": true,
 	}
 }
