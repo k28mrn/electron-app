@@ -8,7 +8,7 @@ export const sketch = (p: p5): void => {
 	 * Setup
 	 */
 	p.setup = (): void => {
-		window.electron.ipcRenderer.invoke(DmxHandleTypes.options, { host: '100.0.0.10' });
+		window.electron.ipcRenderer.invoke(DmxHandleTypes.create, { host: '100.0.0.10' });
 		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.background(255);
 	};

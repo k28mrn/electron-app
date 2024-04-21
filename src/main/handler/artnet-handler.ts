@@ -38,7 +38,7 @@ export class ArtnetHandler {
 	 * オプション設定
 	 */
 	create = (_, options: DmxProps) => {
-		if (!this.artnetDmx) {
+		if (this.artnetDmx) {
 			this.artnetDmx.changeOptions(options);
 		} else {
 			this.artnetDmx = new ArtnetDMX(options);
