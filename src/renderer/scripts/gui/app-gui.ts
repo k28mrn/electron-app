@@ -26,6 +26,8 @@ class ApplicationGui extends EventEmitter {
 	 */
 	async setup() {
 		this.#config = await window.electron.ipcRenderer.invoke(AppHandleTypes.getConfig);
+		console.log("App Config : ", this.#config);
+
 		this.#pane.registerPlugin(EssentialsPlugin);
 		this.#pane.element.parentElement.style.zIndex = '1000';
 		this.#pane.element.parentElement.style.width = '280px';
@@ -51,6 +53,7 @@ class ApplicationGui extends EventEmitter {
 		this.#pane.addBinding(this.#config, 'storePath', { label: '設定JSON', disabled: true });
 		this.#pane.addBinding(this.#config, 'version', { label: 'アプリVer.', disabled: true });
 		this.#pane.addBinding(this.#config, 'ip', { label: 'IP', disabled: true });
+		this.#pane.addButton({ title: '設定を保存', label: '', }).on('click', this.#onSaveClick);
 	};
 
 	/**
@@ -63,9 +66,8 @@ class ApplicationGui extends EventEmitter {
 			config: this.#config.browser,
 			usePlugin: this.#config.usePlugin,
 		});
-		this.electronConfig.on(ElectronGui.Restart, this.#onRestartClick);
-		this.electronConfig.on(ElectronGui.Save, this.#onSaveClick);
-		// this.#electronConfig.on(ElectronGui.Change, this.#onChangeSettings);
+		// this.electronConfig.on(ElectronGui.Restart, this.#onRestartClick);
+		this.electronConfig.on(ElectronGui.Change, this.#onChangeSettings);
 	};
 
 	/**
@@ -75,7 +77,7 @@ class ApplicationGui extends EventEmitter {
 		const folder = this.#pane.addFolder({ title: 'Serial Config' });
 		const serialPort = this.#config.serialPort;
 		const useFlg = this.#config.usePlugin.useSerialPort;
-		this.serialGui = new SerialGui(folder, true, serialPort);
+		this.serialGui = new SerialGui(folder, useFlg, serialPort);
 	};
 
 	/**
@@ -93,6 +95,13 @@ class ApplicationGui extends EventEmitter {
 	};
 
 	/**
+	 * 設定変更
+	 */
+	#onChangeSettings = () => {
+		this.serialGui.folder.hidden = !this.#config.usePlugin.useSerialPort;
+	};
+
+	/**
 	 * 設定情報最新取得
 	 */
 	#getUpdateConfig = (): AppStoreProps => {
@@ -100,6 +109,7 @@ class ApplicationGui extends EventEmitter {
 			...this.#config,
 			browser: { ...this.#config.browser, ...this.electronConfig.config },
 			usePlugin: { ...this.#config.usePlugin, ...this.electronConfig.usePlugin },
+			serialPort: { ...this.#config.serialPort, ...this.serialGui.config },
 		};
 	};
 

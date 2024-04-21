@@ -34,6 +34,8 @@ export class SerialHandler {
 		ipcMain.handle(SerialTypes.open, this.open);
 		//切断
 		ipcMain.handle(SerialTypes.close, this.close);
+		// データ書込
+		ipcMain.handle(SerialTypes.write, this.write);
 	}
 
 	/**
@@ -55,7 +57,7 @@ export class SerialHandler {
 	 */
 	open = (_, { path, baudRate }: SerialPortProps) => {
 		try {
-			if (this.port) this.close();
+			this.close();
 			this.port = new SerialPort({ path, baudRate, autoOpen: false });
 			this.port.pipe(this.parser);
 			this.port.on('open', this.onOpen);
@@ -69,11 +71,26 @@ export class SerialHandler {
 	};
 
 	/**
+	 * 接続確認
+	 */
+	get isOpen(): boolean {
+		return this.port !== null && this.port.isOpen;
+	}
+
+	/**
 	 * シリアル通信切断
 	 */
 	close = () => {
-		if (this.port === null || !this.port.isOpen) return;
+		if (!this.isOpen) return;
 		this.port.close();
+	};
+
+	/**
+	 * シリアル通信書込
+	 */
+	write = (_, data: string) => {
+		if (!this.isOpen) return;
+		this.port.write(data);
 	};
 
 	/**
@@ -96,6 +113,9 @@ export class SerialHandler {
 		this.window.webContents.send(SerialTypes.close);
 	};
 
+	/**
+	 * シリアル通信: Error > Client
+	 */
 	onError = (err: Error) => {
 		console.error('Serial Error:', err);
 		this.window.webContents.send(SerialTypes.error);

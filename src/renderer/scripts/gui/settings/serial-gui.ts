@@ -28,8 +28,6 @@ export class SerialGui extends GuiBase {
 	 * セットアップ
 	 */
 	async setup() {
-		console.log(SerialTypes.list);
-
 		const list: { [key: string]: string; } = await window.electron.ipcRenderer.invoke(SerialTypes.list);
 		if (!(this.config.path in list)) this.config.path = '';
 		this.folder.addBinding(this.config, 'path', { label: 'Path', options: list }).on('change', this.onChangeConfig);
@@ -49,6 +47,11 @@ export class SerialGui extends GuiBase {
 		window.electron.ipcRenderer.on(SerialTypes.open, this.onOpen);
 		window.electron.ipcRenderer.on(SerialTypes.close, this.onClose);
 		window.electron.ipcRenderer.on(SerialTypes.error, this.onError);
+
+		// NOTE:保存されてる情報がある場合は接続を試みる
+		if (!this.folder.hidden && this.config.path !== '') {
+			this.open();
+		}
 	}
 
 	/**

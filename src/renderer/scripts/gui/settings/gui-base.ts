@@ -8,7 +8,7 @@ export abstract class GuiBase extends EventEmitter {
 	static Change = 'change';
 	static Restart = 'restart';
 	static Save = 'save';
-	protected folder: FolderApi;
+	folder: FolderApi;
 
 	constructor(folder: FolderApi, useConfig: boolean = true) {
 		super();
