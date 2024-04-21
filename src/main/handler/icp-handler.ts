@@ -1,8 +1,7 @@
 import { BrowserWindow, app, ipcMain } from "electron";
-import { ArtnetDMX, SendProps } from 'artnet-dmx';
 import { AppConfig } from "../config/application";
-import { AppStoreProps, DmxProps } from "@common/types";
-import { AppHandleTypes, DmxHandleTypes, } from "@common/enums";
+import { AppStoreProps, } from "@common/types";
+import { AppHandleTypes, } from "@common/enums";
 import { getLocalAddress } from "../utils/get-local-address";
 
 /**
@@ -10,7 +9,6 @@ import { getLocalAddress } from "../utils/get-local-address";
  */
 export const icpHandler = ({ window, }: { window: BrowserWindow, }): void => {
 	const { dmx } = AppConfig;
-	let artnetDmx: ArtnetDMX = new ArtnetDMX(dmx);
 
 	/**
 	 * アプリケーション設定取得
@@ -41,26 +39,5 @@ export const icpHandler = ({ window, }: { window: BrowserWindow, }): void => {
 	 */
 	ipcMain.handle(AppHandleTypes.save, (_, data: AppStoreProps) => {
 		AppConfig.setConfig(data);
-	});
-
-	/**
-	 * DMX:オプション設定
-	 */
-	ipcMain.handle(DmxHandleTypes.options, (_, options: DmxProps) => {
-		artnetDmx.changeOptions(options);
-	});
-
-	/**
-	 * DMX:送信
-	 */
-	ipcMain.handle(DmxHandleTypes.send, (_, data: SendProps) => {
-		artnetDmx.send(data);
-	});
-
-	/**
-	 * DMX:閉じる
-	 */
-	ipcMain.handle(DmxHandleTypes.close, () => {
-		artnetDmx.close();
 	});
 };

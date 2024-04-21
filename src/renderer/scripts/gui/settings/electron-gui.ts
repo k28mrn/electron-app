@@ -53,5 +53,6 @@ export class ElectronGui extends GuiBase {
 		pluginTap.addBinding(this.usePlugin, 'useSerialPort', { label: 'Serial通信' }).on('change', this.onChangeConfig);
 		pluginTap.addBinding(this.usePlugin, 'useOsc', { label: 'OSC通信' }).on('change', this.onChangeConfig);
 		pluginTap.addBinding(this.usePlugin, 'useMidi', { label: 'Midiデバイス' }).on('change', this.onChangeConfig);
+
 	};
 }

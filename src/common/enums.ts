@@ -14,7 +14,7 @@ export type AppHandleTypes = typeof AppHandleTypes[keyof typeof AppHandleTypes];
  * DMX Handle types
  */
 export const DmxHandleTypes = {
-	options: 'dmx:options',
+	create: 'dmx:create',
 	send: 'dmx:send',
 	close: 'dmx:close',
 } as const;
