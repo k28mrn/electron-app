@@ -29,9 +29,9 @@ void loop() {
   // シリアルを読み込んでLEDのON/OFF制御
   if (Serial.available() > 0) {
     int input = Serial.read();
-    if (input == 'D') {
+    if (input == 'd') {
         digitalWrite(ledPin, HIGH);
-    } else if (input == 'U') {
+    } else if (input == 'u') {
         digitalWrite(ledPin, LOW);
     }
 

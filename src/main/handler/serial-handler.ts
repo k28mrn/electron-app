@@ -124,9 +124,9 @@ export class SerialHandler {
 	/**
 	 * シリアル通信: Read > Client
 	 */
-	onRead(data: string) {
+	onRead = (data: string) => {
 		console.log('Serial Read:', data);
 		this.window.webContents.send(SerialTypes.read, data);
-	}
+	};
 }
 

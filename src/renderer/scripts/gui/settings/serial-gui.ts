@@ -47,6 +47,7 @@ export class SerialGui extends GuiBase {
 		window.electron.ipcRenderer.on(SerialTypes.connect, this.onOpen);
 		window.electron.ipcRenderer.on(SerialTypes.close, this.onClose);
 		window.electron.ipcRenderer.on(SerialTypes.error, this.onError);
+		window.electron.ipcRenderer.on(SerialTypes.read, this.onRead);
 
 		// NOTE:保存されてる情報がある場合は接続を試みる
 		if (!this.folder.hidden && this.config.path !== '') {
@@ -69,6 +70,13 @@ export class SerialGui extends GuiBase {
 	}
 
 	/**
+	 * 書き込み
+	 */
+	write = (data: string | number) => {
+		window.electron.ipcRenderer.invoke(SerialTypes.write, data);
+	};
+
+	/**
 	 * electronからのOpen通知
 	 */
 	onOpen = () => {
@@ -85,6 +93,14 @@ export class SerialGui extends GuiBase {
 		this.connectButton.title = 'Connect';
 		this.folder.refresh();
 	};
+
+	/**
+	 * electronからのRead通知
+	 */
+	onRead = (_, data: string) => {
+		this.emit('read', data);
+	};
+
 
 	/**
 	 * electronからのError通知
