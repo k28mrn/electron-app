@@ -5,6 +5,7 @@ import { AppStoreProps } from "@common/types";
 import { AppHandleTypes } from "@common/enums";
 import { ElectronGui } from "./settings/electron-gui";
 import { SerialGui } from "./settings/serial-gui";
+import { DmxGui } from "./settings/dmx-gui";
 
 /**
  * アプリケーションGUI
@@ -14,7 +15,8 @@ class ApplicationGui extends EventEmitter {
 	#pane: Pane;
 	#fpsGraph: EssentialsPlugin.FpsGraphBladeApi;
 	electronConfig: ElectronGui;
-	serialGui: SerialGui;
+	dmx: DmxGui;
+	serial: SerialGui;
 
 	constructor() {
 		super();
@@ -74,10 +76,17 @@ class ApplicationGui extends EventEmitter {
 	 * シリアル設定
 	 */
 	#createSerialConfig = () => {
-		const folder = this.#pane.addFolder({ title: 'Serial Config' });
-		const serialPort = this.#config.serialPort;
-		const useFlg = this.#config.usePlugin.useSerialPort;
-		this.serialGui = new SerialGui(folder, useFlg, serialPort);
+		const { serialPort, dmx } = this.#config;
+		const { useSerialPort, useDmx } = this.#config.usePlugin;
+		this.dmx = new DmxGui(this.addFolder('Dmx Config'), useDmx, dmx);
+		this.serial = new SerialGui(this.addFolder('Serial Config'), useSerialPort, serialPort);
+	};
+
+	/**
+	 * GUIフォルダ追加
+	 */
+	addFolder = (title: string) => {
+		return this.#pane.addFolder({ title });
 	};
 
 	/**
@@ -98,7 +107,8 @@ class ApplicationGui extends EventEmitter {
 	 * 設定変更
 	 */
 	#onChangeSettings = () => {
-		this.serialGui.folder.hidden = !this.#config.usePlugin.useSerialPort;
+		this.dmx.folder.hidden = !this.#config.usePlugin.useDmx;
+		this.serial.folder.hidden = !this.#config.usePlugin.useSerialPort;
 	};
 
 	/**
@@ -109,7 +119,8 @@ class ApplicationGui extends EventEmitter {
 			...this.#config,
 			browser: { ...this.#config.browser, ...this.electronConfig.config },
 			usePlugin: { ...this.#config.usePlugin, ...this.electronConfig.usePlugin },
-			serialPort: { ...this.#config.serialPort, ...this.serialGui.config },
+			dmx: { ...this.#config.dmx, ...this.dmx.config },
+			serialPort: { ...this.#config.serialPort, ...this.serial.config },
 		};
 	};
 
@@ -128,4 +139,4 @@ class ApplicationGui extends EventEmitter {
 	};
 }
 
-export const AppGui = new ApplicationGui();
+export const App = new ApplicationGui();

@@ -1,16 +1,16 @@
 import p5 from "p5";
 import { sketch } from "./sketch";
-import { AppGui } from "./gui/app-gui";
+import { App } from "./gui/app-gui";
 
-class App {
+class Main {
 	#p5: p5;
 
 	constructor() {
-		AppGui.setup();
+		App.setup();
 		this.#p5 = new p5(sketch);
 	}
 }
 
 window.onload = (): void => {
-	new App();
+	new Main();
 };

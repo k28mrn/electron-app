@@ -37,28 +37,28 @@ export class SerialGui extends GuiBase {
 		this.connectButton = this.folder.addButton({ title: 'Connect', label: '' }).on('click', () => {
 			console.log(`status: ${this.status}`);
 
-			if (this.status !== SerialStatus.open) {
-				this.open();
+			if (this.status !== SerialStatus.connected) {
+				this.connect();
 			} else {
 				this.close();
 			}
 		});
 
-		window.electron.ipcRenderer.on(SerialTypes.open, this.onOpen);
+		window.electron.ipcRenderer.on(SerialTypes.connect, this.onOpen);
 		window.electron.ipcRenderer.on(SerialTypes.close, this.onClose);
 		window.electron.ipcRenderer.on(SerialTypes.error, this.onError);
 
 		// NOTE:保存されてる情報がある場合は接続を試みる
 		if (!this.folder.hidden && this.config.path !== '') {
-			this.open();
+			this.connect();
 		}
 	}
 
 	/**
 	 * electronへOpen通知 & 設定データ送信
 	 */
-	open() {
-		window.electron.ipcRenderer.invoke(SerialTypes.open, this.config);
+	connect() {
+		window.electron.ipcRenderer.invoke(SerialTypes.connect, this.config);
 	}
 
 	/**
@@ -72,7 +72,7 @@ export class SerialGui extends GuiBase {
 	 * electronからのOpen通知
 	 */
 	onOpen = () => {
-		this.status = SerialStatus.open;
+		this.status = SerialStatus.connected;
 		this.connectButton.title = 'Disconnect';
 		this.folder.refresh();
 	};

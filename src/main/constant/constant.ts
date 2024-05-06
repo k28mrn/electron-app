@@ -43,5 +43,5 @@ export const DEFAULT_MIDI_OPTIONS: MidiProps = {
 
 export const DEFAULT_DMX_OPTIONS = {
 	host: '255.255.255.255',
-	posrt: 6454,
+	port: 6454,
 };

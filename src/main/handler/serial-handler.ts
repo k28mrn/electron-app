@@ -31,7 +31,7 @@ export class SerialHandler {
 		// シリアルポートリスト取得
 		ipcMain.handle(SerialTypes.list, this.getList);
 		//接続
-		ipcMain.handle(SerialTypes.open, this.open);
+		ipcMain.handle(SerialTypes.connect, this.connect);
 		//切断
 		ipcMain.handle(SerialTypes.close, this.close);
 		// データ書込
@@ -55,7 +55,7 @@ export class SerialHandler {
 	/**
 	 * シリアル通信接続
 	 */
-	open = (_, { path, baudRate }: SerialPortProps) => {
+	connect = (_, { path, baudRate }: SerialPortProps) => {
 		try {
 			this.close();
 			this.port = new SerialPort({ path, baudRate, autoOpen: false });
@@ -98,7 +98,7 @@ export class SerialHandler {
 	 */
 	onOpen = () => {
 		console.log('Serial open');
-		this.window.webContents.send(SerialTypes.open);
+		this.window.webContents.send(SerialTypes.connect);
 	};
 
 	/**

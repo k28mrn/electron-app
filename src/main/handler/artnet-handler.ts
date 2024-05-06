@@ -27,7 +27,7 @@ export class ArtnetHandler {
 	 */
 	setHandles() {
 		// オプション設定
-		ipcMain.handle(DmxHandleTypes.create, this.create);
+		ipcMain.handle(DmxHandleTypes.connect, this.connect);
 		// 送信
 		ipcMain.handle(DmxHandleTypes.send, this.send);
 		// 閉じる
@@ -37,7 +37,7 @@ export class ArtnetHandler {
 	/**
 	 * オプション設定
 	 */
-	create = (_, options: DmxProps) => {
+	connect = (_, options: DmxProps) => {
 		if (this.artnetDmx) {
 			this.artnetDmx.changeOptions(options);
 		} else {
