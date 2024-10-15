@@ -61,6 +61,8 @@ export interface OscProps {
 	sendPort?: string;
 }
 
+export type OscMessageTypes = object | Array<any> | string | number | boolean;
+
 /**
  * MIDI設定
  */

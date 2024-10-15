@@ -6,6 +6,7 @@ import { AppHandleTypes } from "@common/enums";
 import { ElectronGui } from "./settings/electron-gui";
 import { SerialGui } from "./settings/serial-gui";
 import { DmxGui } from "./settings/dmx-gui";
+import { OscGui } from "./settings/osc-gui";
 
 /**
  * アプリケーションGUI
@@ -16,6 +17,7 @@ class ApplicationGui extends EventEmitter {
 	#fpsGraph: EssentialsPlugin.FpsGraphBladeApi;
 	electronConfig: ElectronGui;
 	dmx: DmxGui;
+	osc: OscGui;
 	serial: SerialGui;
 
 	constructor() {
@@ -76,9 +78,12 @@ class ApplicationGui extends EventEmitter {
 	 * シリアル設定
 	 */
 	#createSerialConfig = () => {
-		const { serialPort, dmx } = this.#config;
-		const { useSerialPort, useDmx } = this.#config.usePlugin;
+		const { serialPort, dmx, osc } = this.#config;
+		const { useSerialPort, useDmx, useOsc } = this.#config.usePlugin;
+		console.log(useOsc, osc);
+
 		this.dmx = new DmxGui(this.addFolder('Dmx Config'), useDmx, dmx);
+		this.osc = new OscGui(this.addFolder('Osc Config'), useOsc, osc);
 		this.serial = new SerialGui(this.addFolder('Serial Config'), useSerialPort, serialPort);
 	};
 
@@ -108,6 +113,7 @@ class ApplicationGui extends EventEmitter {
 	 */
 	#onChangeSettings = () => {
 		this.dmx.folder.hidden = !this.#config.usePlugin.useDmx;
+		this.osc.folder.hidden = !this.#config.usePlugin.useOsc;
 		this.serial.folder.hidden = !this.#config.usePlugin.useSerialPort;
 	};
 
@@ -120,6 +126,7 @@ class ApplicationGui extends EventEmitter {
 			browser: { ...this.#config.browser, ...this.electronConfig.config },
 			usePlugin: { ...this.#config.usePlugin, ...this.electronConfig.usePlugin },
 			dmx: { ...this.#config.dmx, ...this.dmx.config },
+			osc: { ...this.#config.osc, ...this.osc.config },
 			serialPort: { ...this.#config.serialPort, ...this.serial.config },
 		};
 	};
