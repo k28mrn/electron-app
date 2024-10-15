@@ -43,3 +43,15 @@ export const SerialStatus = {
 } as const;
 export type SerialStatus = typeof SerialStatus[keyof typeof SerialStatus];
 
+
+/**
+ * OSC Handle types
+ */
+export const OscHandleTypes = {
+	open: 'osc:open',
+	close: 'osc:close',
+	update: 'osc:update',
+	send: 'osc:send',
+	receive: 'osc:receive',
+} as const;
+export type OscHandleTypes = typeof OscHandleTypes[keyof typeof OscHandleTypes];

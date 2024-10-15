@@ -80,7 +80,6 @@ class ApplicationGui extends EventEmitter {
 	#createSerialConfig = () => {
 		const { serialPort, dmx, osc } = this.#config;
 		const { useSerialPort, useDmx, useOsc } = this.#config.usePlugin;
-		console.log(useOsc, osc);
 
 		this.dmx = new DmxGui(this.addFolder('Dmx Config'), useDmx, dmx);
 		this.osc = new OscGui(this.addFolder('Osc Config'), useOsc, osc);

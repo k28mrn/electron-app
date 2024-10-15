@@ -1,6 +1,7 @@
 import { FolderApi } from "tweakpane";
 import { GuiBase } from "./gui-base";
-import { OscMessageTypes, OscProps } from "@common/interfaces";
+import { OscMessageProps, OscProps } from "@common/interfaces";
+import { OscHandleTypes } from "@common/enums";
 
 /**
  * シリアル制御用GUIクラス
@@ -12,7 +13,7 @@ export class OscGui extends GuiBase {
 		sendHost: `127.0.0.1`,
 		sendPort: `3333`,
 	};
-	isOpen: boolean = false;
+
 	constructor(folder: FolderApi, useConfig: boolean, config: OscProps) {
 		super(folder);
 		this.folder.hidden = !useConfig;
@@ -28,30 +29,47 @@ export class OscGui extends GuiBase {
 		this.folder.addBinding(this.config, 'sendHost', { label: 'Send Host' }).on('change', this.onChangeConfig);
 		this.folder.addBinding(this.config, 'sendPort', { label: 'Send Port', color: false }).on('change', this.onChangeConfig);
 
+		this.folder.addButton({ title: 'Open', label: '' }).on('click', this.open);
+		this.folder.addButton({ title: 'Close', label: '' }).on('click', this.close);
+
+		// NOTE:保存されてる情報がある場合は接続を試みる
+		if (!this.folder.hidden && this.config.selfPort !== '') {
+			this.open();
+		}
+
 		// ICP通信
-		window.electron.ipcRenderer.on('oscOpen', this._onOpen);
-		window.electron.ipcRenderer.on('oscClose', this._onClose);
-		window.electron.ipcRenderer.on('getOscMessage', this._onGetOscMessage);
+		window.electron.ipcRenderer.on(OscHandleTypes.open, this.#onOpen);
+		window.electron.ipcRenderer.on(OscHandleTypes.close, this.#onClose);
+		window.electron.ipcRenderer.on(OscHandleTypes.receive, this.#onReceiveMessage);
+	};
+
+	open = () => {
+		window.electron.ipcRenderer.invoke(OscHandleTypes.open, this.config);
+	};
+
+	close = () => {
+		window.electron.ipcRenderer.invoke(OscHandleTypes.close);
 	};
 
 	/**
 	 * OSCオープン
 	 */
-	private _onOpen = () => {
-		this.isOpen = true;
+	#onOpen = (_: Electron.IpcRendererEvent, option: any) => {
+		console.log('OSC Open: Connect Info', option);
 	};
 
 	/**
 	 * OSCクローズ
 	 */
-	private _onClose = () => {
-		this.isOpen = false;
+	#onClose = () => {
+		console.log('OSC Close');
 	};
 
 	/**
-	 *
+	 * OSCメッセージ取得
 	 */
-	private _onGetOscMessage = (_: Electron.IpcRendererEvent, message: OscMessageTypes) => {
+	#onReceiveMessage = (_: Electron.IpcRendererEvent, message: OscMessageProps) => {
+		console.log('OSC Receive:', message);
 		this.emit(OscGui.OscMessage, message);
 	};
 }

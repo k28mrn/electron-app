@@ -61,6 +61,13 @@ export interface OscProps {
 	sendPort?: string;
 }
 
+export interface OscMessageProps {
+	offset: number;
+	address: string;
+	args: OscMessageTypes;
+	type: string;
+}
+
 export type OscMessageTypes = object | Array<any> | string | number | boolean;
 
 /**
