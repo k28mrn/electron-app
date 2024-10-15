@@ -24,7 +24,7 @@
 		"@electron-toolkit/utils": "^3.0.0",
 		"artnet-dmx": "^0.1.7",
 		"electron-store": "^8.2.0",
-		"osc-js": "^2.4.0",
+		"osc-js": "^2.4.1",
 		"serialport": "^12.0.0"
 	},
 	"devDependencies": {
