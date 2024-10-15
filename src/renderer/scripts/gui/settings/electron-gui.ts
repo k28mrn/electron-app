@@ -1,6 +1,6 @@
 import { FolderApi } from "@tweakpane/core";
 import { GuiBase } from "./gui-base";
-import { AppStoreProps, BrowserProps, UsePluginProps } from "@common/types";
+import { AppStoreProps, BrowserProps, UsePluginProps } from "@common/interfaces";
 
 /**
  * シリアル制御用GUIクラス

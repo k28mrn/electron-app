@@ -1,5 +1,5 @@
 import { DmxHandleTypes } from '@common/enums';
-import { DmxProps } from '@common/types';
+import { DmxProps } from '@common/interfaces';
 import { ArtnetDMX, SendProps } from 'artnet-dmx';
 import { BrowserWindow, ipcMain } from 'electron';
 

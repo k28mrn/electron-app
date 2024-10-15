@@ -1,7 +1,7 @@
 import Store from 'electron-store';
 import { MainAppStoreProps } from '../constant/types';
 import { DEFAULT_BROWSER_OPTIONS, DEFAULT_DMX_OPTIONS, DEFAULT_MIDI_OPTIONS, DEFAULT_OSC_OPTIONS, DEFAULT_SERIAL_PORT_OPTIONS } from '../constant/constant';
-import { DmxProps } from '@common/types';
+import { DmxProps } from '@common/interfaces';
 
 const STORE_KEY = 'application-settings';
 

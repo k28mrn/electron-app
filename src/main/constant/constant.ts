@@ -1,4 +1,4 @@
-import { MidiProps, OscProps, SerialPortProps } from '@common/types';
+import { MidiProps, OscProps, SerialPortProps } from '@common/interfaces';
 import icon from '../../../resources/icon.png?asset';
 import { join } from 'path';
 

@@ -1,7 +1,7 @@
 import EventEmitter from "eventemitter3";
 import { Pane } from 'tweakpane';
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
-import { AppStoreProps } from "@common/types";
+import { AppStoreProps } from "@common/interfaces";
 import { AppHandleTypes } from "@common/enums";
 import { ElectronGui } from "./settings/electron-gui";
 import { SerialGui } from "./settings/serial-gui";

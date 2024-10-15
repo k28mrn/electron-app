@@ -1,6 +1,6 @@
 import { BrowserWindow, app, ipcMain } from "electron";
 import { AppConfig } from "../config/application";
-import { AppStoreProps, } from "@common/types";
+import { AppStoreProps, } from "@common/interfaces";
 import { AppHandleTypes, } from "@common/enums";
 import { getLocalAddress } from "../utils/get-local-address";
 

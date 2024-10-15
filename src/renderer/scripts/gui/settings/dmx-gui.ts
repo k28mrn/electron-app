@@ -1,6 +1,6 @@
 import { FolderApi } from "tweakpane";
 import { GuiBase } from "./gui-base";
-import { DmxProps, } from "@common/types";
+import { DmxProps, } from "@common/interfaces";
 import { DmxHandleTypes } from "@common/enums";
 import { SendProps } from "artnet-dmx";
 

@@ -1,5 +1,5 @@
 import { SerialTypes } from "@common/enums";
-import { SerialPortProps } from "@common/types";
+import { SerialPortProps } from "@common/interfaces";
 import { BrowserWindow, ipcMain } from "electron";
 import { ReadlineParser, SerialPort } from "serialport";
 

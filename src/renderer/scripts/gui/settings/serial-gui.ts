@@ -1,6 +1,6 @@
 import { ButtonApi, FolderApi } from "tweakpane";
 import { GuiBase } from "./gui-base";
-import { SerialPortProps } from "@common/types";
+import { SerialPortProps } from "@common/interfaces";
 import { SerialStatus, SerialTypes } from "@common/enums";
 
 /**

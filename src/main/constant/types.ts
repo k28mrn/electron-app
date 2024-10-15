@@ -1,4 +1,4 @@
-import { AppStoreProps } from '@common/types';
+import { AppStoreProps } from '@common/interfaces';
 /**
  * アプリケーション設定
  */
