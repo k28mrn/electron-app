@@ -70,6 +70,7 @@ export class OscGui extends GuiBase {
 	 */
 	#onReceiveMessage = (_: Electron.IpcRendererEvent, message: OscMessageProps) => {
 		console.log('OSC Receive:', message);
-		this.emit(OscGui.OscMessage, message);
+		// this.emit(OscGui.OscMessage, message);
+		window.onOscReceived(message);
 	};
 }
