@@ -6,6 +6,7 @@ import { icpHandler } from './handler/icp-handler';
 import { SerialHandler } from './handler/serial-handler';
 import { ArtnetHandler } from './handler/artnet-handler';
 import { OscHandler } from './handler/osc-handler';
+import { shortcut } from './handler/shortcut';
 
 // NOTE:
 // 開発時ワーニング回避設定 (参考: https://qiita.com/kuraiL22/items/80e8e77d62cbe39d0b34)
@@ -36,7 +37,7 @@ function createWindow(): void {
 	} else {
 		mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
 	}
-
+	shortcut({ window: mainWindow });
 	icpHandler({ window: mainWindow });
 	new SerialHandler({ window: mainWindow });
 	new ArtnetHandler({ window: mainWindow });

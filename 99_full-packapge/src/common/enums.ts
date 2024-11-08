@@ -55,3 +55,8 @@ export const OscHandleTypes = {
 	receive: 'osc:receive',
 } as const;
 export type OscHandleTypes = typeof OscHandleTypes[keyof typeof OscHandleTypes];
+
+export const Shortcuts = {
+	showGui: 'shortcut:show_gui',
+} as const;
+export type Shortcuts = typeof Shortcuts[keyof typeof Shortcuts];

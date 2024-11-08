@@ -2,7 +2,7 @@ import EventEmitter from "eventemitter3";
 import { Pane } from 'tweakpane';
 import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
 import { AppStoreProps } from "@common/interfaces";
-import { AppHandleTypes } from "@common/enums";
+import { AppHandleTypes, Shortcuts } from "@common/enums";
 import { ElectronGui } from "./settings/electron-gui";
 import { SerialGui } from "./settings/serial-gui";
 import { DmxGui } from "./settings/dmx-gui";
@@ -40,6 +40,7 @@ class ApplicationGui extends EventEmitter {
 		this.#createBaseConfig();
 		this.#createElectronConfig();
 		this.#createSerialConfig();
+		this.#addListeners();
 	}
 
 	/**
@@ -85,6 +86,12 @@ class ApplicationGui extends EventEmitter {
 		this.osc = new OscGui(this.addFolder('Osc Config'), useOsc, osc);
 		this.serial = new SerialGui(this.addFolder('Serial Config'), useSerialPort, serialPort);
 	};
+
+	#addListeners = () => {
+		window.electron.ipcRenderer.on(Shortcuts.showGui,() =>{
+			this.#pane.hidden = !this.#pane.hidden
+		})
+	}
 
 	/**
 	 * GUIフォルダ追加
