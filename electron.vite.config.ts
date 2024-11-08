@@ -9,9 +9,23 @@ export default defineConfig({
 				'@common': path.resolve(__dirname, 'src/common'),
 			},
 		},
+		css: {
+			preprocessorOptions: {
+				scss: {
+					api: 'modern-compiler'
+				}
+			}
+		}
 	},
 	preload: {
-		plugins: [externalizeDepsPlugin()]
+		plugins: [externalizeDepsPlugin()],
+		css: {
+			preprocessorOptions: {
+				scss: {
+					api: 'modern-compiler'
+				}
+			}
+		}
 	},
 	renderer: {
 		resolve: {
@@ -19,5 +33,12 @@ export default defineConfig({
 				'@common': path.resolve(__dirname, 'src/common'),
 			},
 		},
+		css: {
+			preprocessorOptions: {
+				scss: {
+					api: 'modern-compiler'
+				}
+			}
+		}
 	},
 });

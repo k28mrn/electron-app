@@ -1,7 +1,7 @@
-@import './foundation/reset';
-@import './foundation/variables';
-@import './foundation/functions';
-@import './foundation/base';
+@use './foundation/reset';
+@use './foundation/variables';
+@use './foundation/functions';
+@use './foundation/base';
 
 .app_gui_application {
 	--bld-vw: 80px;

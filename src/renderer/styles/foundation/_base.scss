@@ -1,3 +1,5 @@
+@use './functions' as *;
+
 html {
 	font-size: 62.5%;
 	// overflow-y: scroll;
@@ -18,7 +20,7 @@ body {
 	font-style: normal;
 	letter-spacing: 0.1em;
 	font-feature-settings: 'palt' 1;
-	color: $Black;
+	color: #333;
 	width: 100%;
 	min-height: 100svh;
 	-webkit-text-size-adjust: 100%;
