@@ -2,15 +2,3 @@
 @use './foundation/variables';
 @use './foundation/functions';
 @use './foundation/base';
-
-.app_gui_application {
-	--bld-vw: 80px;
-}
-
-.p5Canvas {
-	position: fixed;
-	left: 0;
-	top: 0;
-	width: 100%;
-	height: 100%;
-}

@@ -1,5 +1,4 @@
 import p5 from "p5";
-import { App } from "./gui/app-gui";
 
 export const sketch = (p: p5): void => {
 	/**
@@ -14,15 +13,11 @@ export const sketch = (p: p5): void => {
 	 * Draw
 	 */
 	p.draw = (): void => {
-		App.fpsBegin(); // FPS計測開始
-
 		let fillColor = getRandomPastelColor(p); // ランダムな色を取得
 		p.fill(fillColor);
 		p.noStroke();
 		const size = p.random(20, 100);
 		p.circle(p.mouseX, p.mouseY, size);
-
-		App.fpsEnd(); // FPS計測終了
 	};
 
 	/**

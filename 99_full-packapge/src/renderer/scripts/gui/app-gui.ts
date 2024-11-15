@@ -19,6 +19,7 @@ class ApplicationGui extends EventEmitter {
 	dmx: DmxGui;
 	osc: OscGui;
 	serial: SerialGui;
+	#rafId: number = -1;
 
 	constructor() {
 		super();
@@ -88,10 +89,10 @@ class ApplicationGui extends EventEmitter {
 	};
 
 	#addListeners = () => {
-		window.electron.ipcRenderer.on(Shortcuts.showGui,() =>{
-			this.#pane.hidden = !this.#pane.hidden
-		})
-	}
+		window.electron.ipcRenderer.on(Shortcuts.showGui, () => {
+			this.#pane.hidden = !this.#pane.hidden;
+		});
+	};
 
 	/**
 	 * GUIフォルダ追加
@@ -149,6 +150,30 @@ class ApplicationGui extends EventEmitter {
 	 */
 	fpsEnd = () => {
 		this.#fpsGraph?.end();
+	};
+
+	/**
+	 * リクエストアニメーションフレーム開始
+	 */
+	#startRaf = () => {
+		this.#update();
+	};
+
+	/**
+	 * リクエストアニメーションフレーム停止
+	 */
+	#stopRaf = () => {
+		window.cancelAnimationFrame(this.#rafId);
+	};
+
+	/**
+	 * 更新処理
+	 */
+	#update = () => {
+		this.fpsBegin();
+		this.#pane.refresh();
+		this.fpsEnd();
+		this.#rafId = window.requestAnimationFrame(this.#update);
 	};
 }
 

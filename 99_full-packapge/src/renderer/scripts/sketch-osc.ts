@@ -27,10 +27,6 @@ export const sketch = (p: p5): void => {
 	 * Draw
 	 */
 	p.draw = (): void => {
-		App.fpsBegin(); // FPS計測開始
-
-
-		App.fpsEnd(); // FPS計測終了
 	};
 
 	/**

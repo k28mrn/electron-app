@@ -23,7 +23,6 @@ export const sketch = (p: p5): void => {
 	 * Draw
 	 */
 	p.draw = (): void => {
-
 	};
 
 	/**
