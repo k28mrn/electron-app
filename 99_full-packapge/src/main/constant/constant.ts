@@ -1,6 +1,5 @@
 import { MidiProps, OscProps, SerialPortProps } from '@common/interfaces';
 import icon from '../../../resources/icon.png?asset';
-import { join } from 'path';
 
 /**
  * ブラウザデフォルト設定
@@ -10,13 +9,8 @@ export const DEFAULT_BROWSER_OPTIONS: Electron.BrowserWindowConstructorOptions =
 	width: 1280, height: 1500,
 	fullscreen: false, frame: true, kiosk: false,
 	alwaysOnTop: false, autoHideMenuBar: false,
-
 	// default vite electron options
 	...(process.platform === 'linux' ? { icon } : {}),
-	webPreferences: {
-		preload: join(__dirname, '../preload/index.js'),
-		sandbox: false
-	}
 };
 
 /**

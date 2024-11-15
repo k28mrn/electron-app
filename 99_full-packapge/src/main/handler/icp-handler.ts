@@ -26,7 +26,7 @@ export const icpHandler = ({ window, }: { window: BrowserWindow, }): void => {
 	 */
 	ipcMain.handle(AppHandleTypes.restart, (_, data: AppStoreProps) => {
 		// 保存
-		AppConfig.setConfig(data);
+		AppConfig.setStoreData(data);
 
 		// 再起動
 		window.close();
@@ -38,6 +38,6 @@ export const icpHandler = ({ window, }: { window: BrowserWindow, }): void => {
 	 * アプリケーション設定保存
 	 */
 	ipcMain.handle(AppHandleTypes.save, (_, data: AppStoreProps) => {
-		AppConfig.setConfig(data);
+		AppConfig.setStoreData(data);
 	});
 };

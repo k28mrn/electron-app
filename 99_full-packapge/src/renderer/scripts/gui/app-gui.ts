@@ -39,7 +39,7 @@ class ApplicationGui extends EventEmitter {
 
 		this.#createBaseConfig();
 		this.#createElectronConfig();
-		this.#createSerialConfig();
+		this.#createPluginConfig();
 		this.#addListeners();
 	}
 
@@ -76,9 +76,9 @@ class ApplicationGui extends EventEmitter {
 	};
 
 	/**
-	 * シリアル設定
+	 * 各種プラグイン設定
 	 */
-	#createSerialConfig = () => {
+	#createPluginConfig = () => {
 		const { serialPort, dmx, osc } = this.#config;
 		const { useSerialPort, useDmx, useOsc } = this.#config.usePlugin;
 

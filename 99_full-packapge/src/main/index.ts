@@ -18,6 +18,7 @@ process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
  */
 function createWindow(): void {
 	// Create the browser window.
+	// console.log(`[INFO] Create BrowserWindow.\n${JSON.stringify(AppConfig.browser, null, 1)}`);
 	const mainWindow = new BrowserWindow(AppConfig.browser);
 
 	// NOTE: 保存のたびにアプリがアクティブになるのでコメントアウト

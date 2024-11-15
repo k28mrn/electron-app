@@ -1,4 +1,6 @@
 import Store from 'electron-store';
+import { join } from 'path';
+
 import { MainAppStoreProps } from '../constant/types';
 import { DEFAULT_BROWSER_OPTIONS, DEFAULT_DMX_OPTIONS, DEFAULT_MIDI_OPTIONS, DEFAULT_OSC_OPTIONS, DEFAULT_SERIAL_PORT_OPTIONS } from '../constant/constant';
 import { DmxProps } from '@common/interfaces';
@@ -28,16 +30,22 @@ class ApplicationConfig {
 			},
 			...data,
 		};
+
+		this.#options.browser.webPreferences = {
+			preload: join(__dirname, '../preload/index.js'),
+			sandbox: false
+		};
 	}
 
 	/**
 	 * ストアに情報保存
 	 */
-	setConfig(data: MainAppStoreProps): void {
+	setStoreData(data: MainAppStoreProps): void {
 		this.#options = { ...this.#options, ...data };
+		delete this.#options.browser?.webPreferences;
 		const store = new Store();
 		store.set(STORE_KEY, this.#options);
-		console.log(`save json path = ${store.path}`);
+		console.log(`[SAVE] Config.\nPath = ${store.path}\ndata = ${JSON.stringify(data, null, 1)}`,);
 	}
 
 	/**
@@ -46,15 +54,6 @@ class ApplicationConfig {
 	#getStoreData(): MainAppStoreProps {
 		const store = new Store();
 		return store.get(STORE_KEY) as MainAppStoreProps ?? {};
-	}
-
-	/**
-	 * Storeに情報保存
-	 */
-	#saveStoreData(data: MainAppStoreProps): void {
-		const store = new Store();
-		store.set(STORE_KEY, this.#options);
-		console.log(`[SAVE] Application Data Path = ${store.path} / data = `, data);
 	}
 
 	/**
