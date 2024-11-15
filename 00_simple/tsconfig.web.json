@@ -1,0 +1,20 @@
+{
+	"extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
+	"include": [
+		"src/renderer/**/*.ts",
+		"src/preload/*.d.ts",
+		"src/common/**/*"
+	],
+	"compilerOptions": {
+		"composite": true,
+		"strict": false,
+		"noUnusedLocals": false,
+		"noUnusedParameters": false,
+		"baseUrl": ".", // モジュールパスのルート
+		"paths": { // モジュールパスのエイリアス
+			"@common/*": [
+				"src/common/*",
+			]
+		},
+	}
+}
