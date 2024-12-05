@@ -1,6 +1,6 @@
 import { BindingApi, FolderApi, } from "@tweakpane/core";
 import { GuiBase } from "./gui-base";
-import { MidiProps } from "@common/interfaces";
+import { MidiEventProps, MidiProps } from "@common/interfaces";
 /**
  * シリアル制御用GUIクラス
  */
@@ -25,9 +25,8 @@ export class MidiGui extends GuiBase {
 	 * 設定情報
 	 */
 	get config(): MidiProps {
-		return {
-			deviceName: this.deviceName,
-		};
+		const deviceName = this.folder.hidden ? '' : this.deviceName;
+		return { deviceName };
 	}
 
 	/**
@@ -108,14 +107,17 @@ export class MidiGui extends GuiBase {
 		this.debug += `note: ${note}\n`; //ノート番号（キー）
 		this.debug += `velocity: ${velocity}\n`; //鍵盤を押す強さ (フェーダー・ノブの場合は操作値 / ボタンの場合は 0 or 127)
 
-		this.emit(MidiGui.MidiMessage, {
-			message: message,
-			cmd: cmd,
-			channel: channel,
-			type: type,
-			note: note,
-			velocity: velocity,
-		});
+		// イベント発火
+		window.dispatchEvent(new CustomEvent<MidiEventProps>(MidiGui.MidiMessage, {
+			detail: {
+				message: message,
+				cmd: cmd,
+				channel: channel,
+				type: type,
+				note: note,
+				velocity: velocity,
+			}
+		}));
 	};
 }
 

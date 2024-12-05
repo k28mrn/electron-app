@@ -7,7 +7,7 @@ import { OscHandleTypes } from "@common/enums";
  * シリアル制御用GUIクラス
  */
 export class OscGui extends GuiBase {
-	static OscMessage = 'OscMessage';
+	static OscReceived = 'OscReceived';
 	config: OscProps = {
 		selfPort: `9000`,
 		sendHost: `127.0.0.1`,
@@ -41,6 +41,9 @@ export class OscGui extends GuiBase {
 		window.electron.ipcRenderer.on(OscHandleTypes.open, this.#onOpen);
 		window.electron.ipcRenderer.on(OscHandleTypes.close, this.#onClose);
 		window.electron.ipcRenderer.on(OscHandleTypes.receive, this.#onReceiveMessage);
+
+		// OSC送信用イベント登録
+		window.sendOsc = this.#sendOsc;
 	};
 
 	open = () => {
@@ -59,6 +62,12 @@ export class OscGui extends GuiBase {
 	};
 
 	/**
+	 * OSCメッセージを送信する
+	 */
+	#sendOsc = (address: string, value: number) => {
+		window.electron.ipcRenderer.invoke(OscHandleTypes.send, address, value);
+	};
+	/**
 	 * OSCクローズ
 	 */
 	#onClose = () => {
@@ -69,8 +78,7 @@ export class OscGui extends GuiBase {
 	 * OSCメッセージ取得
 	 */
 	#onReceiveMessage = (_: Electron.IpcRendererEvent, message: OscMessageProps) => {
-		console.log('OSC Receive:', message);
-		// this.emit(OscGui.OscMessage, message);
-		window.onOscReceived(message);
+		// イベント発火
+		window.dispatchEvent(new CustomEvent<OscMessageProps>(OscGui.OscReceived, { detail: message }));
 	};
 }

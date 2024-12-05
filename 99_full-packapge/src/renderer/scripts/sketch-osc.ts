@@ -16,11 +16,11 @@ export const sketch = (p: p5): void => {
 	 * Setup
 	 */
 	p.setup = (): void => {
-		// OSC受信用の関数を登録
-		window.onOscReceived = onOscReceived;
-
 		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.background(255);
+
+		// OSC受信イベント登録
+		window.addEventListener("OscReceived", onGetOscData);
 	};
 
 	/**
@@ -30,17 +30,27 @@ export const sketch = (p: p5): void => {
 	};
 
 	/**
+	 * OSC受信時の処理
+	 */
+	const onGetOscData = (event: CustomEvent<OscMessageProps>) => {
+		// 受信したOSCメッセージをコンソールに表示
+		console.log("OSC Received : ", event.detail);
+	};
+
+	/**
+	 * キーが押されたときの処理
+	 */
+	p.keyPressed = () => {
+		// OSC送信
+		window.sendOsc('/keyboard', p.keyCode);
+	};
+
+	/**
 	 * Window Resized
 	 */
 	p.windowResized = (): void => {
 		p.resizeCanvas(p.windowWidth, p.windowHeight);
 	};
 
-	/**
-	 * OSC受信時の処理
-	 */
-	const onOscReceived = (message: OscMessageProps) => {
-		// 受信したOSCメッセージをコンソールに表示
-		console.log("OSC Received : ", message);
-	};
+
 };
