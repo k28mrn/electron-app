@@ -34,6 +34,7 @@
 		"@tweakpane/plugin-essentials": "^0.2.1",
 		"@types/node": "^18.19.9",
 		"@types/p5": "^1.7.6",
+		"@types/webmidi": "^2.1.0",
 		"electron": "^28.2.0",
 		"electron-builder": "^24.9.1",
 		"electron-vite": "^2.0.0",

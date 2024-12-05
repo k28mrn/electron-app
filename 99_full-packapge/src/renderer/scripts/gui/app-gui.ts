@@ -7,6 +7,7 @@ import { ElectronGui } from "./settings/electron-gui";
 import { SerialGui } from "./settings/serial-gui";
 import { DmxGui } from "./settings/dmx-gui";
 import { OscGui } from "./settings/osc-gui";
+import { MidiGui } from "./settings/midi-gui";
 
 /**
  * アプリケーションGUI
@@ -19,6 +20,7 @@ class ApplicationGui extends EventEmitter {
 	dmx: DmxGui;
 	osc: OscGui;
 	serial: SerialGui;
+	midi: MidiGui;
 	#rafId: number = -1;
 
 	constructor() {
@@ -80,12 +82,13 @@ class ApplicationGui extends EventEmitter {
 	 * 各種プラグイン設定
 	 */
 	#createPluginConfig = () => {
-		const { serialPort, dmx, osc } = this.#config;
-		const { useSerialPort, useDmx, useOsc } = this.#config.usePlugin;
+		const { serialPort, dmx, osc, midi } = this.#config;
+		const { useSerialPort, useDmx, useOsc, useMidi } = this.#config.usePlugin;
 
 		this.dmx = new DmxGui(this.addFolder('Dmx Config'), useDmx, dmx);
 		this.osc = new OscGui(this.addFolder('Osc Config'), useOsc, osc);
 		this.serial = new SerialGui(this.addFolder('Serial Config'), useSerialPort, serialPort);
+		this.midi = new MidiGui(this.addFolder('MIDI Config'), useMidi, midi);
 	};
 
 	#addListeners = () => {
@@ -122,6 +125,7 @@ class ApplicationGui extends EventEmitter {
 		this.dmx.folder.hidden = !this.#config.usePlugin.useDmx;
 		this.osc.folder.hidden = !this.#config.usePlugin.useOsc;
 		this.serial.folder.hidden = !this.#config.usePlugin.useSerialPort;
+		this.midi.folder.hidden = !this.#config.usePlugin.useMidi;
 	};
 
 	/**
@@ -135,6 +139,7 @@ class ApplicationGui extends EventEmitter {
 			dmx: { ...this.#config.dmx, ...this.dmx.config },
 			osc: { ...this.#config.osc, ...this.osc.config },
 			serialPort: { ...this.#config.serialPort, ...this.serial.config },
+			midi: { ...this.#config.midi, ...this.midi.config },
 		};
 	};
 
