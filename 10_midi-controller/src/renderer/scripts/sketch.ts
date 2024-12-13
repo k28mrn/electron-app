@@ -7,9 +7,6 @@ import { MidiEventProps } from "@common/interfaces";
  * MIDIデータを受け取り演出する
  */
 export const sketch = (p: p5): void => {
-	// DMXデータ
-	let data = new Uint8Array(512);
-
 	/**
 	 * Setup
 	 */
@@ -25,7 +22,6 @@ export const sketch = (p: p5): void => {
 	 * Draw
 	 */
 	p.draw = (): void => {
-
 	};
 
 	/**
