@@ -27,6 +27,11 @@ export class OscHandler {
 		this.setHandles();
 	}
 
+	dispose = () => {
+		this.close();
+	};
+
+
 	/**
 	* ハンドラ登録
 	*/
@@ -75,7 +80,7 @@ export class OscHandler {
 	/**
 	 * Close
 	 */
-	close = (_: IpcMainInvokeEvent) => {
+	close = (_?: IpcMainInvokeEvent) => {
 		if (!this.osc) return;
 		console.log(`[APP INFO] Close OSC`);
 		this.osc.close();

@@ -12,6 +12,7 @@ import { shortcut } from './handler/shortcut';
 // 開発時ワーニング回避設定 (参考: https://qiita.com/kuraiL22/items/80e8e77d62cbe39d0b34)
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
+let osc: OscHandler | undefined = undefined;
 /**
  * ウィンドウ作成
  * メインプロセスのエントリーポイント
@@ -42,7 +43,7 @@ function createWindow(): void {
 	icpHandler({ window: mainWindow });
 	new SerialHandler({ window: mainWindow });
 	new ArtnetHandler({ window: mainWindow });
-	new OscHandler({ window: mainWindow });
+	osc = new OscHandler({ window: mainWindow });
 }
 
 /**
@@ -72,6 +73,7 @@ app.whenReady().then(() => {
  * アプリケーションが終了する前に呼び出される
  */
 app.on("will-quit", () => {
+	osc?.dispose();
 });
 
 /**
