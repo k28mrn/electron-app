@@ -27,8 +27,11 @@ export class OscHandler {
 		this.setHandles();
 	}
 
+	/**
+	 * 破棄
+	 */
 	dispose = () => {
-		this.close();
+		this.close(false);
 	};
 
 
@@ -39,7 +42,7 @@ export class OscHandler {
 		// 開始
 		ipcMain.handle(OscHandleTypes.open, this.open);
 		// 終了
-		ipcMain.handle(OscHandleTypes.close, this.close);
+		ipcMain.handle(OscHandleTypes.close, this.onClose);
 		// 送信
 		ipcMain.handle(OscHandleTypes.send, this.send);
 		// 更新
@@ -49,9 +52,9 @@ export class OscHandler {
 	/**
 	 * osc通信開始
 	 */
-	open = (icpEvent: IpcMainInvokeEvent, options: OscProps) => {
+	open = (_: IpcMainInvokeEvent, options: OscProps) => {
 		// 使用してれば一度閉じる
-		this.close(icpEvent);
+		this.close(false);
 
 		// OSCインスタンス作成
 		const { selfPort, sendHost, sendPort } = options;
@@ -80,14 +83,18 @@ export class OscHandler {
 	/**
 	 * Close
 	 */
-	close = (_?: IpcMainInvokeEvent) => {
+	onClose = (_?: IpcMainInvokeEvent,) => {
+		this.close(true);
+	};
+
+	close = (notifyClient: boolean) => {
 		if (!this.osc) return;
 		console.log(`[APP INFO] Close OSC`);
 		this.osc.close();
 		this.osc.off('open', this.openId);
-		this.osc.off('close', this.closeId);
-		this.osc = undefined;
-		this.window.webContents.send(OscHandleTypes.close);
+		if (notifyClient) {
+			this.osc.off('close', this.closeId);
+		}
 	};
 
 	/**
