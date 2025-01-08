@@ -17,19 +17,24 @@ export const sketch = (p: p5): void => {
 	 * Draw
 	 */
 	p.draw = (): void => {
-		const r = 255;
+		const r = 0;
 		const g = 255 * (p.mouseX / p.width);
 		const b = 255 * (p.mouseY / p.height);
 		p.background(r, g, b);
 
 		// DMXデータ編集 & 送信
-		data[2] = r;
-		data[3] = g;
-		data[4] = b;
-		App.dmx.send({ data: data, });
+		// ムービングヘッドの例
+		data[0] = 0;
+		data[1] = 0;
+		data[2] = 255;
+		data[3] = r;
+		data[4] = g;
+		data[5] = b;
+		data[6] = 0;
+		window.sendDmx({ data: data, });
 
 		// 例: 詳細設定
-		// App.dmx.send({
+		// window.sendDmx({
 		// 	universe: 0,
 		// 	data: data,
 		// 	callback: (status: SendStatus, message?: string) => {

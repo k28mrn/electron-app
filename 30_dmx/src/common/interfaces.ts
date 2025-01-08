@@ -57,15 +57,29 @@ export interface SerialPortProps {
  */
 export interface OscProps {
 	selfPort?: string;
-	sendHost?: string;
-	sendPort?: string;
 }
 
-export interface OscMessageProps {
-	offset: number;
+/**
+ * 送信OSCデータ
+ */
+export interface SendOscProps {
+	host: string;
+	port: number;
 	address: string;
-	args: OscMessageTypes;
-	type: string;
+	values: OscMessageTypes[];
+}
+/**
+ * 受信OSCデータ
+ */
+export interface ReceiveOscProps {
+	address: string;
+	values: OscMessageTypes[];
+	info: {
+		address: string;
+		port: number;
+		size: number;
+		family: string;
+	};
 }
 
 export type OscMessageTypes = object | Array<any> | string | number | boolean;

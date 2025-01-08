@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { sketch } from "./sketch-dmx";
+import { sketch } from "./sketch";
 import { App } from "./gui/app-gui";
 
 const main = async () => {

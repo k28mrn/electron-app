@@ -23,6 +23,13 @@ export class ArtnetHandler {
 	}
 
 	/**
+	 * 破棄
+	 */
+	dispose() {
+		this.#disconnect();
+	}
+
+	/**
 	 * ハンドラ登録
 	 */
 	setHandles() {
@@ -31,17 +38,19 @@ export class ArtnetHandler {
 		// 送信
 		ipcMain.handle(DmxHandleTypes.send, this.send);
 		// 閉じる
-		ipcMain.handle(DmxHandleTypes.close, this.close);
+		ipcMain.handle(DmxHandleTypes.disconnect, this.#disconnect);
 	}
 
 	/**
 	 * オプション設定
 	 */
 	connect = (_, options: DmxProps) => {
+		console.log('[INFO] ArtNet connect', options);
+
 		if (this.artnetDmx) {
 			this.artnetDmx.changeOptions(options);
 		} else {
-			this.artnetDmx = new ArtnetDMX({ host: options.host });
+			this.artnetDmx = new ArtnetDMX(options);
 		}
 	};
 
@@ -55,8 +64,8 @@ export class ArtnetHandler {
 	/**
 	 * 閉じる
 	 */
-	close = () => {
+	#disconnect = () => {
+		console.log('[INFO] ArtNet disconnect');
 		this.artnetDmx?.close();
-		this.artnetDmx = null;
 	};
 }
