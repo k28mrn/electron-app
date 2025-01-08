@@ -1,6 +1,6 @@
 import { FolderApi } from "tweakpane";
 import { GuiBase } from "./gui-base";
-import { OscMessageProps, OscProps } from "@common/interfaces";
+import { ReceiveOscProps, OscProps, SendOscProps } from "@common/interfaces";
 import { OscHandleTypes } from "@common/enums";
 
 /**
@@ -8,11 +8,7 @@ import { OscHandleTypes } from "@common/enums";
  */
 export class OscGui extends GuiBase {
 	static OscReceived = 'OscReceived';
-	config: OscProps = {
-		selfPort: `9000`,
-		sendHost: `127.0.0.1`,
-		sendPort: `3333`,
-	};
+	config: OscProps = { selfPort: `9000` };
 
 	constructor(folder: FolderApi, useConfig: boolean, config: OscProps) {
 		super(folder);
@@ -26,9 +22,6 @@ export class OscGui extends GuiBase {
 	 */
 	setup = async () => {
 		this.folder.addBinding(this.config, 'selfPort', { label: 'Self Port', color: false }).on('change', this.onChangeConfig);
-		this.folder.addBinding(this.config, 'sendHost', { label: 'Send Host' }).on('change', this.onChangeConfig);
-		this.folder.addBinding(this.config, 'sendPort', { label: 'Send Port', color: false }).on('change', this.onChangeConfig);
-
 		this.folder.addButton({ title: 'Open', label: '' }).on('click', this.open);
 		this.folder.addButton({ title: 'Close', label: '' }).on('click', this.close);
 
@@ -64,8 +57,8 @@ export class OscGui extends GuiBase {
 	/**
 	 * OSCメッセージを送信する
 	 */
-	#sendOsc = (address: string, value: number) => {
-		window.electron.ipcRenderer.invoke(OscHandleTypes.send, address, value);
+	#sendOsc = (data: SendOscProps) => {
+		window.electron.ipcRenderer.invoke(OscHandleTypes.send, data);
 	};
 	/**
 	 * OSCクローズ
@@ -77,8 +70,8 @@ export class OscGui extends GuiBase {
 	/**
 	 * OSCメッセージ取得
 	 */
-	#onReceiveMessage = (_: Electron.IpcRendererEvent, message: OscMessageProps) => {
+	#onReceiveMessage = (_: Electron.IpcRendererEvent, message: ReceiveOscProps) => {
 		// イベント発火
-		window.dispatchEvent(new CustomEvent<OscMessageProps>(OscGui.OscReceived, { detail: message }));
+		window.dispatchEvent(new CustomEvent<ReceiveOscProps>(OscGui.OscReceived, { detail: message }));
 	};
 }

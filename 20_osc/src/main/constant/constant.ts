@@ -25,7 +25,6 @@ export const DEFAULT_SERIAL_PORT_OPTIONS: SerialPortProps = {
  */
 export const DEFAULT_OSC_OPTIONS: OscProps = {
 	selfPort: '9000',
-	sendHost: '127.0.0.1', sendPort: '3333',
 };
 
 /**
