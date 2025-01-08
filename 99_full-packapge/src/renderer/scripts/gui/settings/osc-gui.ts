@@ -1,6 +1,6 @@
 import { FolderApi } from "tweakpane";
 import { GuiBase } from "./gui-base";
-import { OscMessageProps, OscProps } from "@common/interfaces";
+import { ReceiveOscProps, OscProps, SendOscProps } from "@common/interfaces";
 import { OscHandleTypes } from "@common/enums";
 
 /**
@@ -64,8 +64,8 @@ export class OscGui extends GuiBase {
 	/**
 	 * OSCメッセージを送信する
 	 */
-	#sendOsc = (address: string, value: number) => {
-		window.electron.ipcRenderer.invoke(OscHandleTypes.send, address, value);
+	#sendOsc = (data: SendOscProps) => {
+		window.electron.ipcRenderer.invoke(OscHandleTypes.send, data);
 	};
 	/**
 	 * OSCクローズ
@@ -77,8 +77,8 @@ export class OscGui extends GuiBase {
 	/**
 	 * OSCメッセージ取得
 	 */
-	#onReceiveMessage = (_: Electron.IpcRendererEvent, message: OscMessageProps) => {
+	#onReceiveMessage = (_: Electron.IpcRendererEvent, message: ReceiveOscProps) => {
 		// イベント発火
-		window.dispatchEvent(new CustomEvent<OscMessageProps>(OscGui.OscReceived, { detail: message }));
+		window.dispatchEvent(new CustomEvent<ReceiveOscProps>(OscGui.OscReceived, { detail: message }));
 	};
 }

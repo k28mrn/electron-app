@@ -1,6 +1,6 @@
 import p5 from "p5";
 import { App } from "./gui/app-gui";
-import { OscMessageProps } from "@common/interfaces";
+import { ReceiveOscProps } from "@common/interfaces";
 
 /**
  * OSC受信用スケッチ
@@ -32,7 +32,7 @@ export const sketch = (p: p5): void => {
 	/**
 	 * OSC受信時の処理
 	 */
-	const onGetOscData = (event: CustomEvent<OscMessageProps>) => {
+	const onGetOscData = (event: CustomEvent<ReceiveOscProps>) => {
 		// 受信したOSCメッセージをコンソールに表示
 		console.log("OSC Received : ", event.detail);
 	};
@@ -41,8 +41,14 @@ export const sketch = (p: p5): void => {
 	 * キーが押されたときの処理
 	 */
 	p.keyPressed = () => {
+
 		// OSC送信
-		window.sendOsc('/keyboard', p.keyCode);
+		window.sendOsc({
+			host: "192.168.0.21",
+			port: 3333,
+			address: "/1/faderC",
+			values: [p.random(1)],
+		});
 	};
 
 	/**
