@@ -8,11 +8,7 @@ import { OscHandleTypes } from "@common/enums";
  */
 export class OscGui extends GuiBase {
 	static OscReceived = 'OscReceived';
-	config: OscProps = {
-		selfPort: `9000`,
-		sendHost: `127.0.0.1`,
-		sendPort: `3333`,
-	};
+	config: OscProps = { selfPort: `9000` };
 
 	constructor(folder: FolderApi, useConfig: boolean, config: OscProps) {
 		super(folder);
@@ -26,9 +22,6 @@ export class OscGui extends GuiBase {
 	 */
 	setup = async () => {
 		this.folder.addBinding(this.config, 'selfPort', { label: 'Self Port', color: false }).on('change', this.onChangeConfig);
-		this.folder.addBinding(this.config, 'sendHost', { label: 'Send Host' }).on('change', this.onChangeConfig);
-		this.folder.addBinding(this.config, 'sendPort', { label: 'Send Port', color: false }).on('change', this.onChangeConfig);
-
 		this.folder.addButton({ title: 'Open', label: '' }).on('click', this.open);
 		this.folder.addButton({ title: 'Close', label: '' }).on('click', this.close);
 

@@ -57,8 +57,6 @@ export interface SerialPortProps {
  */
 export interface OscProps {
 	selfPort?: string;
-	sendHost?: string;
-	sendPort?: string;
 }
 
 /**
