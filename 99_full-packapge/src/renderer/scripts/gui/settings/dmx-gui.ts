@@ -20,6 +20,7 @@ export class DmxGui extends GuiBase {
 		super(folder, useConfig);
 		this.config = { ...this.defaultConfig, ...data };
 		this.setup();
+		window.sendDmx = this.#send;
 	}
 
 	/**
@@ -30,7 +31,7 @@ export class DmxGui extends GuiBase {
 		this.folder.addBinding(this.config, 'port', { label: 'Port', step: 1 }).on('change', this.onChangeConfig);
 		// 接続/切断ボタン
 		this.folder.addButton({ title: 'Connect', label: '' }).on('click', this.connect);
-		this.folder.addButton({ title: 'Close', label: '' }).on('click', this.close);
+		this.folder.addButton({ title: 'Disconnect', label: '' }).on('click', this.disconnect);
 
 		// NOTE:保存されてる情報がある場合は接続を試みる
 		if (!this.folder.hidden && this.config.host !== '') {
@@ -48,11 +49,11 @@ export class DmxGui extends GuiBase {
 	/**
 	 * electronへClose通知
 	 */
-	close = () => {
-		window.electron.ipcRenderer.invoke(DmxHandleTypes.close);
+	disconnect = () => {
+		window.electron.ipcRenderer.invoke(DmxHandleTypes.disconnect);
 	};
 
-	send = (data: SendProps) => {
+	#send = (data: SendProps) => {
 		window.electron.ipcRenderer.invoke(DmxHandleTypes.send, data);
 	};
 

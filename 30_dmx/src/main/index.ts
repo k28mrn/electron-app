@@ -3,16 +3,13 @@ import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import { AppConfig } from './config/application';
 import { icpHandler } from './handler/icp-handler';
-import { SerialHandler } from './handler/serial-handler';
 import { ArtnetHandler } from './handler/artnet-handler';
-import { OscHandler } from './handler/osc-handler';
 import { shortcut } from './handler/shortcut';
 
 // NOTE:
 // 開発時ワーニング回避設定 (参考: https://qiita.com/kuraiL22/items/80e8e77d62cbe39d0b34)
 process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = '1';
 
-let osc: OscHandler | undefined = undefined;
 /**
  * ウィンドウ作成
  * メインプロセスのエントリーポイント
@@ -41,9 +38,7 @@ function createWindow(): void {
 	}
 	shortcut({ window: mainWindow });
 	icpHandler({ window: mainWindow });
-	new SerialHandler({ window: mainWindow });
 	new ArtnetHandler({ window: mainWindow });
-	osc = new OscHandler({ window: mainWindow });
 }
 
 /**
@@ -73,7 +68,6 @@ app.whenReady().then(() => {
  * アプリケーションが終了する前に呼び出される
  */
 app.on("will-quit", () => {
-	osc?.dispose();
 });
 
 /**

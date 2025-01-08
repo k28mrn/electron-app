@@ -16,7 +16,7 @@ export type AppHandleTypes = typeof AppHandleTypes[keyof typeof AppHandleTypes];
 export const DmxHandleTypes = {
 	connect: 'dmx:connect',
 	send: 'dmx:send',
-	close: 'dmx:close',
+	disconnect: 'dmx:disconnect',
 } as const;
 export type DmxHandleTypes = typeof DmxHandleTypes[keyof typeof DmxHandleTypes];
 

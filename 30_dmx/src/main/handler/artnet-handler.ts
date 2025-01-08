@@ -41,7 +41,7 @@ export class ArtnetHandler {
 		if (this.artnetDmx) {
 			this.artnetDmx.changeOptions(options);
 		} else {
-			this.artnetDmx = new ArtnetDMX(options);
+			this.artnetDmx = new ArtnetDMX({ host: options.host });
 		}
 	};
 
@@ -57,5 +57,6 @@ export class ArtnetHandler {
 	 */
 	close = () => {
 		this.artnetDmx?.close();
+		this.artnetDmx = null;
 	};
 }
