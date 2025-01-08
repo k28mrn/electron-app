@@ -1,5 +1,5 @@
 import { BrowserWindow, IpcMainInvokeEvent, ipcMain } from 'electron';
-import OSC from 'osc-js';
+import osc from 'osc';
 import { getLocalAddress } from '../utils/get-local-address';
 import { OscHandleTypes } from '@common/enums';
 import { OscProps } from '@common/interfaces';
@@ -10,9 +10,8 @@ import { OscProps } from '@common/interfaces';
 export class OscHandler {
 	window: BrowserWindow;
 	myIp: string = '';
-	openId: number = -1;
-	closeId: number = -1;
-	osc: OSC | undefined = undefined;
+	isOpened: boolean = false;
+	udpPort: osc.UDPPort;
 
 	constructor({ window, }: { window: BrowserWindow, }) {
 		this.window = window;
@@ -31,22 +30,30 @@ export class OscHandler {
 	 * 破棄
 	 */
 	dispose = () => {
-		this.close(false);
+		this.removeHandles();
+		this.close();
 	};
 
 
 	/**
-	* ハンドラ登録
-	*/
+	 * ハンドラ登録
+	 */
 	setHandles() {
 		// 開始
 		ipcMain.handle(OscHandleTypes.open, this.open);
 		// 終了
-		ipcMain.handle(OscHandleTypes.close, this.onClose);
+		ipcMain.handle(OscHandleTypes.close, this.close);
 		// 送信
 		ipcMain.handle(OscHandleTypes.send, this.send);
-		// 更新
-		ipcMain.handle(OscHandleTypes.update, this.update);
+	}
+
+	/**
+	 * ハンドラ解除
+	 */
+	removeHandles() {
+		ipcMain.removeHandler(OscHandleTypes.open);
+		ipcMain.removeHandler(OscHandleTypes.close);
+		ipcMain.removeHandler(OscHandleTypes.send);
 	}
 
 	/**
@@ -54,62 +61,80 @@ export class OscHandler {
 	 */
 	open = (_: IpcMainInvokeEvent, options: OscProps) => {
 		// 使用してれば一度閉じる
-		this.close(false);
+		this.close();
 
 		// OSCインスタンス作成
-		const { selfPort, sendHost, sendPort } = options;
-		const oscConfig = {
-			type: 'udp4',
-			open: { host: this.myIp, port: selfPort, },
-			send: { host: sendHost, port: sendPort, },
-		};
-		this.osc = new OSC({
-			plugin: new OSC.DatagramPlugin(oscConfig)
+		const { selfPort } = options;
+		this.udpPort = new osc.UDPPort({
+			localPort: selfPort,
+			localAddress: this.myIp,
+			metadata: true,
 		});
 
-		// イベント登録
-		this.openId = this.osc.on('open', () => {
-			console.info(`[APP INFO] Opened OSC :`, oscConfig);
-			this.window.webContents.send(OscHandleTypes.open, oscConfig);
-		});
+		// NOTE: broadcastしたい場合
+		// this.udpPort = new osc.UDPPort({
+		// 	localPort: selfPort,
+		// 	localAddress: "0.0.0.0",
+		// 	metadata: true,
+		// 	broadcast: true,
+		// });
 
-		this.osc.on('*', (message) => {
-			console.log(`[OSC] receive:`, message);
-			this.window.webContents.send(OscHandleTypes.receive, message);
-		});
-		this.osc.open();
+		this.udpPort.on('ready', this.#onReady);
+		this.udpPort.on("message", this.#onReceive);
+		this.udpPort.open();
 	};
 
 	/**
-	 * Close
+	 * クローズ
 	 */
-	onClose = (_?: IpcMainInvokeEvent,) => {
-		this.close(true);
+	close = () => {
+		if (!this.isOpened) return;
+		this.isOpened = false;
+		this.udpPort.off('ready', this.#onReady);
+		this.udpPort.off('message', this.#onReceive);
+		this.udpPort.close();
+		console.log('[INFO] Close OSC');
 	};
 
-	close = (notifyClient: boolean) => {
-		if (!this.osc) return;
-		console.log(`[APP INFO] Close OSC`);
-		this.osc.close();
-		this.osc.off('open', this.openId);
-		if (notifyClient) {
-			this.osc.off('close', this.closeId);
-		}
+	/**
+	 * 準備完了
+	 */
+	#onReady = () => {
+		this.isOpened = true;
+		console.log('[INFO] Open OSC', this.udpPort.options);
+		// NOTE: example
+		// this.udpPort.send({
+		// 	address: "/s_new",
+		// 	args: [
+		// 		{
+		// 			type: "s",
+		// 			value: "default"
+		// 		},
+		// 		{
+		// 			type: "i",
+		// 			value: 100
+		// 		}
+		// 	]
+		// }, "192.168.0.255", 9000);
+	};
+
+	/**
+	 * 受信
+	 */
+	#onReceive = (oscMsg, timeTag, info) => {
+		if (!this.isOpened) return;
+		// console.log("Remote info is: ", info);
+		console.log("[INFO] Receved osc data = ", oscMsg);
+		const address = oscMsg.address;
+		const values = oscMsg.args.map((arg) => arg.value);
+		this.window.webContents.send(OscHandleTypes.receive, address, values, info);
 	};
 
 	/**
 	 * 送信
 	 */
 	send = (_: IpcMainInvokeEvent, address: string, args: any) => {
-		if (this.osc === undefined || this.osc.status() !== OSC.STATUS.IS_OPEN) return;
-		this.osc.send(new OSC.Message(address, args));
-	};
+		if (!this.isOpened) return;
 
-	/**
-	 * 情報更新
-	 */
-	update = (icpEvent: IpcMainInvokeEvent, options: OscProps) => {
-		this.close(icpEvent);
-		this.open(icpEvent, options);
 	};
 }
