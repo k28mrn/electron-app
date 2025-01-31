@@ -53,6 +53,9 @@ export class SerialGui extends GuiBase {
 		if (!this.folder.hidden && this.config.path !== '') {
 			this.connect();
 		}
+
+		// Serial書込み用関数
+		window.writeSerial = this.write;
 	}
 
 	/**
@@ -98,7 +101,8 @@ export class SerialGui extends GuiBase {
 	 * electronからのRead通知
 	 */
 	onRead = (_, data: string) => {
-		this.emit('read', data);
+		// this.emit('read', data);
+		window.dispatchEvent(new CustomEvent<string>(SerialGui.ReadSerial, { detail: data }));
 	};
 
 

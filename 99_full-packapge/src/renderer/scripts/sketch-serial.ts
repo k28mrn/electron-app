@@ -5,8 +5,8 @@ export const sketch = (p: p5): void => {
 	/**
 	 * シリアルデータ読み込み
 	 */
-	const onReadSerialData = (data: string): void => {
-		console.log("onReadSerialData", data);
+	const onReadSerialData = (event: CustomEvent<string>): void => {
+		console.log("onReadSerialData", event.detail);
 	};
 
 	/**
@@ -14,7 +14,7 @@ export const sketch = (p: p5): void => {
 	 */
 	p.setup = (): void => {
 		// シリアルデータ読み込みイベント登録
-		App.serial.on('read', onReadSerialData);
+		window.addEventListener("ReadSerial", onReadSerialData);
 		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.background(255);
 	};
@@ -30,7 +30,7 @@ export const sketch = (p: p5): void => {
 	 */
 	p.keyPressed = () => {
 		console.log(`keyPressed = ${p.key}`);
-		App.serial.write(p.key); // Serial書込み
+		window.writeSerial(p.key); // Serial書込み
 	};
 
 	/**
