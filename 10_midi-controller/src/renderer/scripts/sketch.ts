@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { App } from "./gui/app-gui";
+import { Gui } from "./gui/app-gui";
 import { MidiEventProps } from "@common/interfaces";
 
 /**

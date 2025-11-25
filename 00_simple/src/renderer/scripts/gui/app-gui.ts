@@ -104,4 +104,4 @@ class ApplicationGui extends EventEmitter {
 	};
 }
 
-export const App = new ApplicationGui();
+export const Gui = new ApplicationGui();
