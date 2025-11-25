@@ -48,6 +48,9 @@ export class ElectronGui extends GuiBase {
 
 		// プラグイン設定
 		pluginTap.element.classList.add('app_gui_application');
-		pluginTap.addBinding(this.usePlugin, 'guiDisplay', { label: '起動時GUI表示' });
+		pluginTap.addBinding(this.usePlugin, 'useDmx', { label: 'DMX' }).on('change', this.onChangeConfig);
+		pluginTap.addBinding(this.usePlugin, 'useSerialPort', { label: 'Serial通信' }).on('change', this.onChangeConfig);
+		pluginTap.addBinding(this.usePlugin, 'useOsc', { label: 'OSC通信' }).on('change', this.onChangeConfig);
+		pluginTap.addBinding(this.usePlugin, 'useMidi', { label: 'Midiデバイス' }).on('change', this.onChangeConfig);
 	};
 }

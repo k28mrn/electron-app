@@ -21,8 +21,8 @@ class ApplicationConfig {
 			osc: DEFAULT_OSC_OPTIONS,
 			midi: DEFAULT_MIDI_OPTIONS,
 			dmx: DEFAULT_DMX_OPTIONS,
+			guiDisplay: true,
 			usePlugin: {
-				guiDisplay: true,
 				useDmx: false,
 				useSerialPort: false,
 				useOsc: true,

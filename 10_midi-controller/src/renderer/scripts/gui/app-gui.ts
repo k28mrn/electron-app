@@ -35,7 +35,7 @@ class ApplicationGui extends EventEmitter {
 		this.#pane.registerPlugin(EssentialsPlugin);
 		this.#pane.element.parentElement.style.zIndex = '1000';
 		this.#pane.element.parentElement.style.width = '280px';
-		this.#pane.hidden = !this.#config.usePlugin.guiDisplay;
+		this.#pane.hidden = !this.#config.guiDisplay;
 
 		this.#createBaseConfig();
 		this.#createElectronConfig();
@@ -89,7 +89,7 @@ class ApplicationGui extends EventEmitter {
 	#addListeners = () => {
 		window.electron.ipcRenderer.on(Shortcuts.showGui, () => {
 			this.#pane.hidden = !this.#pane.hidden;
-			window.electron.ipcRenderer.invoke(AppHandleTypes.save, { usePlugin: { guiDisplay: !this.#pane.hidden } });
+			window.electron.ipcRenderer.invoke(AppHandleTypes.save, { guiDisplay: !this.#pane.hidden });
 		});
 	};
 

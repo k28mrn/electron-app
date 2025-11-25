@@ -4,5 +4,6 @@ import { AppStoreProps } from '@common/interfaces';
  */
 export interface MainAppStoreProps extends AppStoreProps {
 	browser?: Electron.BrowserWindowConstructorOptions;
+	guiDisplay?: boolean;
 }
 
