@@ -12,6 +12,9 @@ class ApplicationGui extends EventEmitter {
 	#pane: Pane;
 	#fpsGraph: EssentialsPlugin.FpsGraphBladeApi;
 	#rafId: number = -1;
+	#params = {
+		info: "ctrl+1でGUI表示・非表示"
+	}
 
 	constructor() {
 		super();
@@ -47,14 +50,16 @@ class ApplicationGui extends EventEmitter {
 		}) as EssentialsPlugin.FpsGraphBladeApi;
 
 		// IP設定
-		this.#pane.addBinding(this.#config, 'storePath', { label: '設定JSON', disabled: true });
-		this.#pane.addBinding(this.#config, 'version', { label: 'アプリVer.', disabled: true });
-		this.#pane.addBinding(this.#config, 'ip', { label: 'IP', disabled: true });
+		this.#pane.addBinding(this.#config, 'storePath', { label: '設定JSON', readonly: true });
+		this.#pane.addBinding(this.#config, 'version', { label: 'アプリVer.', readonly: true });
+		this.#pane.addBinding(this.#config, 'ip', { label: 'IP', readonly: true });
+		this.#pane.addBinding(this.#params, 'info', { label: 'Info', readonly: true, multiline: true, rows: 2 });
 	};
 
 	#addListeners = () => {
 		window.electron.ipcRenderer.on(Shortcuts.showGui, () => {
 			this.#pane.hidden = !this.#pane.hidden;
+			window.electron.ipcRenderer.invoke(AppHandleTypes.save, { guiDisplay: !this.#pane.hidden });
 		});
 	};
 
