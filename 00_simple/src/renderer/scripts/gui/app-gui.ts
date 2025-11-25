@@ -28,7 +28,7 @@ class ApplicationGui extends EventEmitter {
 		this.#pane.registerPlugin(EssentialsPlugin);
 		this.#pane.element.parentElement.style.zIndex = '1000';
 		this.#pane.element.parentElement.style.width = '280px';
-		this.#pane.hidden = !this.#config.usePlugin.guiDisplay;
+		this.#pane.hidden = !this.#config.guiDisplay;
 
 		this.#createBaseConfig();
 		this.#addListeners();
@@ -46,7 +46,7 @@ class ApplicationGui extends EventEmitter {
 			rows: 2,
 		}) as EssentialsPlugin.FpsGraphBladeApi;
 
-		// // IP設定
+		// IP設定
 		this.#pane.addBinding(this.#config, 'storePath', { label: '設定JSON', disabled: true });
 		this.#pane.addBinding(this.#config, 'version', { label: 'アプリVer.', disabled: true });
 		this.#pane.addBinding(this.#config, 'ip', { label: 'IP', disabled: true });

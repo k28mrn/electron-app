@@ -8,7 +8,6 @@ import { getLocalAddress } from "../utils/get-local-address";
  * ipc通信 イベント登録
  */
 export const icpHandler = ({ window, }: { window: BrowserWindow, }): void => {
-	const { dmx } = AppConfig;
 
 	/**
 	 * アプリケーション設定取得

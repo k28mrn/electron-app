@@ -2,8 +2,7 @@ import Store from 'electron-store';
 import { join } from 'path';
 
 import { MainAppStoreProps } from '../constant/types';
-import { DEFAULT_BROWSER_OPTIONS, DEFAULT_DMX_OPTIONS, DEFAULT_MIDI_OPTIONS, DEFAULT_OSC_OPTIONS, DEFAULT_SERIAL_PORT_OPTIONS } from '../constant/constant';
-import { DmxProps } from '@common/interfaces';
+import { DEFAULT_BROWSER_OPTIONS, } from '../constant/constant';
 
 const STORE_KEY = 'application-settings';
 
@@ -17,17 +16,7 @@ class ApplicationConfig {
 		const data = this.#getStoreData();
 		this.#options = {
 			browser: DEFAULT_BROWSER_OPTIONS,
-			serialPort: DEFAULT_SERIAL_PORT_OPTIONS,
-			osc: DEFAULT_OSC_OPTIONS,
-			midi: DEFAULT_MIDI_OPTIONS,
-			dmx: DEFAULT_DMX_OPTIONS,
-			usePlugin: {
-				guiDisplay: true,
-				useDmx: false,
-				useSerialPort: false,
-				useOsc: false,
-				useMidi: false,
-			},
+			guiDisplay: true,
 			...data,
 		};
 
@@ -61,13 +50,6 @@ class ApplicationConfig {
 	 */
 	get browser(): Electron.BrowserWindowConstructorOptions {
 		return { ...this.options.browser, };
-	}
-
-	/**
-	 *
-	 */
-	get dmx(): DmxProps {
-		return { ...this.options.dmx, };
 	}
 
 	get options(): MainAppStoreProps {
