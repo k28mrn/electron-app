@@ -8,6 +8,7 @@ export interface AppStoreProps {
 	version?: string;
 	storePath?: string;
 	browser?: BrowserProps;
+	guiDisplay?: boolean;
 	serialPort?: SerialPortProps;
 	osc?: OscProps;
 	midi?: MidiProps;
@@ -36,7 +37,6 @@ export interface BrowserProps {
  * Plugin 使用設定
  */
 export interface UsePluginProps {
-	guiDisplay?: boolean;
 	useDmx?: boolean;
 	useSerialPort?: boolean;
 	useOsc?: boolean;
