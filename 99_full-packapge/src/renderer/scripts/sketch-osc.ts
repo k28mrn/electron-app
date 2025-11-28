@@ -1,15 +1,9 @@
 import p5 from "p5";
-import { Gui } from "./gui/app-gui";
 import { ReceiveOscProps } from "@common/interfaces";
+import { Osc } from "./lib/osc";
 
 /**
  * OSC受信用スケッチ
- * 1. GUIのElectron Config > Plugin > OSC通信にチェックを入れる
- * 2. OSC Config設定する。
- * 3. 設定ができたら「設定を保存」を押す
- * 4. 「Open」を押すとOSC通信が開始される
- *
- * 次回以降は、今回の設定を覚えて自動的に接続される
  */
 export const sketch = (p: p5): void => {
 	/**
@@ -19,36 +13,45 @@ export const sketch = (p: p5): void => {
 		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.background(255);
 
+		// OSCオープン
+		Osc.open({ port: 9000 });
+
+		// ブロードキャスト
+		// Osc.openBroadcast({ port: 9000 });
+
 		// OSC受信イベント登録
-		window.addEventListener("OscReceived", onGetOscData);
+		Osc.addReceiveEvent(onGetOscData);
 	};
 
 	/**
 	 * Draw
 	 */
-	p.draw = (): void => {
-	};
+	p.draw = (): void => {};
 
 	/**
 	 * OSC受信時の処理
 	 */
-	const onGetOscData = (event: CustomEvent<ReceiveOscProps>) => {
+	const onGetOscData = (message: ReceiveOscProps): void => {
 		// 受信したOSCメッセージをコンソールに表示
-		console.log("OSC Received : ", event.detail);
+		console.log("OSC Received : ", message);
 	};
 
 	/**
 	 * キーが押されたときの処理
 	 */
 	p.keyPressed = () => {
-
-		// OSC送信
-		window.sendOsc({
-			host: "192.168.0.21",
-			port: 3333,
-			address: "/1/faderC",
-			values: [p.random(1)],
-		});
+		if (p.key === "a") {
+			// OSC送信
+			Osc.send({
+				host: "192.168.0.7",
+				port: 3333,
+				address: "/1/faderC",
+				values: [p.random(1)],
+			});
+		} else if (p.key === "s") {
+			// OSCクローズ
+			Osc.close();
+		}
 	};
 
 	/**
@@ -57,6 +60,4 @@ export const sketch = (p: p5): void => {
 	p.windowResized = (): void => {
 		p.resizeCanvas(p.windowWidth, p.windowHeight);
 	};
-
-
 };

@@ -1,4 +1,3 @@
-
 /**
  * アプリケーション設定
  */
@@ -10,7 +9,6 @@ export interface AppStoreProps {
 	browser?: BrowserProps;
 	guiDisplay?: boolean;
 	serialPort?: SerialPortProps;
-	osc?: OscProps;
 	midi?: MidiProps;
 	dmx?: DmxProps;
 	usePlugin?: UsePluginProps;
@@ -39,10 +37,8 @@ export interface BrowserProps {
 export interface UsePluginProps {
 	useDmx?: boolean;
 	useSerialPort?: boolean;
-	useOsc?: boolean;
 	useMidi?: boolean;
 }
-
 
 /**
  * シリアルポート設定
@@ -56,7 +52,9 @@ export interface SerialPortProps {
  * OSC設定
  */
 export interface OscProps {
-	selfPort?: string;
+	port?: number;
+	localAddress?: string;
+	broadcast?: boolean;
 }
 
 /**
@@ -98,7 +96,6 @@ export interface DmxProps {
 	host?: string;
 	port?: number;
 }
-
 
 /**
  * MIDIメッセージ受信データ

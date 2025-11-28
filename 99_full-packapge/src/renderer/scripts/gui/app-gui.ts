@@ -1,12 +1,11 @@
 import EventEmitter from "eventemitter3";
-import { Pane } from 'tweakpane';
-import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
+import { Pane } from "tweakpane";
+import * as EssentialsPlugin from "@tweakpane/plugin-essentials";
 import { AppStoreProps } from "@common/interfaces";
 import { AppHandleTypes, Shortcuts } from "@common/enums";
 import { ElectronGui } from "./settings/electron-gui";
 import { SerialGui } from "./settings/serial-gui";
 import { DmxGui } from "./settings/dmx-gui";
-import { OscGui } from "./settings/osc-gui";
 import { MidiGui } from "./settings/midi-gui";
 
 /**
@@ -18,35 +17,37 @@ class ApplicationGui extends EventEmitter {
 	#fpsGraph: EssentialsPlugin.FpsGraphBladeApi;
 	electronConfig: ElectronGui;
 	dmx: DmxGui;
-	osc: OscGui;
 	serial: SerialGui;
 	midi: MidiGui;
 	#rafId: number = -1;
 	#params = {
-		info: "ctrl+1でGUI表示・非表示"
-	}
+		info: "ctrl+1でGUI表示・非表示",
+	};
 
 	constructor() {
 		super();
-		this.#pane = new Pane({ title: 'Settings' });
+		this.#pane = new Pane({ title: "Settings" });
 	}
 
 	/**
 	 * アプリケーション設定
 	 */
 	async setup() {
-		this.#config = await window.electron.ipcRenderer.invoke(AppHandleTypes.getConfig);
+		this.#config = await window.electron.ipcRenderer.invoke(
+			AppHandleTypes.getConfig
+		);
 		console.log("App Config : ", this.#config);
 
 		this.#pane.registerPlugin(EssentialsPlugin);
-		this.#pane.element.parentElement.style.zIndex = '1000';
-		this.#pane.element.parentElement.style.width = '280px';
+		this.#pane.element.parentElement.style.zIndex = "1000";
+		this.#pane.element.parentElement.style.width = "280px";
 		this.#pane.hidden = !this.#config.guiDisplay;
 
 		this.#createBaseConfig();
 		this.#createElectronConfig();
 		this.#createPluginConfig();
 		this.#addListeners();
+		this.#startMonitor();
 	}
 
 	/**
@@ -55,24 +56,37 @@ class ApplicationGui extends EventEmitter {
 	#createBaseConfig = () => {
 		// FPS
 		this.#fpsGraph = this.#pane.addBlade({
-			view: 'fpsgraph',
-			label: 'FPS',
+			view: "fpsgraph",
+			label: "FPS",
 			rows: 2,
 		}) as EssentialsPlugin.FpsGraphBladeApi;
 
 		// // IP設定
-		this.#pane.addBinding(this.#config, 'storePath', { label: '設定JSON', readonly: true });
-		this.#pane.addBinding(this.#config, 'version', { label: 'アプリVer.', readonly: true });
-		this.#pane.addBinding(this.#config, 'ip', { label: 'IP', readonly: true });
-		this.#pane.addBinding(this.#params, 'info', { label: 'Info', readonly: true, multiline: true, rows: 2 });
-		this.#pane.addButton({ title: '設定を保存', label: '', }).on('click', this.#onSaveClick);
+		this.#pane.addBinding(this.#config, "storePath", {
+			label: "設定JSON",
+			readonly: true,
+		});
+		this.#pane.addBinding(this.#config, "version", {
+			label: "アプリVer.",
+			readonly: true,
+		});
+		this.#pane.addBinding(this.#config, "ip", { label: "IP", readonly: true });
+		this.#pane.addBinding(this.#params, "info", {
+			label: "Info",
+			readonly: true,
+			multiline: true,
+			rows: 2,
+		});
+		this.#pane
+			.addButton({ title: "設定を保存", label: "" })
+			.on("click", this.#onSaveClick);
 	};
 
 	/**
 	 * Electron設定
 	 */
 	#createElectronConfig = () => {
-		const folder = this.#pane.addFolder({ title: 'Electron Config' });
+		const folder = this.#pane.addFolder({ title: "Electron Config" });
 		this.electronConfig = new ElectronGui({
 			folder,
 			config: this.#config.browser,
@@ -86,19 +100,24 @@ class ApplicationGui extends EventEmitter {
 	 * 各種プラグイン設定
 	 */
 	#createPluginConfig = () => {
-		const { serialPort, dmx, osc, midi } = this.#config;
-		const { useSerialPort, useDmx, useOsc, useMidi } = this.#config.usePlugin;
+		const { serialPort, dmx, midi } = this.#config;
+		const { useSerialPort, useDmx, useMidi } = this.#config.usePlugin;
 
-		this.dmx = new DmxGui(this.addFolder('Dmx Config'), useDmx, dmx);
-		this.osc = new OscGui(this.addFolder('Osc Config'), useOsc, osc);
-		this.serial = new SerialGui(this.addFolder('Serial Config'), useSerialPort, serialPort);
-		this.midi = new MidiGui(this.addFolder('MIDI Config'), useMidi, midi);
+		this.dmx = new DmxGui(this.addFolder("Dmx Config"), useDmx, dmx);
+		this.serial = new SerialGui(
+			this.addFolder("Serial Config"),
+			useSerialPort,
+			serialPort
+		);
+		this.midi = new MidiGui(this.addFolder("MIDI Config"), useMidi, midi);
 	};
 
 	#addListeners = () => {
 		window.electron.ipcRenderer.on(Shortcuts.showGui, () => {
 			this.#pane.hidden = !this.#pane.hidden;
-			window.electron.ipcRenderer.invoke(AppHandleTypes.save, { guiDisplay: !this.#pane.hidden });
+			window.electron.ipcRenderer.invoke(AppHandleTypes.save, {
+				guiDisplay: !this.#pane.hidden,
+			});
 		});
 	};
 
@@ -113,14 +132,20 @@ class ApplicationGui extends EventEmitter {
 	 * 設定保存
 	 */
 	#onSaveClick = () => {
-		window.electron.ipcRenderer.invoke(AppHandleTypes.save, this.#getUpdateConfig());
+		window.electron.ipcRenderer.invoke(
+			AppHandleTypes.save,
+			this.#getUpdateConfig()
+		);
 	};
 
 	/**
 	 * 設定反映のための再起動
 	 */
 	#onRestartClick = () => {
-		window.electron.ipcRenderer.invoke(AppHandleTypes.restart, this.#getUpdateConfig());
+		window.electron.ipcRenderer.invoke(
+			AppHandleTypes.restart,
+			this.#getUpdateConfig()
+		);
 	};
 
 	/**
@@ -128,7 +153,6 @@ class ApplicationGui extends EventEmitter {
 	 */
 	#onChangeSettings = () => {
 		this.dmx.folder.hidden = !this.#config.usePlugin.useDmx;
-		this.osc.folder.hidden = !this.#config.usePlugin.useOsc;
 		this.serial.folder.hidden = !this.#config.usePlugin.useSerialPort;
 		this.midi.folder.hidden = !this.#config.usePlugin.useMidi;
 	};
@@ -140,9 +164,11 @@ class ApplicationGui extends EventEmitter {
 		return {
 			...this.#config,
 			browser: { ...this.#config.browser, ...this.electronConfig.config },
-			usePlugin: { ...this.#config.usePlugin, ...this.electronConfig.usePlugin },
+			usePlugin: {
+				...this.#config.usePlugin,
+				...this.electronConfig.usePlugin,
+			},
 			dmx: { ...this.#config.dmx, ...this.dmx.config },
-			osc: { ...this.#config.osc, ...this.osc.config },
 			serialPort: { ...this.#config.serialPort, ...this.serial.config },
 			midi: { ...this.#config.midi, ...this.midi.config },
 		};
@@ -163,16 +189,16 @@ class ApplicationGui extends EventEmitter {
 	};
 
 	/**
-	 * リクエストアニメーションフレーム開始
+	 * FPSモニタリング開始
 	 */
-	#startRaf = () => {
+	#startMonitor = () => {
 		this.#update();
 	};
 
 	/**
-	 * リクエストアニメーションフレーム停止
+	 * FPSモニタリング停止
 	 */
-	#stopRaf = () => {
+	#stopMonitor = () => {
 		window.cancelAnimationFrame(this.#rafId);
 	};
 

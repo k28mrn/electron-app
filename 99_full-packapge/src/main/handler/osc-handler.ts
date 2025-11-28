@@ -1,27 +1,27 @@
-import { BrowserWindow, IpcMainInvokeEvent, ipcMain } from 'electron';
-import osc from 'osc';
-import { getLocalAddress } from '../utils/get-local-address';
-import { OscHandleTypes } from '@common/enums';
-import { ReceiveOscProps, OscProps, SendOscProps } from '@common/interfaces';
+import { BrowserWindow, IpcMainInvokeEvent, ipcMain } from "electron";
+import osc from "osc";
+import { getLocalAddress } from "../utils/get-local-address";
+import { OscHandleTypes } from "@common/enums";
+import { ReceiveOscProps, OscProps, SendOscProps } from "@common/interfaces";
 
 /**
  * OSC通信制御
  */
 export class OscHandler {
 	window: BrowserWindow;
-	myIp: string = '';
+	myIp: string = "";
 	isOpened: boolean = false;
 	udpPort: osc.UDPPort;
 
-	constructor({ window, }: { window: BrowserWindow, }) {
+	constructor({ window }: { window: BrowserWindow }) {
 		this.window = window;
 		this.myIp = getLocalAddress();
 		this.setup();
 	}
 
 	/**
-	* セットアップ
-	*/
+	 * セットアップ
+	 */
 	setup() {
 		this.setHandles();
 	}
@@ -33,7 +33,6 @@ export class OscHandler {
 		this.removeHandles();
 		this.close();
 	};
-
 
 	/**
 	 * ハンドラ登録
@@ -64,12 +63,17 @@ export class OscHandler {
 		this.close();
 
 		// OSCインスタンス作成
-		const { selfPort } = options;
-		this.udpPort = new osc.UDPPort({
-			localPort: selfPort,
-			localAddress: this.myIp,
+		const { port, localAddress, broadcast } = options;
+		const ip = localAddress || this.myIp;
+		const broadcastFlag = broadcast || false;
+		const params = {
+			localPort: port,
+			localAddress: ip,
 			metadata: true,
-		});
+			broadcast: broadcastFlag,
+		};
+		console.log("[INFO] OSC Open: Connect Info", params);
+		this.udpPort = new osc.UDPPort(params);
 
 		// NOTE: broadcastしたい場合
 		// this.udpPort = new osc.UDPPort({
@@ -78,7 +82,7 @@ export class OscHandler {
 		// 	metadata: true,
 		// 	broadcast: true,
 		// });
-		this.udpPort.on('ready', this.#onReady);
+		this.udpPort.on("ready", this.#onReady);
 		this.udpPort.on("message", this.#onReceive);
 		this.udpPort.open();
 	};
@@ -89,19 +93,36 @@ export class OscHandler {
 	close = () => {
 		if (!this.isOpened) return;
 		this.isOpened = false;
-		this.udpPort.off('ready', this.#onReady);
-		this.udpPort.off('message', this.#onReceive);
-		this.udpPort.close();
-		console.log('[INFO] Close OSC');
+
+		// 古いポートへの参照を保持して、レースコンディションを防ぐ
+		const oldPort = this.udpPort;
+		this.udpPort = null;
+
+		oldPort.off("ready", this.#onReady);
+		oldPort.off("message", this.#onReceive);
+		oldPort.on("close", () => {
+			this.#safeSend(OscHandleTypes.close);
+		});
+		oldPort.close();
+		console.log("[INFO] Close OSC");
+	};
+
+	/**
+	 * 安全にレンダラーへ送信（ウィンドウ破棄後のエラーを防ぐ）
+	 */
+	#safeSend = (channel: string, ...args: unknown[]) => {
+		if (this.window && !this.window.isDestroyed()) {
+			this.window.webContents.send(channel, ...args);
+		}
 	};
 
 	/**
 	 * 準備完了
 	 */
 	#onReady = () => {
+		if (!this.udpPort) return;
 		this.isOpened = true;
-		console.log('[INFO] Open OSC', this.udpPort.options);
-
+		this.#safeSend(OscHandleTypes.open, this.udpPort.options);
 	};
 
 	/**
@@ -117,7 +138,7 @@ export class OscHandler {
 			values: values,
 			info: info,
 		};
-		this.window.webContents.send(OscHandleTypes.receive, params);
+		this.#safeSend(OscHandleTypes.receive, params);
 	};
 
 	/**
@@ -129,20 +150,20 @@ export class OscHandler {
 
 		const args = values.map((value) => {
 			if (typeof value === "string") {
-				return { type: "s", value, };
+				return { type: "s", value };
 			}
 			if (typeof value === "number") {
 				if (value % 1 === 0) {
-					return { type: "i", value, };
+					return { type: "i", value };
 				}
-				return { type: "f", value, };
+				return { type: "f", value };
 			}
 			if (value instanceof Blob) {
-				return { type: "b", value, };
+				return { type: "b", value };
 			}
-			return { type: "s", value: value.toString(), };
+			return { type: "s", value: value.toString() };
 		});
-		this.udpPort.send({ address, args, }, host, port);
+		this.udpPort.send({ address, args }, host, port);
 		console.log("[INFO] Send osc data = ", data);
 
 		// NOTE: example;
