@@ -1,4 +1,3 @@
-
 /**
  * アプリケーション設定
  */
@@ -9,11 +8,6 @@ export interface AppStoreProps {
 	storePath?: string;
 	browser?: BrowserProps;
 	guiDisplay?: boolean;
-	serialPort?: SerialPortProps;
-	osc?: OscProps;
-	midi?: MidiProps;
-	dmx?: DmxProps;
-	usePlugin?: UsePluginProps;
 }
 
 /**
@@ -30,33 +24,15 @@ export interface BrowserProps {
 	kiosk?: boolean;
 	alwaysOnTop?: boolean;
 	autoHideMenuBar?: boolean;
-	serialPort?: SerialPortProps;
-}
-
-/**
- * Plugin 使用設定
- */
-export interface UsePluginProps {
-	useDmx?: boolean;
-	useSerialPort?: boolean;
-	useOsc?: boolean;
-	useMidi?: boolean;
-}
-
-
-/**
- * シリアルポート設定
- */
-export interface SerialPortProps {
-	path?: string;
-	baudRate?: number;
 }
 
 /**
  * OSC設定
  */
 export interface OscProps {
-	selfPort?: string;
+	port?: number;
+	localAddress?: string;
+	broadcast?: boolean;
 }
 
 /**
@@ -83,31 +59,3 @@ export interface ReceiveOscProps {
 }
 
 export type OscMessageTypes = object | Array<any> | string | number | boolean;
-
-/**
- * MIDI設定
- */
-export interface MidiProps {
-	deviceName?: string;
-}
-
-/**
- * DMX設定
- */
-export interface DmxProps {
-	host?: string;
-	port?: number;
-}
-
-
-/**
- * MIDIメッセージ受信データ
- */
-export interface MidiEventProps {
-	message: WebMidi.MIDIMessageEvent;
-	cmd: number;
-	channel: number;
-	type: number;
-	note: number;
-	velocity: number;
-}
