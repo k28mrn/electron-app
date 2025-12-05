@@ -1,15 +1,13 @@
 import { BrowserWindow, app, ipcMain } from "electron";
 import { AppConfig } from "../config/application";
-import { AppStoreProps, } from "@common/interfaces";
-import { AppHandleTypes, } from "@common/enums";
+import { AppStoreProps } from "@common/interfaces";
+import { AppHandleTypes } from "@common/enums";
 import { getLocalAddress } from "../utils/get-local-address";
 
 /**
  * ipc通信 イベント登録
  */
-export const icpHandler = ({ window, }: { window: BrowserWindow, }): void => {
-	const { dmx } = AppConfig;
-
+export const icpHandler = ({ window }: { window: BrowserWindow }): void => {
 	/**
 	 * アプリケーション設定取得
 	 */
