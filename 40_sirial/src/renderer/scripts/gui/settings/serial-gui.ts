@@ -36,19 +36,21 @@ export class SerialGui extends GuiBase {
 			rows: 5,
 		});
 
-		// 指定シリアルポート
-		this.folder.addBinding(this.serial.config, "path", {
-			label: "Select Port",
-			readonly: true,
-		});
-		// 指定ボーレート
-		this.folder.addBinding(this.serial.config, "baudRate", {
-			label: "BaudRate",
-			readonly: true,
-		});
-		this.folder.addBinding(this.serial, "status", {
-			label: "Status",
-			readonly: true,
-		});
+		if (this.serial.config) {
+			// 指定シリアルポート
+			this.folder.addBinding(this.serial.config, "path", {
+				label: "Select Port",
+				readonly: true,
+			});
+			// 指定ボーレート
+			this.folder.addBinding(this.serial.config, "baudRate", {
+				label: "BaudRate",
+				readonly: true,
+			});
+			this.folder.addBinding(this.serial, "status", {
+				label: "Status",
+				readonly: true,
+			});
+		}
 	}
 }
