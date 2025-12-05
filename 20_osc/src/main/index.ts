@@ -39,8 +39,6 @@ function createWindow(): void {
 	}
 	shortcut({ window: mainWindow });
 	icpHandler({ window: mainWindow });
-	new SerialHandler({ window: mainWindow });
-	new ArtnetHandler({ window: mainWindow });
 	osc = new OscHandler({ window: mainWindow });
 }
 

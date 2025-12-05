@@ -70,6 +70,9 @@ class ApplicationGui extends EventEmitter {
 			multiline: true,
 			rows: 2,
 		});
+		this.#pane
+			.addButton({ title: "設定を保存", label: "" })
+			.on("click", this.#onSaveClick);
 	};
 
 	/**
@@ -97,6 +100,26 @@ class ApplicationGui extends EventEmitter {
 	 */
 	addFolder = (title: string) => {
 		return this.#pane.addFolder({ title });
+	};
+
+	/**
+	 * 設定保存
+	 */
+	#onSaveClick = () => {
+		window.electron.ipcRenderer.invoke(
+			AppHandleTypes.save,
+			this.#getUpdateConfig()
+		);
+	};
+
+	/**
+	 * 設定情報最新取得
+	 */
+	#getUpdateConfig = (): AppStoreProps => {
+		return {
+			...this.#config,
+			browser: { ...this.#config.browser, ...this.electronConfig.config },
+		};
 	};
 
 	/**
