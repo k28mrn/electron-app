@@ -11,9 +11,9 @@ export class SerialHandler {
 	port: SerialPort = null;
 	parser: ReadlineParser = null;
 
-	constructor({ window, }: { window: BrowserWindow, }) {
+	constructor({ window }: { window: BrowserWindow }) {
 		this.window = window;
-		this.parser = new ReadlineParser({ delimiter: '\n' });
+		this.parser = new ReadlineParser({ delimiter: "\n" });
 		this.setup();
 	}
 
@@ -43,11 +43,12 @@ export class SerialHandler {
 	 */
 	getList = async () => {
 		const list = await SerialPort.list();
-		const pathList: { [key: string]: string; } = { ' ': '' };
+
+		const pathList: string[] = [];
 		for (const v of list) {
 			// NOTE: Bluetoothを除外
-			if (v.path.indexOf('Bluetooth') >= 0) continue;
-			pathList[`${v.path}`] = v.path;
+			if (v.path.indexOf("Bluetooth") >= 0) continue;
+			pathList.push(v.path);
 		}
 		return pathList;
 	};
@@ -60,10 +61,10 @@ export class SerialHandler {
 			this.close();
 			this.port = new SerialPort({ path, baudRate, autoOpen: false });
 			this.port.pipe(this.parser);
-			this.port.on('open', this.onOpen);
-			this.port.on('close', this.onClose);
-			this.port.on('error', this.onError);
-			this.parser.on('data', this.onRead);
+			this.port.on("open", this.onOpen);
+			this.port.on("close", this.onClose);
+			this.port.on("error", this.onError);
+			this.parser.on("data", this.onRead);
 			this.port.open();
 		} catch (err) {
 			this.onError(err);
@@ -97,7 +98,7 @@ export class SerialHandler {
 	 * シリアル通信: Open > Client
 	 */
 	onOpen = () => {
-		console.log('Serial open');
+		console.log("Serial open");
 		this.window.webContents.send(SerialTypes.connect);
 	};
 
@@ -105,10 +106,10 @@ export class SerialHandler {
 	 * シリアル通信: Close > Client
 	 */
 	onClose = () => {
-		console.log('Serial close');
-		this.port.off('open', this.onOpen);
-		this.port.off('close', this.onClose);
-		this.parser.off('data', this.onRead);
+		console.log("Serial close");
+		this.port.off("open", this.onOpen);
+		this.port.off("close", this.onClose);
+		this.parser.off("data", this.onRead);
 		this.port = null;
 		this.window.webContents.send(SerialTypes.close);
 	};
@@ -117,7 +118,7 @@ export class SerialHandler {
 	 * シリアル通信: Error > Client
 	 */
 	onError = (err: Error) => {
-		console.error('Serial Error:', err);
+		console.error("Serial Error:", err);
 		this.window.webContents.send(SerialTypes.error);
 	};
 
@@ -125,8 +126,7 @@ export class SerialHandler {
 	 * シリアル通信: Read > Client
 	 */
 	onRead = (data: string) => {
-		console.log('Serial Read:', data);
+		console.log("Serial Read:", data);
 		this.window.webContents.send(SerialTypes.read, data);
 	};
 }
-

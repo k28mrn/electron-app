@@ -7,10 +7,8 @@ declare global {
 		electron: ElectronAPI;
 		api: unknown;
 		sendDmx: (data: SendProps) => void;
-		writeSerial: (data: string) => void;
 	}
 	interface WindowEventMap {
 		MidiMessage: CustomEvent<MidiEventProps>; //MIDIのに入力イベント
-		ReadSerial: CustomEvent<string>; //シリアルの受信イベント
 	}
 }

@@ -7,6 +7,7 @@ import { ElectronGui } from "./settings/electron-gui";
 import { SerialGui } from "./settings/serial-gui";
 import { DmxGui } from "./settings/dmx-gui";
 import { MidiGui } from "./settings/midi-gui";
+import { SerialManagerProps } from "../lib/serial";
 
 /**
  * アプリケーションGUI
@@ -100,15 +101,10 @@ class ApplicationGui extends EventEmitter {
 	 * 各種プラグイン設定
 	 */
 	#createPluginConfig = () => {
-		const { serialPort, dmx, midi } = this.#config;
-		const { useSerialPort, useDmx, useMidi } = this.#config.usePlugin;
+		const { dmx, midi } = this.#config;
+		const { useDmx, useMidi } = this.#config.usePlugin;
 
 		this.dmx = new DmxGui(this.addFolder("Dmx Config"), useDmx, dmx);
-		this.serial = new SerialGui(
-			this.addFolder("Serial Config"),
-			useSerialPort,
-			serialPort
-		);
 		this.midi = new MidiGui(this.addFolder("MIDI Config"), useMidi, midi);
 	};
 
@@ -153,7 +149,6 @@ class ApplicationGui extends EventEmitter {
 	 */
 	#onChangeSettings = () => {
 		this.dmx.folder.hidden = !this.#config.usePlugin.useDmx;
-		this.serial.folder.hidden = !this.#config.usePlugin.useSerialPort;
 		this.midi.folder.hidden = !this.#config.usePlugin.useMidi;
 	};
 
@@ -169,7 +164,6 @@ class ApplicationGui extends EventEmitter {
 				...this.electronConfig.usePlugin,
 			},
 			dmx: { ...this.#config.dmx, ...this.dmx.config },
-			serialPort: { ...this.#config.serialPort, ...this.serial.config },
 			midi: { ...this.#config.midi, ...this.midi.config },
 		};
 	};
@@ -210,6 +204,13 @@ class ApplicationGui extends EventEmitter {
 		this.#pane.refresh();
 		this.fpsEnd();
 		this.#rafId = window.requestAnimationFrame(this.#update);
+	};
+
+	/**
+	 * シリアル通信の状況
+	 */
+	displaySerialData = (serial: SerialManagerProps) => {
+		this.serial = new SerialGui(this.addFolder("Serial Config"), serial);
 	};
 }
 

@@ -5,7 +5,7 @@ import { AppStoreProps } from "@common/interfaces";
 import { AppHandleTypes, Shortcuts } from "@common/enums";
 import { ElectronGui } from "./settings/electron-gui";
 import { SerialGui } from "./settings/serial-gui";
-import { SerialManagerProps } from "./lib/serial";
+import { SerialManagerProps } from "../lib/serial";
 
 /**
  * アプリケーションGUI

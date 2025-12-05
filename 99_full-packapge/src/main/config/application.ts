@@ -6,8 +6,6 @@ import {
 	DEFAULT_BROWSER_OPTIONS,
 	DEFAULT_DMX_OPTIONS,
 	DEFAULT_MIDI_OPTIONS,
-	DEFAULT_OSC_OPTIONS,
-	DEFAULT_SERIAL_PORT_OPTIONS,
 } from "../constant/constant";
 import { DmxProps } from "@common/interfaces";
 
@@ -23,13 +21,11 @@ class ApplicationConfig {
 		const data = this.#getStoreData();
 		this.#options = {
 			browser: DEFAULT_BROWSER_OPTIONS,
-			serialPort: DEFAULT_SERIAL_PORT_OPTIONS,
 			midi: DEFAULT_MIDI_OPTIONS,
 			dmx: DEFAULT_DMX_OPTIONS,
 			guiDisplay: true,
 			usePlugin: {
 				useDmx: false,
-				useSerialPort: false,
 				useMidi: false,
 			},
 			...data,

@@ -1,8 +1,6 @@
-import { ButtonApi, FolderApi } from "tweakpane";
+import { FolderApi } from "tweakpane";
 import { GuiBase } from "./gui-base";
-import { SerialPortProps } from "@common/interfaces";
-import { SerialStatus, SerialTypes } from "@common/enums";
-import { SerialManagerProps } from "../lib/serial";
+import { SerialManagerProps } from "../../lib/serial";
 
 /**
  * シリアル制御用GUIクラス

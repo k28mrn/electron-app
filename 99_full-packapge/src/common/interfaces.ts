@@ -8,7 +8,6 @@ export interface AppStoreProps {
 	storePath?: string;
 	browser?: BrowserProps;
 	guiDisplay?: boolean;
-	serialPort?: SerialPortProps;
 	midi?: MidiProps;
 	dmx?: DmxProps;
 	usePlugin?: UsePluginProps;
@@ -28,7 +27,6 @@ export interface BrowserProps {
 	kiosk?: boolean;
 	alwaysOnTop?: boolean;
 	autoHideMenuBar?: boolean;
-	serialPort?: SerialPortProps;
 }
 
 /**
@@ -36,7 +34,6 @@ export interface BrowserProps {
  */
 export interface UsePluginProps {
 	useDmx?: boolean;
-	useSerialPort?: boolean;
 	useMidi?: boolean;
 }
 

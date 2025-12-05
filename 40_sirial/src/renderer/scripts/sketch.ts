@@ -1,6 +1,6 @@
 import p5 from "p5";
 import { Gui } from "./gui/app-gui";
-import { Serial } from "./gui/lib/serial";
+import { Serial } from "./lib/serial";
 
 export const sketch = (p: p5): void => {
 	/**
@@ -27,6 +27,7 @@ export const sketch = (p: p5): void => {
 
 		// シリアル切断
 		// Serial.close();
+
 		// シリアル業況確認用のGUI表示
 		Gui.displaySerialData(Serial);
 
