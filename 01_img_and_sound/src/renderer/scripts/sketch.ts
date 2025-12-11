@@ -8,8 +8,8 @@ export const sketch = (p: p5): void => {
 	 * Preload
 	 */
 	p.preload = (): void => {
-		img = p.loadImage("/static/img1.png");
-		clickSound = new Audio("/static/button_click.mp3");
+		img = p.loadImage("static/img1.png");
+		clickSound = new Audio("static/button_click.mp3");
 	};
 
 	/**
