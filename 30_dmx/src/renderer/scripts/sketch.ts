@@ -1,5 +1,6 @@
 import p5 from "p5";
 import { Gui } from "./gui/app-gui";
+import { DMX } from "./lib/dmx";
 
 export const sketch = (p: p5): void => {
 	// DMXデータ
@@ -11,6 +12,15 @@ export const sketch = (p: p5): void => {
 	p.setup = (): void => {
 		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.background(255);
+
+		// DMX接続
+		DMX.connect({ host: "255.255.255.255", port: 6454 });
+
+		// DMX切断
+		// DMX.disconnect();
+
+		// GUI二DMX設定を表示
+		// Gui.displayDmxConfig(DMX);
 	};
 
 	/**
@@ -31,10 +41,10 @@ export const sketch = (p: p5): void => {
 		data[4] = g;
 		data[5] = b;
 		data[6] = 0;
-		window.sendDmx({ data: data, });
+		DMX.send({ data: data });
 
 		// 例: 詳細設定
-		// window.sendDmx({
+		// DMX.send({
 		// 	universe: 0,
 		// 	data: data,
 		// 	callback: (status: SendStatus, message?: string) => {

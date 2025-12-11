@@ -1,6 +1,6 @@
 import { FolderApi } from "@tweakpane/core";
 import { GuiBase } from "./gui-base";
-import { AppStoreProps, BrowserProps } from "@common/interfaces";
+import { BrowserProps } from "@common/interfaces";
 
 /**
  * シリアル制御用GUIクラス
@@ -11,7 +11,6 @@ export class ElectronGui extends GuiBase {
 	constructor({ folder, config }: { folder: FolderApi; config: BrowserProps }) {
 		super(folder);
 		this.config = config;
-
 		this.setup();
 	}
 

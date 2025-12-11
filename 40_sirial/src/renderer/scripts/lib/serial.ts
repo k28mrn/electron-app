@@ -16,6 +16,9 @@ export interface SerialManagerProps {
 	removeReceiveEvent: (callback: (message: string) => void) => void;
 }
 
+/**
+ * シリアル通信管理クラス
+ */
 class SerialManager implements SerialManagerProps {
 	status: SerialStatus = SerialStatus.closed;
 	config: SerialPortProps;
