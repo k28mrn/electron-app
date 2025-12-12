@@ -22,7 +22,7 @@ export const sketch = (p: p5): void => {
 		Serial.addReceiveEvent(onReadSerialData);
 
 		// シリアル接続
-		// Serial.connect({ path: "/dev/tty", baudRate: 9600 });
+		Serial.connect({ path: "/dev/tty", baudRate: 9600 });
 		// Serial.connect({ path: "/dev/tty.usbserial-10", baudRate: 115200 });
 
 		// シリアル切断

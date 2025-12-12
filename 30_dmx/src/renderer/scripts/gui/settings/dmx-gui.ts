@@ -21,12 +21,15 @@ export class DmxGui extends GuiBase {
 	 * セットアップ
 	 */
 	async setup() {
-		this.folder
-			.addBinding(this.dmx.config, "host", { label: "Host", readonly: true })
-			.on("change", this.onChangeConfig);
-		this.folder
-			.addBinding(this.dmx.config, "port", { label: "Port", readonly: true })
-			.on("change", this.onChangeConfig);
+		this.folder.addBinding(this.dmx.config, "host", {
+			label: "Host",
+			readonly: true,
+		});
+		this.folder.addBinding(this.dmx.config, "port", {
+			label: "Port",
+			readonly: true,
+			format: (v) => v.toFixed(0),
+		});
 
 		this.folder.addBinding;
 	}

@@ -44,6 +44,7 @@ export class SerialGui extends GuiBase {
 			this.folder.addBinding(this.serial.config, "baudRate", {
 				label: "BaudRate",
 				readonly: true,
+				format: (v) => v.toFixed(0),
 			});
 			this.folder.addBinding(this.serial, "status", {
 				label: "Status",

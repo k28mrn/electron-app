@@ -14,13 +14,13 @@ export const sketch = (p: p5): void => {
 		p.background(255);
 
 		// DMX接続
-		DMX.connect({ host: "255.255.255.255", port: 6454 });
+		DMX.connect({ host: "100.0.0.10" });
 
 		// DMX切断
 		// DMX.disconnect();
 
 		// GUI二DMX設定を表示
-		// Gui.displayDmxConfig(DMX);
+		Gui.displayDmxConfig(DMX);
 	};
 
 	/**
