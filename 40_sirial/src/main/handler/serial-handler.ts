@@ -15,6 +15,20 @@ export class SerialHandler {
 		this.window = window;
 		this.parser = new ReadlineParser({ delimiter: "\n" });
 		this.setup();
+		this.setLiveReloadHandler();
+	}
+
+	/**
+	 * LiveReload時にシリアルポートをクローズするハンドラを設定
+	 */
+	setLiveReloadHandler() {
+		// ページリロード時（LiveReload含む）にシリアルポートをクローズ
+		this.window.webContents.on("did-start-loading", () => {
+			if (this.isOpen) {
+				console.log("LiveReload detected: closing serial port");
+				this.close();
+			}
+		});
 	}
 
 	/**

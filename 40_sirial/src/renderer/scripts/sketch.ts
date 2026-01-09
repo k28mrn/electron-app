@@ -6,7 +6,7 @@ export const sketch = (p: p5): void => {
 	/**
 	 * シリアルデータ読み込み
 	 */
-	const onReadSerialData = (message: string): void => {
+	const onReadSerialData = (message: string | number): void => {
 		console.log("onReadSerialData", message);
 	};
 
