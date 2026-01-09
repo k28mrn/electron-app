@@ -1,6 +1,7 @@
 import p5 from "p5";
 import { Gui } from "./gui/app-gui";
 import { MidiEventProps } from "@common/interfaces";
+import { Midi } from "./lib/midi";
 import { LeftRed } from "./animation/left-red";
 import { TopGreen } from "./animation/top-green";
 import { RightBlue } from "./animation/right-blue";
@@ -18,18 +19,32 @@ export const sketch = (p: p5): void => {
 	let rightBlue = new RightBlue();
 	let bottomWhite = new BottomWhite();
 	let bgList = [leftRed, topGreen, rightBlue, bottomWhite];
-
 	// サークルアニメーション
 	let circles = new Circles();
 	/**
 	 * Setup
 	 */
-	p.setup = (): void => {
+	p.setup = async (): Promise<void> => {
 		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.background(255);
 
-		// MIDIキーボードイベント登録
-		window.addEventListener("MidiMessage", onGetMidiMessage);
+		// PCに接続されているMIDIデバイスリストを取得
+		const list = await Midi.getList();
+
+		// MIDIデバイスを接続
+		Midi.connect("nanoKONTROL2 SLIDER/KNOB");
+
+		// MIDIデバイス切断
+		// Midi.disconnect();
+
+		// MIDIデバイス受信イベント登録
+		Midi.on(onGetMidiMessage);
+
+		// MIDIデバイス受信イベント削除
+		// Midi.off(onGetMidiMessage);
+
+		// MIDIデータ確認用データをGUIに表示
+		Gui.displayMidiData(Midi);
 	};
 
 	/**
@@ -47,38 +62,35 @@ export const sketch = (p: p5): void => {
 	/**
 	 * MIDIキーボードが押されてイベントが発生した時の処理
 	 */
-	const onGetMidiMessage = (event: CustomEvent<MidiEventProps>): void => {
-		// console.log(event.detail);
-		if (event.detail.note === 32 && event.detail.velocity > 0) {
+	const onGetMidiMessage = (message: MidiEventProps): void => {
+		// console.log(message);
+		if (message.note === 32 && message.velocity > 0) {
 			leftRed.start();
-			bgList = bgList.filter(item => item !== leftRed); //一度取り除いて
+			bgList = bgList.filter((item) => item !== leftRed); //一度取り除いて
 			bgList.push(leftRed); // 再度挿入
-
 		}
-		if (event.detail.note === 48 && event.detail.velocity > 0) {
+		if (message.note === 48 && message.velocity > 0) {
 			topGreen.start();
-			bgList = bgList.filter(item => item !== topGreen); //一度取り除いて
+			bgList = bgList.filter((item) => item !== topGreen); //一度取り除いて
 			bgList.push(topGreen); // 再度挿入
 		}
-		if (event.detail.note === 33 && event.detail.velocity > 0) {
+		if (message.note === 33 && message.velocity > 0) {
 			rightBlue.start();
-			bgList = bgList.filter(item => item !== rightBlue); //一度取り除いて
+			bgList = bgList.filter((item) => item !== rightBlue); //一度取り除いて
 			bgList.push(rightBlue); // 再度挿入
 		}
-		if (event.detail.note === 49 && event.detail.velocity > 0) {
+		if (message.note === 49 && message.velocity > 0) {
 			bottomWhite.start();
-			bgList = bgList.filter(item => item !== bottomWhite); //一度取り除いて
+			bgList = bgList.filter((item) => item !== bottomWhite); //一度取り除いて
 			bgList.push(bottomWhite); // 再度挿入
 		}
 
-		if (event.detail.note === 0) {
-			circles.update(event.detail.velocity);
+		if (message.note === 0) {
+			circles.update(message.velocity);
 		}
-		if (event.detail.note === 16) {
-			circles.scaleUpdate(event.detail.velocity);
+		if (message.note === 16) {
+			circles.scaleUpdate(message.velocity);
 		}
-
-
 	};
 
 	/**

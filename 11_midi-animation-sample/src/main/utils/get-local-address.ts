@@ -2,7 +2,7 @@ import os from "os";
 
 /**
  * 自分のIPアドレスを取得
- * @returns 
+ * @returns
  */
 export const getLocalAddress = () => {
 	const interfaces = os.networkInterfaces();
