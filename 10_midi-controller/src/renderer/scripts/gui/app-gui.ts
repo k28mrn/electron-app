@@ -1,6 +1,6 @@
 import EventEmitter from "eventemitter3";
-import { Pane } from 'tweakpane';
-import * as EssentialsPlugin from '@tweakpane/plugin-essentials';
+import { Pane } from "tweakpane";
+import * as EssentialsPlugin from "@tweakpane/plugin-essentials";
 import { AppStoreProps } from "@common/interfaces";
 import { AppHandleTypes, Shortcuts } from "@common/enums";
 import { ElectronGui } from "./settings/electron-gui";
@@ -17,24 +17,26 @@ class ApplicationGui extends EventEmitter {
 	midi: MidiGui;
 	#rafId: number = -1;
 	#params = {
-		info: "ctrl+1でGUI表示・非表示"
-	}
+		info: "ctrl+1でGUI表示・非表示",
+	};
 
 	constructor() {
 		super();
-		this.#pane = new Pane({ title: 'Settings' });
+		this.#pane = new Pane({ title: "Settings" });
 	}
 
 	/**
 	 * アプリケーション設定
 	 */
 	async setup() {
-		this.#config = await window.electron.ipcRenderer.invoke(AppHandleTypes.getConfig);
+		this.#config = await window.electron.ipcRenderer.invoke(
+			AppHandleTypes.getConfig
+		);
 		console.log("App Config : ", this.#config);
 
 		this.#pane.registerPlugin(EssentialsPlugin);
-		this.#pane.element.parentElement.style.zIndex = '1000';
-		this.#pane.element.parentElement.style.width = '280px';
+		this.#pane.element.parentElement.style.zIndex = "1000";
+		this.#pane.element.parentElement.style.width = "280px";
 		this.#pane.hidden = !this.#config.guiDisplay;
 
 		this.#createBaseConfig();
@@ -49,31 +51,41 @@ class ApplicationGui extends EventEmitter {
 	#createBaseConfig = () => {
 		// FPS
 		this.#fpsGraph = this.#pane.addBlade({
-			view: 'fpsgraph',
-			label: 'FPS',
+			view: "fpsgraph",
+			label: "FPS",
 			rows: 2,
 		}) as EssentialsPlugin.FpsGraphBladeApi;
 
 		// // IP設定
-		this.#pane.addBinding(this.#config, 'storePath', { label: '設定JSON', readonly: true });
-		this.#pane.addBinding(this.#config, 'version', { label: 'アプリVer.', readonly: true });
-		this.#pane.addBinding(this.#config, 'ip', { label: 'IP', readonly: true });
-		this.#pane.addBinding(this.#params, 'info', { label: 'Info', readonly: true, multiline: true, rows: 2 });
-		this.#pane.addButton({ title: '設定を保存', label: '', }).on('click', this.#onSaveClick);
+		this.#pane.addBinding(this.#config, "storePath", {
+			label: "設定JSON",
+			readonly: true,
+		});
+		this.#pane.addBinding(this.#config, "version", {
+			label: "アプリVer.",
+			readonly: true,
+		});
+		this.#pane.addBinding(this.#config, "ip", { label: "IP", readonly: true });
+		this.#pane.addBinding(this.#params, "info", {
+			label: "Info",
+			readonly: true,
+			multiline: true,
+			rows: 2,
+		});
+		this.#pane
+			.addButton({ title: "設定を保存", label: "" })
+			.on("click", this.#onSaveClick);
 	};
 
 	/**
 	 * Electron設定
 	 */
 	#createElectronConfig = () => {
-		const folder = this.#pane.addFolder({ title: 'Electron Config' });
+		const folder = this.#pane.addFolder({ title: "Electron Config" });
 		this.electronConfig = new ElectronGui({
 			folder,
 			config: this.#config.browser,
-			usePlugin: this.#config.usePlugin,
 		});
-		// this.electronConfig.on(ElectronGui.Restart, this.#onRestartClick);
-		this.electronConfig.on(ElectronGui.Change, this.#onChangeSettings);
 	};
 
 	/**
@@ -81,15 +93,16 @@ class ApplicationGui extends EventEmitter {
 	 */
 	#createPluginConfig = () => {
 		const { midi } = this.#config;
-		const { useMidi } = this.#config.usePlugin;
 
-		this.midi = new MidiGui(this.addFolder('MIDI Config'), useMidi, midi);
+		this.midi = new MidiGui(this.addFolder("MIDI Config"), true, midi);
 	};
 
 	#addListeners = () => {
 		window.electron.ipcRenderer.on(Shortcuts.showGui, () => {
 			this.#pane.hidden = !this.#pane.hidden;
-			window.electron.ipcRenderer.invoke(AppHandleTypes.save, { guiDisplay: !this.#pane.hidden });
+			window.electron.ipcRenderer.invoke(AppHandleTypes.save, {
+				guiDisplay: !this.#pane.hidden,
+			});
 		});
 	};
 
@@ -104,21 +117,20 @@ class ApplicationGui extends EventEmitter {
 	 * 設定保存
 	 */
 	#onSaveClick = () => {
-		window.electron.ipcRenderer.invoke(AppHandleTypes.save, this.#getUpdateConfig());
+		window.electron.ipcRenderer.invoke(
+			AppHandleTypes.save,
+			this.#getUpdateConfig()
+		);
 	};
 
 	/**
 	 * 設定反映のための再起動
 	 */
 	#onRestartClick = () => {
-		window.electron.ipcRenderer.invoke(AppHandleTypes.restart, this.#getUpdateConfig());
-	};
-
-	/**
-	 * 設定変更
-	 */
-	#onChangeSettings = () => {
-		this.midi.folder.hidden = !this.#config.usePlugin.useMidi;
+		window.electron.ipcRenderer.invoke(
+			AppHandleTypes.restart,
+			this.#getUpdateConfig()
+		);
 	};
 
 	/**
@@ -128,7 +140,6 @@ class ApplicationGui extends EventEmitter {
 		return {
 			...this.#config,
 			browser: { ...this.#config.browser, ...this.electronConfig.config },
-			usePlugin: { ...this.#config.usePlugin, ...this.electronConfig.usePlugin },
 			midi: { ...this.#config.midi, ...this.midi.config },
 		};
 	};
