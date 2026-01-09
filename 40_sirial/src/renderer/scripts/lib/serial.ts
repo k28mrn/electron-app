@@ -81,10 +81,6 @@ class SerialManager implements SerialManagerProps {
 	 * electronからのRead通知
 	 */
 	onRead = (_, data: string) => {
-		// this.emit('read', data);
-		// window.dispatchEvent(
-		// 	new CustomEvent<string>(SerialGui.ReadSerial, { detail: data })
-		// );
 		this.callbacks.forEach((callback) => callback(data));
 	};
 

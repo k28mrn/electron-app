@@ -4,6 +4,7 @@ import * as EssentialsPlugin from "@tweakpane/plugin-essentials";
 import { AppStoreProps } from "@common/interfaces";
 import { AppHandleTypes, Shortcuts } from "@common/enums";
 import { ElectronGui } from "./settings/electron-gui";
+import { MidiManagerProps } from "../lib/midi";
 import { MidiGui } from "./settings/midi-gui";
 
 /**
@@ -14,8 +15,8 @@ class ApplicationGui extends EventEmitter {
 	#pane: Pane;
 	#fpsGraph: EssentialsPlugin.FpsGraphBladeApi;
 	electronConfig: ElectronGui;
-	midi: MidiGui;
 	#rafId: number = -1;
+	midi: MidiGui;
 	#params = {
 		info: "ctrl+1でGUI表示・非表示",
 	};
@@ -41,7 +42,6 @@ class ApplicationGui extends EventEmitter {
 
 		this.#createBaseConfig();
 		this.#createElectronConfig();
-		this.#createPluginConfig();
 		this.#addListeners();
 	}
 
@@ -88,15 +88,6 @@ class ApplicationGui extends EventEmitter {
 		});
 	};
 
-	/**
-	 * 各種プラグイン設定
-	 */
-	#createPluginConfig = () => {
-		const { midi } = this.#config;
-
-		this.midi = new MidiGui(this.addFolder("MIDI Config"), true, midi);
-	};
-
 	#addListeners = () => {
 		window.electron.ipcRenderer.on(Shortcuts.showGui, () => {
 			this.#pane.hidden = !this.#pane.hidden;
@@ -140,7 +131,6 @@ class ApplicationGui extends EventEmitter {
 		return {
 			...this.#config,
 			browser: { ...this.#config.browser, ...this.electronConfig.config },
-			midi: { ...this.#config.midi, ...this.midi.config },
 		};
 	};
 
@@ -180,6 +170,14 @@ class ApplicationGui extends EventEmitter {
 		this.#pane.refresh();
 		this.fpsEnd();
 		this.#rafId = window.requestAnimationFrame(this.#update);
+	};
+
+	/**
+	 * MIDIデータ確認用データをGUIに表示
+	 * @param midi
+	 */
+	displayMidiData = (midi: MidiManagerProps) => {
+		this.midi = new MidiGui(this.addFolder("MIDI Debug"), true, midi);
 	};
 }
 

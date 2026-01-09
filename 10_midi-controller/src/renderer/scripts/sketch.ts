@@ -29,6 +29,9 @@ export const sketch = (p: p5): void => {
 
 		// MIDIデバイス受信イベント削除
 		// Midi.off(onGetMidiMessage);
+
+		// MIDIデータ確認用データをGUIに表示
+		Gui.displayMidiData(Midi);
 	};
 
 	/**

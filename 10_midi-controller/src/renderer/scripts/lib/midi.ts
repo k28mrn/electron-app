@@ -1,6 +1,14 @@
 import { MidiEventProps } from "@common/interfaces";
 
-class MidiManager {
+export interface MidiManagerProps {
+	device: WebMidi.MIDIInput;
+	deviceName: string;
+	getList: () => Promise<{ [key: string]: WebMidi.MIDIInput }>;
+	on: (callback: (message: MidiEventProps) => void) => void;
+	off: (callback: (message: MidiEventProps) => void) => void;
+}
+
+class MidiManager implements MidiManagerProps {
 	device: WebMidi.MIDIInput = undefined;
 	#deviceList: { [key: string]: WebMidi.MIDIInput } = {};
 	#callbacks: ((message: MidiEventProps) => void)[] = [];
@@ -22,6 +30,10 @@ class MidiManager {
 			console.error(e);
 		}
 		return this.#deviceList;
+	}
+
+	get deviceName(): string {
+		return this.device?.name || "";
 	}
 
 	/**
