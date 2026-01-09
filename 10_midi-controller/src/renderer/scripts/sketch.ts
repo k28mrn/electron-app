@@ -1,6 +1,7 @@
 import p5 from "p5";
 import { Gui } from "./gui/app-gui";
 import { MidiEventProps } from "@common/interfaces";
+import { Midi } from "./lib/midi";
 
 /**
  * MIDIコントローラ制御サンプル
@@ -10,25 +11,36 @@ export const sketch = (p: p5): void => {
 	/**
 	 * Setup
 	 */
-	p.setup = (): void => {
+	p.setup = async (): Promise<void> => {
 		p.createCanvas(p.windowWidth, p.windowHeight);
 		p.background(255);
 
-		// MIDIキーボードイベント登録
-		window.addEventListener("MidiMessage", onGetMidiMessage);
+		// PCに接続されているMIDIデバイスリストを取得
+		const list = await Midi.getList();
+
+		// MIDIデバイスを接続
+		Midi.connect("nanoKONTROL2 SLIDER/KNOB");
+
+		// MIDIデバイス切断
+		// Midi.disconnect();
+
+		// MIDIデバイス受信イベント登録
+		Midi.on(onGetMidiMessage);
+
+		// MIDIデバイス受信イベント削除
+		// Midi.off(onGetMidiMessage);
 	};
 
 	/**
 	 * Draw
 	 */
-	p.draw = (): void => {
-	};
+	p.draw = (): void => {};
 
 	/**
 	 * MIDIキーボードが押されてイベントが発生した時の処理
 	 */
-	const onGetMidiMessage = (event: CustomEvent<MidiEventProps>): void => {
-		console.log(event.detail);
+	const onGetMidiMessage = (message: MidiEventProps): void => {
+		console.log(message);
 	};
 
 	/**

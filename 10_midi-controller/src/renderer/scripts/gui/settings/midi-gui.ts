@@ -1,20 +1,20 @@
-import { BindingApi, FolderApi, } from "@tweakpane/core";
+import { BindingApi, FolderApi } from "@tweakpane/core";
 import { GuiBase } from "./gui-base";
 import { MidiEventProps, MidiProps } from "@common/interfaces";
 /**
  * シリアル制御用GUIクラス
  */
 export class MidiGui extends GuiBase {
-	static MidiMessage = 'MidiMessage';
-	deviceName: string = '';
+	static MidiMessage = "MidiMessage";
+	deviceName: string = "";
 	device: WebMidi.MIDIInput = undefined;
-	debug: string = '';
-	#deviceList: { [key: string]: WebMidi.MIDIInput; } = {};
-	#deviceKeyList: { [key: string]: string; } = {};
+	debug: string = "";
+	#deviceList: { [key: string]: WebMidi.MIDIInput } = {};
+	#deviceKeyList: { [key: string]: string } = {};
 	#deviceBinding: BindingApi;
 	#debugBinding: BindingApi;
 
-	constructor(folder: FolderApi, useConfig: boolean, data: MidiProps,) {
+	constructor(folder: FolderApi, useConfig: boolean, data: MidiProps) {
 		super(folder);
 		this.folder.hidden = !useConfig;
 		this.deviceName = data.deviceName;
@@ -25,7 +25,7 @@ export class MidiGui extends GuiBase {
 	 * 設定情報
 	 */
 	get config(): MidiProps {
-		const deviceName = this.folder.hidden ? '' : this.deviceName;
+		const deviceName = this.folder.hidden ? "" : this.deviceName;
 		return { deviceName };
 	}
 
@@ -35,7 +35,12 @@ export class MidiGui extends GuiBase {
 	setup = async () => {
 		await this.#getMidiInputs();
 		this.#setDeviceList();
-		this.#debugBinding = this.folder.addBinding(this, "debug", { label: 'Debug', readonly: true, multiline: true, rows: 6, });
+		this.#debugBinding = this.folder.addBinding(this, "debug", {
+			label: "Debug",
+			readonly: true,
+			multiline: true,
+			rows: 6,
+		});
 	};
 
 	/**
@@ -44,17 +49,23 @@ export class MidiGui extends GuiBase {
 	#setDeviceList = () => {
 		if (this.#deviceBinding) this.#deviceBinding.dispose();
 		// GUI設定
-		this.#deviceBinding = this.folder.addBinding(this, "deviceName", { label: 'Device', options: this.#deviceKeyList, }).on('change', (_) => {
-			// 既に選択されてるデバイス一度閉じる
-			if (this.device) {
-				this.device.onmidimessage = null;
-				this.device.close();
-			}
-			// 新しいデバイスを設定
-			this.device = this.#deviceList[this.deviceName];
-			this.onChangeConfig();
-			this.#startListener();
-		});
+		this.#deviceBinding = this.folder
+			.addBinding(this, "deviceName", {
+				label: "Device",
+				options: this.#deviceKeyList,
+			})
+			.on("change", (_) => {
+				// 既に選択されてるデバイス一度閉じる
+				if (this.device) {
+					this.device.onmidimessage = null;
+					this.device.close();
+				}
+				// 新しいデバイスを設定
+				console.log(this.deviceName);
+				this.device = this.#deviceList[this.deviceName];
+				this.onChangeConfig();
+				this.#startListener();
+			});
 
 		// 保存してた情報がありリストの中に存在していれば設定
 		if (this.deviceName in this.#deviceList) {
@@ -108,16 +119,17 @@ export class MidiGui extends GuiBase {
 		this.debug += `velocity: ${velocity}\n`; //鍵盤を押す強さ (フェーダー・ノブの場合は操作値 / ボタンの場合は 0 or 127)
 
 		// イベント発火
-		window.dispatchEvent(new CustomEvent<MidiEventProps>(MidiGui.MidiMessage, {
-			detail: {
-				message: message,
-				cmd: cmd,
-				channel: channel,
-				type: type,
-				note: note,
-				velocity: velocity,
-			}
-		}));
+		window.dispatchEvent(
+			new CustomEvent<MidiEventProps>(MidiGui.MidiMessage, {
+				detail: {
+					message: message,
+					cmd: cmd,
+					channel: channel,
+					type: type,
+					note: note,
+					velocity: velocity,
+				},
+			})
+		);
 	};
 }
-
