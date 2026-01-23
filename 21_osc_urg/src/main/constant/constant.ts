@@ -9,7 +9,7 @@ export const DEFAULT_BROWSER_OPTIONS: Electron.BrowserWindowConstructorOptions =
 		y: 0,
 		width: 1280,
 		height: 1500,
-		fullscreen: false,
+		fullscreen: true,
 		frame: true,
 		kiosk: false,
 		alwaysOnTop: false,
