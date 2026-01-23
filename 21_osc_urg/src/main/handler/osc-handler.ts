@@ -15,7 +15,8 @@ export class OscHandler {
 
 	constructor({ window }: { window: BrowserWindow }) {
 		this.window = window;
-		this.myIp = getLocalAddress();
+		// this.myIp = getLocalAddress();
+		this.myIp = "localhost";
 		this.setup();
 	}
 
