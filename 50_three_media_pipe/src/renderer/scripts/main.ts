@@ -1,9 +1,10 @@
 import { Gui } from "./gui/app-gui";
-import { setup, draw } from "./sketch";
+// import { setup, draw } from "./sketch-three";
+import { setup, draw } from "./sketch-mediapipe";
 
 const main = async () => {
 	await Gui.setup();
-	setup();
+	await setup();
 
 	const animate = () => {
 		requestAnimationFrame(animate);
