@@ -1,0 +1,8 @@
+{
+	"name": "electron-app",
+	"private": true,
+	"description": "授業用 Electron サンプル集",
+	"scripts": {
+		"clean": "node scripts/clean.mjs"
+	}
+}
